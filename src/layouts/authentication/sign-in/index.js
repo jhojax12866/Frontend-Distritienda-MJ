@@ -40,8 +40,8 @@ function SignIn() {
 
   return (
     <CoverLayout
-      title="Welcome back"
-      description="Enter your email and password to sign in"
+      title="BIENVENIDOS A DISTRITIENDA MJ"
+      description="Sistema de gestion de inventariado, creditos y prestamos"
       image={curved9}
     >
       <SoftBox component="form" role="form">
@@ -61,17 +61,6 @@ function SignIn() {
           </SoftBox>
           <SoftInput type="password" placeholder="Password" />
         </SoftBox>
-        <SoftBox display="flex" alignItems="center">
-          <Switch checked={rememberMe} onChange={handleSetRememberMe} />
-          <SoftTypography
-            variant="button"
-            fontWeight="regular"
-            onClick={handleSetRememberMe}
-            sx={{ cursor: "pointer", userSelect: "none" }}
-          >
-            &nbsp;&nbsp;Remember me
-          </SoftTypography>
-        </SoftBox>
         <SoftBox mt={4} mb={1}>
           <SoftButton variant="gradient" color="info" fullWidth>
             sign in
@@ -79,7 +68,7 @@ function SignIn() {
         </SoftBox>
         <SoftBox mt={3} textAlign="center">
           <SoftTypography variant="button" color="text" fontWeight="regular">
-            Don&apos;t have an account?{" "}
+            Aun no estas registrado?{" "}
             <SoftTypography
               component={Link}
               to="/authentication/sign-up"
