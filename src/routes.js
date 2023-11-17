@@ -45,6 +45,7 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 
+
 // Soft UI Dashboard React icons
 import Shop from "examples/Icons/Shop";
 import Office from "examples/Icons/Office";
@@ -54,6 +55,9 @@ import SpaceShip from "examples/Icons/SpaceShip";
 import CustomerSupport from "examples/Icons/CustomerSupport";
 import CreditCard from "examples/Icons/CreditCard";
 import Cube from "examples/Icons/Cube";
+import Tabla_Inventario from "layouts/tabla_inventario";
+import Inventario from "layouts/inventario/inventari";
+import Tabla_Creditos from "layouts/Tabla Creditos";
 
 const routes = [
   {
@@ -63,6 +67,34 @@ const routes = [
     route: "/dashboard",
     icon: <Shop size="12px" />,
     component: <Dashboard />,
+    noCollapse: true,
+  },
+  
+  {
+    type: "collapse",
+    name: "Inventario",
+    key: "inventario",
+    route: "/inventario",
+    icon: <CustomerSupport size="12px" />,
+    component: <Inventario />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Tabla Inventario",
+    key: "tabla_inventario",
+    route: "/Tabla Inventario",
+    icon: <Office size="12px" />,
+    component: <Tabla_Inventario />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Tabla Creditos",
+    key: "tabla_creditos",
+    route: "/Tabla Creditos",
+    icon: <Office size="12px" />,
+    component: <Tabla_Creditos/>,
     noCollapse: true,
   },
   {
@@ -83,24 +115,8 @@ const routes = [
     component: <Billing />,
     noCollapse: true,
   },
-  {
-    type: "collapse",
-    name: "Virtual Reality",
-    key: "virtual-reality",
-    route: "/virtual-reality",
-    icon: <Cube size="12px" />,
-    component: <VirtualReality />,
-    noCollapse: true,
-  },
-  {
-    type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    route: "/rtl",
-    icon: <Settings size="12px" />,
-    component: <RTL />,
-    noCollapse: true,
-  },
+  
+  
   { type: "title", title: "Account Pages", key: "account-pages" },
   {
     type: "collapse",
@@ -129,6 +145,7 @@ const routes = [
     component: <SignUp />,
     noCollapse: true,
   },
+
 ];
 
 export default routes;

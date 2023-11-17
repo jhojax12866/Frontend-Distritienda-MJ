@@ -50,7 +50,7 @@ import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 
-function Overview() {
+function Inventario() {
   return (
     <DashboardLayout>
       <Header />
@@ -61,7 +61,7 @@ function Overview() {
           </Grid>
           <Grid item xs={12} md={6} xl={4}>
             <ProfileInfoCard
-              title="Perfil de Usuario"
+              title="Perfil de Usuarioooooooooooo"
               description="Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
               info={{
                 fullName: "Alec M. Thompson",
@@ -183,4 +183,4 @@ function Overview() {
   );
 }
 
-export default Overview;
+export default Inventario;
