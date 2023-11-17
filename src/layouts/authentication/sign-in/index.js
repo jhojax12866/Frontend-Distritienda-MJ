@@ -40,8 +40,8 @@ function SignIn() {
 
   return (
     <CoverLayout
-      title="BIENVENIDOS A DISTRITIENDA MJ"
-      description="Sistema de gestion de inventariado, creditos y prestamos"
+      title="BIENVENIDO NUEVAMENTE"
+      description="Sistema de gestion de inventario, ventas, compras y creditos"
       image={curved9}
     >
       <SoftBox component="form" role="form">
