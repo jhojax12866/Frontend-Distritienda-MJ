@@ -62,8 +62,11 @@ function SignIn() {
           <SoftInput type="password" placeholder="Password" />
         </SoftBox>
         <SoftBox mt={4} mb={1}>
-          <SoftButton variant="gradient" color="info" fullWidth>
-            sign in
+          <SoftButton 
+          variant="gradient" color="info" fullWidth
+          component={Link}
+          to="/desboard">
+          Inicia Sesion
           </SoftButton>
         </SoftBox>
         <SoftBox mt={3} textAlign="center">
@@ -77,7 +80,7 @@ function SignIn() {
               fontWeight="medium"
               textGradient
             >
-              Sign up
+              registrate
             </SoftTypography>
           </SoftTypography>
         </SoftBox>

@@ -95,7 +95,7 @@ function Dashboard() {
               <BuildByDevelopers />
             </Grid>
             <Grid item xs={12} lg={5}>
-              <WorkWithTheRockets />
+              
             </Grid>
           </Grid>
         </SoftBox>
@@ -140,7 +140,7 @@ function Dashboard() {
             <Projects />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <OrderOverview />
+            
           </Grid>
         </Grid>
       </SoftBox>

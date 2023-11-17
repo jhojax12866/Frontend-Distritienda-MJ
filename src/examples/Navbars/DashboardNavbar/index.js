@@ -206,7 +206,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
         )}
       </Toolbar>
       <SoftInput
-                placeholder="Type here..."
+                placeholder="haz tu busqueda aqui"
                 icon={{ component: "search", direction: "left" }}
               />
     </AppBar>
