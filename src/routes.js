@@ -55,7 +55,7 @@ import SpaceShip from "examples/Icons/SpaceShip";
 import CustomerSupport from "examples/Icons/CustomerSupport";
 import CreditCard from "examples/Icons/CreditCard";
 import Cube from "examples/Icons/Cube";
-import Tabla_Inventario from "layouts/tabla_inventario";
+import Tabla_Inventario from "layouts/Tabla Inventario";
 import Inventario from "layouts/inventario/inventari";
 import Tabla_Creditos from "layouts/Tabla Creditos";
 
