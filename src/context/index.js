@@ -1,35 +1,15 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-/**
-  This file is used for controlling the global states of the components,
-  you can customize the states for the different components here.
-*/
-
 import { createContext, useContext, useReducer, useMemo } from "react";
 
-// prop-types is a library for typechecking of props
+
 import PropTypes from "prop-types";
 
-// The Soft UI Dashboard PRO Material main context
+
 const SoftUI = createContext(null);
 
-// Setting custom name for the context which is visible on react dev tools
+
 SoftUI.displayName = "SoftUIContext";
 
-// Soft UI Dashboard React reducer
+
 function reducer(state, action) {
   switch (action.type) {
     case "MINI_SIDENAV": {
@@ -62,7 +42,7 @@ function reducer(state, action) {
   }
 }
 
-// Soft UI Dashboard React context provider
+
 function SoftUIControllerProvider({ children }) {
   const initialState = {
     miniSidenav: false,
@@ -82,7 +62,7 @@ function SoftUIControllerProvider({ children }) {
   return <SoftUI.Provider value={value}>{children}</SoftUI.Provider>;
 }
 
-// Soft UI Dashboard React custom hook for using context
+
 function useSoftUIController() {
   const context = useContext(SoftUI);
 
@@ -93,12 +73,12 @@ function useSoftUIController() {
   return context;
 }
 
-// Typechecking props for the SoftUIControllerProvider
+
 SoftUIControllerProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-// Context module functions
+
 const setMiniSidenav = (dispatch, value) => dispatch({ type: "MINI_SIDENAV", value });
 const setTransparentSidenav = (dispatch, value) => dispatch({ type: "TRANSPARENT_SIDENAV", value });
 const setSidenavColor = (dispatch, value) => dispatch({ type: "SIDENAV_COLOR", value });
