@@ -37,58 +37,21 @@ import team4 from "assets/images/team-4.jpg";
 function Inventario() {
   return (
     <DashboardLayout>
-      <Header />
+      
       <SoftBox mt={5} mb={3}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6} xl={4}>
-            <PlatformSettings />
-          </Grid>
-          <Grid item xs={12} md={6} xl={4}>
-            <ProfileInfoCard
-              title="Perfil de Usuarioooooooooooo"
-              description="Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
-              info={{
-                fullName: "Alec M. Thompson",
-                mobile: "(44) 123 1234 123",
-                email: "alecthompson@mail.com",
-                location: "USA",
-              }}
-              social={[
-                {
-                  link: "https://www.facebook.com/CreativeTim/",
-                  icon: <FacebookIcon />,
-                  color: "facebook",
-                },
-                {
-                  link: "https://twitter.com/creativetim",
-                  icon: <TwitterIcon />,
-                  color: "twitter",
-                },
-                {
-                  link: "https://www.instagram.com/creativetimofficial/",
-                  icon: <InstagramIcon />,
-                  color: "instagram",
-                },
-              ]}
-              action={{ route: "", tooltip: "Edit Profile" }}
-            />
-          </Grid>
-          <Grid item xs={12} xl={4}>
-            <ProfilesList title="conversations" profiles={profilesListData} />
-          </Grid>
-        </Grid>
+        
       </SoftBox>
       <SoftBox mb={3}>
         <Card>
           <SoftBox pt={2} px={2}>
             <SoftBox mb={0.5}>
               <SoftTypography variant="h6" fontWeight="medium">
-                Projects
+                Productos
               </SoftTypography>
             </SoftBox>
             <SoftBox mb={1}>
               <SoftTypography variant="button" fontWeight="regular" color="text">
-                Architects design houses
+                Agrega productos a tu inventario
               </SoftTypography>
             </SoftBox>
           </SoftBox>
@@ -155,7 +118,7 @@ function Inventario() {
                 />
               </Grid>
               <Grid item xs={12} md={6} xl={3}>
-                <PlaceholderCard title={{ variant: "h5", text: "New project" }} outlined />
+                <PlaceholderCard title={{ variant: "h5", text: "New Producto" }} outlined />
               </Grid>
             </Grid>
           </SoftBox>

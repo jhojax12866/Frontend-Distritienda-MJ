@@ -23,7 +23,7 @@ function Tabla_Inventario() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">TABLAAAAAAAAAAAAA</SoftTypography>
+              <SoftTypography variant="h6">TABLA DE PRODUCTOS</SoftTypography>
             </SoftBox>
             <SoftBox
               sx={{
