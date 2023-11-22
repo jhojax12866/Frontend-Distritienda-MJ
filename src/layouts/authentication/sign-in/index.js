@@ -51,7 +51,7 @@ function SignIn() {
           <SoftButton 
           variant="gradient" color="info" fullWidth
           component={Link}
-          to="/desboard">
+          to="/Inicio">
           Inicia Sesion
           </SoftButton>
         </SoftBox>

@@ -11,10 +11,11 @@ import Table from "examples/Tables/Table";
 
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
+import data_productos from "./data_productos/data_productos";
 
 function Tabla_Inventario() {
-  const { columns, rows } = authorsTableData;
-  const { columns: prCols, rows: prRows } = projectsTableData;
+  const { columns, rows } = data_productos;
+  
 
   return (
     <DashboardLayout>
@@ -39,25 +40,9 @@ function Tabla_Inventario() {
             </SoftBox>
           </Card>
         </SoftBox>
-        <Card>
-          <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-            <SoftTypography variant="h6">Projects table</SoftTypography>
-          </SoftBox>
-          <SoftBox
-            sx={{
-              "& .MuiTableRow-root:not(:last-child)": {
-                "& td": {
-                  borderBottom: ({ borders: { borderWidth, borderColor } }) =>
-                    `${borderWidth[1]} solid ${borderColor}`,
-                },
-              },
-            }}
-          >
-            <Table columns={prCols} rows={prRows} />
-          </SoftBox>
-        </Card>
+        
       </SoftBox>
-      <Footer />
+     
     </DashboardLayout>
   );
 }

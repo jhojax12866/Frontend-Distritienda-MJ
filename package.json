@@ -24,6 +24,7 @@
     "axios": "^1.6.2",
     "chart.js": "3.9.1",
     "chroma-js": "2.4.2",
+    "datos_api": "github:jhojax12866/datos_api",
     "prop-types": "15.8.1",
     "react": ">=16.8.0",
     "react-chartjs-2": "3.0.5",
@@ -64,6 +65,7 @@
     ]
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.7.0",
     "eslint": "8.40.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-import": "2.27.5",

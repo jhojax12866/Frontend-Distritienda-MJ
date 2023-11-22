@@ -37,9 +37,9 @@ import team4 from "assets/images/team-4.jpg";
 function Inventario() {
   return (
     <DashboardLayout>
-      
+
       <SoftBox mt={5} mb={3}>
-        
+
       </SoftBox>
       <SoftBox mb={3}>
         <Card>
