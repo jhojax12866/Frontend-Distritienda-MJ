@@ -118,16 +118,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
   );
 
   return (
-    <AppBar
-      position={absolute ? "absolute" : navbarType}
-      color="inherit"
-      sx={(theme) => navbar(theme, { transparentNavbar, absolute, light })}
-      
-    >
+    <AppBar position={absolute ? "absolute" : navbarType} color="inherit"elevation={2} // Añade sombra
+        sx={{borderRadius: "8px"}}>
       <Toolbar sx={(theme) => navbarContainer(theme)}>
-        <SoftBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-        
-          <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
+        <SoftBox color="inherit" mb={{ xs: 1, md: 0 }}>
+          <Breadcrumbs icon="home" title="Tabla Inventario" route={route} light={light} />
         </SoftBox>
         {isMini ? null : (
           <SoftBox sx={(theme) => navbarRow(theme, { isMini })}>
@@ -180,17 +175,13 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 variant="contained"
                 onClick={handleOpenMenu}
               >
-                <Icon className={light ? "text-white" : "text-dark"}>notifications</Icon>
               </IconButton>
               {renderMenu()}
             </SoftBox>
           </SoftBox>
         )}
       </Toolbar>
-      <SoftInput
-                placeholder="haz tu busqueda aqui"
-                icon={{ component: "search", direction: "left" }}
-              />
+      
     </AppBar>
   );
 }

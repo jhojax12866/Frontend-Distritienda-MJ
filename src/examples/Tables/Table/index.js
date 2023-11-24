@@ -52,10 +52,10 @@ function Table({ columns, rows }) {
         pl={align === "left" ? pl : 3}
         pr={align === "right" ? pr : 3}
         textAlign={align}
-        fontSize={size.xxs}
-        fontWeight={fontWeightBold}
-        color="secondary"
-        opacity={0.7}
+        fontSize={size.sm} // Ajusta el tamaño de la letra del encabezado
+        fontWeight="bold" // Haz el texto en negrita para destacarlo
+        color="black" // Cambia el color del texto del encabezado
+        bgcolor="background.paper" // Cambia el fondo del encabezado
         borderBottom={`${borderWidth[1]} solid ${light.main}`}
       >
         {name.toUpperCase()}
