@@ -1,6 +1,7 @@
 import Grid from "@mui/material/Grid";
 import Icon from "@mui/material/Icon";
-
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
@@ -25,53 +26,59 @@ import Projects from "layouts/dashboard/components/Projects";
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
 
+
+
 function Dashboard() {
+  const [products, setProducts] = useState([]);
+  const [stock, setStock] = useState([]);
   const { size } = typography;
   const { chart, items } = reportsBarChartData;
+  useEffect(() => {
+    // Obtener productos
+    axios.get('https://diplomadobd-06369030a7e4.herokuapp.com/productos/')
+      .then(response => {
+        setProducts(response.data);
+      })
+      .catch(error => {
+        console.error('Error al obtener productos:', error);
+      });
+
+    // Obtener información de stock
+    axios.get('https://diplomadobd-06369030a7e4.herokuapp.com/stock/')
+      .then(response => {
+        // Filtrar productos con cantidad
+        const productsWithStock = response.data.filter(product => product.cantidad > 0);
+        setStock(productsWithStock);
+      })
+      .catch(error => {
+        console.error('Error al obtener información de stock:', error);
+      });
+  }, []);
 
   return (
     <DashboardLayout>
       <DashboardNavbar/>
       <SoftBox py={3}>
         <SoftBox mb={3}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6} xl={3}>
-              <MiniStatisticsCard
-                title={{ text: "PRODUCTO" }}
-                count="$53,000"
-                percentage={{ color: "success", text: "+55%" }}
-                icon={{ color: "info", component: "paid" }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <MiniStatisticsCard
-                title={{ text: "today's users" }}
-                count="2,300"
-                percentage={{ color: "success", text: "+3%" }}
-                icon={{ color: "info", component: "public" }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <MiniStatisticsCard
-                title={{ text: "new clients" }}
-                count="+3,462"
-                percentage={{ color: "error", text: "-2%" }}
-                icon={{ color: "info", component: "emoji_events" }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <MiniStatisticsCard
-                title={{ text: "sales" }}
-                count="$103,430"
-                percentage={{ color: "success", text: "+5%" }}
-                icon={{
-                  color: "info",
-                  component: "shopping_cart",
-                }}
-              />
-            </Grid>
+        <Grid container spacing={3}>
+          
+            {products.map(product => (
+              
+              <Grid key={product.id} item xs={12} sm={6} xl={3}>
+                <MiniStatisticsCard
+                  title={{ text: product.nombre }}
+                  count={product.precio}
+                  subcount={`Categoría: ${product.categoria}`}
+                  percentage={{ color: "success", text: "+55%" }}
+                  icon={{ color: "info", component: "paid" }}
+                />
+              </Grid>
+              
+            ))}
+
           </Grid>
         </SoftBox>
+        
         <SoftBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={7}>

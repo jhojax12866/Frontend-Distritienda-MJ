@@ -8,6 +8,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
 
+
 const data_productos = {
   columns: [
     { name: "nombre", align: "left" },
@@ -57,22 +58,22 @@ function Tabla_Inventario() {
         Buscar
       </SoftTypography>
       <TextField
-        label=""
-        variant="filled"
-        color="secondary"
-        value={searchTerm}
-        onChange={handleSearchTermChange}
-        fullWidth
-        InputLabelProps={{ shrink: false }}
-        InputProps={{
-          style: {
-            fontSize: '14px',
-            backgroundColor: 'rgba(173, 216, 230, 0.9)', // Tono de azul claro
-            borderRadius: '10px', // Agrega bordes redondeados
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Agrega sombra suave
-          },
-        }}
-      />
+      label=""
+      variant="filled"
+      color="secondary"
+      value={searchTerm}
+      onChange={handleSearchTermChange}
+      fullWidth
+      InputLabelProps={{ shrink: false }}
+      InputProps={{
+        style: {
+          fontSize: '14px',
+          backgroundColor: 'rgba(173, 216, 230, 0.9)', // Tono de azul claro
+          borderRadius: '10px', // Agrega bordes redondeados
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Agrega sombra suave
+        },
+      }}
+    />
       <SoftBox py={3}>
         <SoftBox mb={3}>
           <Card>
@@ -97,6 +98,4 @@ function Tabla_Inventario() {
       <Footer />
     </DashboardLayout>
   );
-}
-
-export default Tabla_Inventario;
+}export default Tabla_Inventario;
