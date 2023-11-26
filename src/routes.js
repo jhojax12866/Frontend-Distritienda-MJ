@@ -19,6 +19,7 @@ import Cube from "examples/Icons/Cube";
 import Tabla_Inventario from "layouts/Tabla Inventario";
 import Inventario from "layouts/inventario/inventari";
 import Tabla_Creditos from "layouts/Tabla Creditos";
+import Lotes from "layouts/Lotes";
 
 const routes = [
   {
@@ -47,6 +48,15 @@ const routes = [
     route: "/Tabla Inventario",
     icon: <Office size="12px" />,
     component: <Tabla_Inventario />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Lotes",
+    key: "lotes",
+    route: "/Lotes",
+    icon: <Office size="12px" />,
+    component: <Lotes/>,
     noCollapse: true,
   },
   {
