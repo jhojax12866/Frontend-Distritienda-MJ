@@ -6,11 +6,13 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
+import { TextField } from "@mui/material";
 
 function Lotes() {
   const [lotes, setLotes] = useState([]);
   const [productos, setProductos] = useState([]);
   const [selectedLot, setSelectedLot] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,12 +66,45 @@ function Lotes() {
     // Add other product columns as needed
   ];
 
-  // Filter productos based on PRODUCTO_LOTE
-  const filteredProductos = productos.filter(producto => producto.producto_lote === selectedLot?.producto_lote);
+  // Función para filtrar productos por lote y término de búsqueda
+  const filterLotes = (loteId) => {
+    return lotes.filter(
+      (lote) =>
+        lote.numero_lote.toString().includes(searchTerm.toLowerCase())
+    );
+  };
+
+  // Manejar cambios en el término de búsqueda
+  const handleSearchTermChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  // Filtrar lotes según el término de búsqueda
+  const filteredLotes = filterLotes();
 
   return (
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
       <DashboardNavbar />
+      <SoftTypography variant="body1" style={{ paddingLeft: '2px', paddingTop: '0px', fontSize: '19px' }}>
+        Buscar
+      </SoftTypography>
+      <TextField
+        label=""
+        variant="filled"
+        color="secondary"
+        value={searchTerm}
+        onChange={handleSearchTermChange}
+        fullWidth
+        InputLabelProps={{ shrink: false }}
+        InputProps={{
+          style: {
+            fontSize: '14px',
+            backgroundColor: 'rgba(173, 216, 230, 0.9)',
+            borderRadius: '10px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+          },
+        }}
+      />
       <SoftBox py={3}>
         <SoftBox mb={3}>
           <Card>
@@ -86,7 +121,7 @@ function Lotes() {
                 },
               }}
             >
-              <Table columns={lotesColumns} rows={lotes} onRowClick={handleRowClick} />
+              <Table columns={lotesColumns} rows={filteredLotes} onRowClick={handleRowClick} />
             </SoftBox>
           </Card>
         </SoftBox>
@@ -108,8 +143,7 @@ function Lotes() {
                 },
               }}
             >
-              {/* Use the product name from the first product in the filteredProductos list */}
-              <Table columns={productosColumns} rows={filteredProductos} />
+              <Table columns={productosColumns} rows={productos} />
             </SoftBox>
           </Card>
         </SoftBox>

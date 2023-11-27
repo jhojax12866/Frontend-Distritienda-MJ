@@ -1,29 +1,52 @@
-
-import { useState } from "react";
-
-
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
-
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
-
-
+import axios from "axios";
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 import SoftInput from "components/SoftInput";
 import SoftButton from "components/SoftButton";
-
-
 import BasicLayout from "layouts/authentication/components/BasicLayout";
-
-
 import curved6 from "assets/images/curved-images/curved14.jpg";
 
 function SignUp() {
-  const [agreement, setAgremment] = useState(true);
+  const [agreement, setAgreement] = useState(true);
 
-  const handleSetAgremment = () => setAgremment(!agreement);
+  const handleSignUp = async () => {
+    // Get form data from the input fields
+    const username = document.getElementById("username").value;
+    const email = document.getElementById("email").value;
+    const first_name = document.getElementById("name").value;
+    const password = document.getElementById("password").value;
+
+    // Create formData object
+    const formData = {
+      username: username,
+      email: email,
+      first_name: first_name,
+      password: password,
+    };
+
+    try {
+      const response = await axios.post("https://diplomadobd-06369030a7e4.herokuapp.com/users/users_create", formData);
+    
+      if (response && response.data) {
+        console.log("Usuario registrado exitosamente:", response.data);
+      } else {
+        console.error("Respuesta inesperada:", response);
+      }
+    } catch (error) {
+      console.error("Error al registrarse:", error.response ? error.response.data : error.message);
+    }
+  };
+
+  useEffect(() => {
+    // ... any other code you want to run on component mount ...
+
+  }, []); // Empty dependency array ensures the effect runs only once after initial render
+
+  const handleSetAgreement = () => setAgreement(!agreement);
 
   return (
     <BasicLayout
@@ -32,25 +55,27 @@ function SignUp() {
       image={curved6}
     >
       <Card>
-        
         <SoftBox pt={2} pb={3} px={3}>
           <SoftBox component="form" role="form">
             <SoftBox mb={2}>
-              <SoftInput placeholder="Name" />
+              <SoftInput id="username" placeholder="Name" />
             </SoftBox>
             <SoftBox mb={2}>
-              <SoftInput type="email" placeholder="Email" />
+              <SoftInput id="email" type="email" placeholder="Email" />
             </SoftBox>
             <SoftBox mb={2}>
-              <SoftInput type="password" placeholder="Password" />
+              <SoftInput id="name" placeholder="First Name" />
+            </SoftBox>
+            <SoftBox mb={2}>
+              <SoftInput id="password" type="password" placeholder="Password" />
             </SoftBox>
             <SoftBox display="flex" alignItems="center">
-              <Checkbox checked={agreement} onChange={handleSetAgremment} />
+              <Checkbox checked={agreement} onChange={handleSetAgreement} />
               <SoftTypography
                 variant="button"
                 fontWeight="regular"
-                onClick={handleSetAgremment}
-                sx={{ cursor: "poiner", userSelect: "none" }}
+                onClick={handleSetAgreement}
+                sx={{ cursor: "pointer", userSelect: "none" }}
               >
                 &nbsp;&nbsp;Estoy de acuerdo con los&nbsp;
               </SoftTypography>
@@ -61,11 +86,11 @@ function SignUp() {
                 fontWeight="bold"
                 textGradient
               >
-                terminos y condiciones.
+                términos y condiciones.
               </SoftTypography>
             </SoftBox>
             <SoftBox mt={4} mb={1}>
-              <SoftButton variant="gradient" color="dark" fullWidth>
+              <SoftButton variant="gradient" color="dark" fullWidth onClick={handleSignUp}>
                 Registrate
               </SoftButton>
             </SoftBox>
@@ -80,7 +105,7 @@ function SignUp() {
                   fontWeight="bold"
                   textGradient
                 >
-                  Inicia sesion aqui
+                  Inicia sesión aquí
                 </SoftTypography>
               </SoftTypography>
             </SoftBox>

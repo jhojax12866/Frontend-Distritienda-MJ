@@ -18,13 +18,12 @@ import GradientLineChart from "examples/Charts/LineCharts/GradientLineChart";
 import typography from "assets/theme/base/typography";
 
 
-import BuildByDevelopers from "layouts/dashboard/components/BuildByDevelopers";
-
 import Projects from "layouts/dashboard/components/Projects";
 
 
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
+import Pvendido from "./components/Pvendido";
 
 
 
@@ -82,7 +81,7 @@ function Dashboard() {
         <SoftBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={7}>
-              <BuildByDevelopers />
+              <Pvendido />
             </Grid>
             <Grid item xs={12} lg={5}>
               

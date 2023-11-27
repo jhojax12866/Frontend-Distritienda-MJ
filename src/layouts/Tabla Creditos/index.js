@@ -7,33 +7,62 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
 
-const data_creditos = {
-  columns: [
-    { name: "id", align: "center" },
-    { name: "medio_pago", align: "center" },
-    { name: "estado_pago", align: "center" },
-    { name: "factura_v", align: "center" },
-    { name: "factura_c", align: "center" },
-  ],
-};
-
 function Tabla_Creditos() {
-  const { columns } = data_creditos;
   const [creditos, setCreditos] = useState([]);
+  const [facturasVenta, setFacturasVenta] = useState([]);
+  const [facturasCompra, setFacturasCompra] = useState([]);
+  const [personas, setPersonas] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/pago/");
-        const data = await response.json();
-        setCreditos(data);
+        // Obtener datos de la API de pagos
+        const responsePago = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/pago/");
+        const dataPago = await responsePago.json();
+        setCreditos(dataPago);
+
+        // Obtener datos de la API de facturas de venta
+        const responseFacturaVenta = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/factura_venta/");
+        const dataFacturaVenta = await responseFacturaVenta.json();
+        setFacturasVenta(dataFacturaVenta);
+
+        // Obtener datos de la API de facturas de compra
+        const responseFacturaCompra = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/factura_compra/");
+        const dataFacturaCompra = await responseFacturaCompra.json();
+        setFacturasCompra(dataFacturaCompra);
+
+        // Obtener datos de la API de personas
+        const responsePersonas = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/personas/");
+        const dataPersonas = await responsePersonas.json();
+        setPersonas(dataPersonas);
       } catch (error) {
-        console.error("Error al obtener datos de la API de créditos", error);
+        console.error("Error al obtener datos de la API", error);
       }
     };
 
     fetchData();
   }, []);
+
+  // Función para obtener el nombre de una persona por su ID
+  const getNombrePersonaById = (personaId) => {
+    const persona = personas.find((p) => p.id === personaId);
+    return persona ? `${persona.nombre} ${persona.apellido}` : "N/A";
+  };
+
+  // Modificar la estructura de datos para incluir FACTURA_V y FACTURA_C en la tabla
+  const tablaData = creditos.map((credito) => {
+    const facturaVenta = facturasVenta.find((factura) => factura.id === credito.factura_v);
+    const facturaCompra = facturasCompra.find((factura) => factura.id === credito.factura_c);
+
+    return {
+      id: credito.id,
+      medio_pago: credito.medio_pago,
+      estado_pago: credito.estado_pago,
+      factura_v: facturaVenta ? facturaVenta.total_v : "N/A",
+      factura_c: facturaCompra ? facturaCompra.total_c : "N/A",
+      proveedor_nombre: facturaCompra ? getNombrePersonaById(facturaCompra.proveedor_f) : "N/A",
+    };
+  });
 
   return (
     <DashboardLayout>
@@ -54,7 +83,17 @@ function Tabla_Creditos() {
                 },
               }}
             >
-              <Table columns={columns} rows={creditos} />
+              <Table
+                columns={[
+                  { name: "id", align: "center" },
+                  { name: "medio_pago", align: "center" },
+                  { name: "estado_pago", align: "center" },
+                  { name: "factura_v", align: "center" },
+                  { name: "factura_c", align: "center" },
+                  { name: "proveedor_nombre", align: "center" },
+                ]}
+                rows={tablaData}
+              />
             </SoftBox>
           </Card>
         </SoftBox>
