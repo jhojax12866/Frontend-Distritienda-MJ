@@ -10,28 +10,19 @@ import Table from "examples/Tables/Table";
 function Tabla_Creditos() {
   const [creditos, setCreditos] = useState([]);
   const [facturasVenta, setFacturasVenta] = useState([]);
-  const [facturasCompra, setFacturasCompra] = useState([]);
   const [personas, setPersonas] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Obtener datos de la API de pagos
         const responsePago = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/pago/");
         const dataPago = await responsePago.json();
         setCreditos(dataPago);
 
-        // Obtener datos de la API de facturas de venta
         const responseFacturaVenta = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/factura_venta/");
         const dataFacturaVenta = await responseFacturaVenta.json();
         setFacturasVenta(dataFacturaVenta);
 
-        // Obtener datos de la API de facturas de compra
-        const responseFacturaCompra = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/factura_compra/");
-        const dataFacturaCompra = await responseFacturaCompra.json();
-        setFacturasCompra(dataFacturaCompra);
-
-        // Obtener datos de la API de personas
         const responsePersonas = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/personas/");
         const dataPersonas = await responsePersonas.json();
         setPersonas(dataPersonas);
@@ -49,20 +40,24 @@ function Tabla_Creditos() {
     return persona ? `${persona.nombre} ${persona.apellido}` : "N/A";
   };
 
-  // Modificar la estructura de datos para incluir FACTURA_V y FACTURA_C en la tabla
+  // Modificar la estructura de datos para incluir solo FACTURA_V en la tabla y facturas diferentes de null
   const tablaData = creditos.map((credito) => {
     const facturaVenta = facturasVenta.find((factura) => factura.id === credito.factura_v);
-    const facturaCompra = facturasCompra.find((factura) => factura.id === credito.factura_c);
 
-    return {
-      id: credito.id,
-      medio_pago: credito.medio_pago,
-      estado_pago: credito.estado_pago,
-      factura_v: facturaVenta ? facturaVenta.total_v : "N/A",
-      factura_c: facturaCompra ? facturaCompra.total_c : "N/A",
-      proveedor_nombre: facturaCompra ? getNombrePersonaById(facturaCompra.proveedor_f) : "N/A",
-    };
-  });
+    // Verificar si la factura de venta es diferente de null
+    if (facturaVenta) {
+      return {
+        id: credito.id,
+        medio_pago: credito.medio_pago,
+        estado_pago: credito.estado_pago,
+        factura_v: facturaVenta.total_v,
+        cliente_nombre: getNombrePersonaById(facturaVenta.cliente_f),
+      };
+    }
+
+    // Si la factura de venta es null, devolver null para no incluirla en la tabla
+    return null;
+  }).filter(Boolean); // Filtrar elementos nulos
 
   return (
     <DashboardLayout>
@@ -85,12 +80,12 @@ function Tabla_Creditos() {
             >
               <Table
                 columns={[
-                  { name: "id", align: "center" },
+                  { name: "cliente_nombre", align: "center" },
+                 
                   { name: "medio_pago", align: "center" },
                   { name: "estado_pago", align: "center" },
                   { name: "factura_v", align: "center" },
-                  { name: "factura_c", align: "center" },
-                  { name: "proveedor_nombre", align: "center" },
+                  
                 ]}
                 rows={tablaData}
               />

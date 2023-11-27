@@ -52,11 +52,11 @@ function Lotes() {
   };
 
   const lotesColumns = [
-    { name: "id", align: "left" },
-    { name: "fecha_ingreso", align: "left" },
+    { name: "numero_lote", align: "center" },
     { name: "producto_lote", align: "center" },
     { name: "cantidad", align: "center" },
-    { name: "numero_lote", align: "center" },
+    { name: "fecha_ingreso", align: "left" },
+    
   ];
 
   const productosColumns = [
