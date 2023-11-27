@@ -6,11 +6,13 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
+import { TextField } from "@mui/material";
 
 function Tabla_Creditos() {
   const [creditos, setCreditos] = useState([]);
   const [facturasVenta, setFacturasVenta] = useState([]);
   const [personas, setPersonas] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,27 +43,54 @@ function Tabla_Creditos() {
   };
 
   // Modificar la estructura de datos para incluir solo FACTURA_V en la tabla y facturas diferentes de null
-  const tablaData = creditos.map((credito) => {
-    const facturaVenta = facturasVenta.find((factura) => factura.id === credito.factura_v);
+  const tablaData = creditos
+    .filter((credito) => credito.estado_pago.toLowerCase().includes(searchTerm.toLowerCase()))
+    .map((credito) => {
+      const facturaVenta = facturasVenta.find((factura) => factura.id === credito.factura_v);
 
-    // Verificar si la factura de venta es diferente de null
-    if (facturaVenta) {
-      return {
-        id: credito.id,
-        medio_pago: credito.medio_pago,
-        estado_pago: credito.estado_pago,
-        factura_v: facturaVenta.total_v,
-        cliente_nombre: getNombrePersonaById(facturaVenta.cliente_f),
-      };
-    }
+      // Verificar si la factura de venta es diferente de null
+      if (facturaVenta) {
+        return {
+          cliente_nombre: getNombrePersonaById(facturaVenta.cliente_f),
+          medio_pago: credito.medio_pago,
+          estado_pago: credito.estado_pago,
+          factura_v: facturaVenta.total_v,
+        };
+      }
 
-    // Si la factura de venta es null, devolver null para no incluirla en la tabla
-    return null;
-  }).filter(Boolean); // Filtrar elementos nulos
+      // Si la factura de venta es null, devolver null para no incluirla en la tabla
+      return null;
+    })
+    .filter(Boolean); // Filtrar elementos nulos
+
+  // Función para filtrar elementos por término de búsqueda
+  const filterBySearchTerm = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      <SoftTypography variant="body1" style={{ paddingLeft: '2px', paddingTop: '0px', fontSize: '19px' }}>
+        Buscar
+      </SoftTypography>
+      <TextField
+                label=""
+                variant="filled"
+                color="secondary"
+                value={searchTerm}
+                onChange={filterBySearchTerm}
+                fullWidth
+                InputLabelProps={{ shrink: false }}
+                InputProps={{
+                  style: {
+                    fontSize: '14px',
+                    backgroundColor: 'rgba(173, 216, 230, 0.9)',
+                    borderRadius: '10px',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                  },
+                }}
+              />
       <SoftBox py={3}>
         <SoftBox mb={3}>
           <Card>
@@ -81,11 +110,9 @@ function Tabla_Creditos() {
               <Table
                 columns={[
                   { name: "cliente_nombre", align: "center" },
-                 
                   { name: "medio_pago", align: "center" },
                   { name: "estado_pago", align: "center" },
                   { name: "factura_v", align: "center" },
-                  
                 ]}
                 rows={tablaData}
               />
