@@ -24,6 +24,7 @@ import Projects from "layouts/dashboard/components/Projects";
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
 import Pvendido from "./components/Pvendido";
+import Productcard from "./components/Productcard/indes";
 
 
 
@@ -64,13 +65,14 @@ function Dashboard() {
             {products.map(product => (
               
               <Grid key={product.id} item xs={12} sm={6} xl={3}>
-                <MiniStatisticsCard
-                  title={{ text: product.nombre }}
+                <Productcard
+                  title={product.nombre} // Cambia esta línea
                   count={product.precio}
                   subcount={`Categoría: ${product.categoria}`}
                   percentage={{ color: "success", text: "+55%" }}
                   icon={{ color: "info", component: "paid" }}
-                />
+                  image={product.imagen}
+/>
               </Grid>
               
             ))}
