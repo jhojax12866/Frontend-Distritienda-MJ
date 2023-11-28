@@ -8,7 +8,7 @@ import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
 import { TextField } from "@mui/material";
 
-function Compras() {
+function Tabla_Creditos() {
   const [creditos, setCreditos] = useState([]);
   const [facturasVenta, setFacturasVenta] = useState([]);
   const [personas, setPersonas] = useState([]);
@@ -30,10 +30,10 @@ function Compras() {
         const dataPersonas = await responsePersonas.json();
         setPersonas(dataPersonas);
 
-        // Nueva llamada a la API de cartera
         const responseCartera = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/cartera/");
         const dataCartera = await responseCartera.json();
         setCarteraData(dataCartera);
+
       } catch (error) {
         console.error("Error al obtener datos de la API", error);
       }
@@ -58,7 +58,7 @@ function Compras() {
       // Verificar si la factura de venta y la información de cartera son diferentes de null
       if (facturaVenta && carteraInfo) {
         return {
-          cliente_nombre: getNombrePersonaById(facturaVenta.cliente_f),
+          proveedor: getNombrePersonaById(facturaVenta.cliente_f),
           medio_pago: credito.medio_pago,
           estado_pago: credito.estado_pago,
           factura_v: facturaVenta.total_v,
@@ -104,7 +104,7 @@ function Compras() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">TABLA CREDITOS VALLEJOS</SoftTypography>
+              <SoftTypography variant="h6">COMPRAS - PROVEEDORES</SoftTypography>
             </SoftBox>
             <SoftBox
               sx={{
@@ -118,12 +118,13 @@ function Compras() {
             >
               <Table
                 columns={[
-                  { name: "cliente_nombre", align: "center" },
-                  { name: "medio_pago", align: "center" },
-                  { name: "estado_pago", align: "center" },
-                  { name: "factura_v", align: "center" },
-                  { name: "fecha_facturacion", align: "center" }, // Agregar columna de fecha de facturación
-                  { name: "fecha_vencimiento", align: "center" }, // Agregar columna de fecha de vencimiento
+                  { name: "id_factura_compra", align: "center" },
+                  { name: "proveedor", align: "center" },
+                  { name: "producto", align: "center" },
+                  { name: "cantidad", align: "center" },
+                  { name: "precio_unitario", align: "center" },
+                  { name: "fecha_facturacion", align: "center" },
+                  { name: "total", align: "center" },
                 ]}
                 rows={tablaData}
               />
@@ -136,4 +137,4 @@ function Compras() {
   );
 }
 
-export default Compras;
+export default Tabla_Creditos;
