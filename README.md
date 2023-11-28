@@ -4,58 +4,58 @@
 
 ![Image](https://s3.amazonaws.com/creativetim_bucket/products/500/original/soft-ui-dashboard-material-ui.jpg)
 
-Comienza tu desarrollo con una plantilla de administrador innovadora para MUI y React. Si te gusta el aspecto y la sensación de la tendencia de diseño más popular en este momento, Soft UI, ¡te enamorarás de este panel de control! Cuenta con una gran cantidad de componentes construidos para encajar y lucir increíbles.
+Start your Development with an Innovative Admin Template for MUI and React. If you like the look & feel of the hottest design trend right now, Soft UI, you will fall in love with this dashboard! It features a huge number of components built to fit together and look amazing.
 
-**Elementos Totalmente Codificados**
-Soft UI Dashboard React está construido con más de 70 elementos individuales del frontend, como botones, entradas, barras de navegación, pestañas de navegación, tarjetas o alertas, brindándote la libertad de elegir y combinar. Todos los componentes pueden tener variaciones de color, que puedes modificar fácilmente usando la API de estilos MUI y la propiedad `sx`. Ahorrarás mucho tiempo desde la prototipación hasta el código completamente funcional porque todos los elementos están implementados. Este panel de MUI Premium viene con bloques de diseño preconstruidos, por lo que el proceso de desarrollo es fluido y cambiar de nuestras páginas al sitio web real es muy fácil de hacer.
+**Fully Coded Elements**
+Soft UI Dashboard React is built with over 70 frontend individual elements, like buttons, inputs, navbars, nav tabs, cards, or alerts, giving you the freedom of choosing and combining. All components can take variations in color, which you can easily modify using MUI styled api and sx prop. You will save a lot of time going from prototyping to full-functional code because all elements are implemented. This Premium MUI Dashboard is coming with prebuilt design blocks, so the development process is seamless, switching from our pages to the real website is very easy to be done.
 
-Ver [todos los componentes aquí](https://www.creative-tim.com/learning-lab/react/alerts/soft-ui-dashboard/).
+View [all components here](https://www.creative-tim.com/learning-lab/react/alerts/soft-ui-dashboard/).
 
-**Documentación elaborada por Desarrolladores**
+**Documentation built by Developers**
 
-Cada elemento está bien presentado en una documentación muy completa.
+Each element is well presented in very complex documentation.
 
-Puedes leer más sobre la [documentación aquí](https://www.creative-tim.com/learning-lab/react/overview/soft-ui-dashboard/).
+You can read more about the [documentation here](https://www.creative-tim.com/learning-lab/react/overview/soft-ui-dashboard/).
 
-**Páginas de Ejemplo**
+**Example Pages**
 
-Si quieres inspiración o simplemente mostrar algo directamente a tus clientes, puedes iniciar tu desarrollo con nuestras páginas de ejemplo preconstruidas. Cada página tiene un buen espacio, con diseños atractivos y formas agradables. Soft UI Dashboard React tiene todo lo que necesitas para configurar rápidamente un proyecto increíble.
+If you want to get inspiration or just show something directly to your clients, you can jump-start your development with our pre-built example pages. Every page is spaced well, with attractive layouts and pleasing shapes. Soft UI Dashboard React has everything you need to quickly set up an amazing project.
 
-Ver [páginas de ejemplo aquí](https://demos.creative-tim.com/soft-ui-dashboard-react/#/dashboard).
+View [example pages here](https://demos.creative-tim.com/soft-ui-dashboard-react/#/dashboard).
 
-**ENLACES ÚTILES**
+**HELPFUL LINKS**
 
-- Ver [Repositorio de Github](https://github.com/creativetimofficial/soft-ui-dashboard-react)
-- Consultar [Página de Preguntas Frecuentes](https://www.creative-tim.com/faq)
+- View [Github Repository](https://github.com/creativetimofficial/soft-ui-dashboard-react)
+- Check [FAQ Page](https://www.creative-tim.com/faq)
 
-#### Agradecimientos especiales
+#### Special thanks
 
-Durante el desarrollo de este panel de control, hemos utilizado muchos recursos existentes de desarrolladores increíbles. Queremos agradecerles por proporcionar sus herramientas de código abierto:
+During the development of this dashboard, we have used many existing resources from awesome developers. We want to thank them for providing their tools open source:
 
-- [MUI](https://mui.com/) - La biblioteca de interfaz de usuario React para un desarrollo web más rápido y sencillo.
-- [React Countup](https://github.com/glennreyes/react-countup) - Un componente React ligero que se puede utilizar para crear rápidamente animaciones que muestran datos numéricos de una manera más interesante.
-- [React ChartJS 2](http://reactchartjs.github.io/react-chartjs-2/#/) - Gráficos React simples pero flexibles para diseñadores y desarrolladores.
-- [ChromaJS](https://gka.github.io/chroma.js/) - Una pequeña biblioteca JavaScript sin dependencias para todo tipo de conversiones de color y escalas de color.
-- [UUID](https://github.com/uuidjs/uuid) - Biblioteca JavaScript para generar números de identificación aleatorios.
-- [Nepcha Analytics](https://nepcha.com?ref=readme) para la herramienta de análisis. Nepcha ya está integrado con Soft UI Dashboard React. Puedes usarlo para obtener información sobre tus fuentes de tráfico.
+- [MUI](https://mui.com/) - The React UI library for faster and easier web development.
+- [React Countup](https://github.com/glennreyes/react-countup) - A lightweight React component that can be used to quickly create animations that display numerical data in a more interesting way.
+- [React ChartJS 2](http://reactchartjs.github.io/react-chartjs-2/#/) - Simple yet flexible React charting for designers & developers.
+- [ChromaJS](https://gka.github.io/chroma.js/) - A small-ish zero-dependency JavaScript library for all kinds of color conversions and color scales.
+- [UUID](https://github.com/uuidjs/uuid) - JavaScript library for generating random id numbers.
+- [Nepcha Analytics](https://nepcha.com?ref=readme) for the analytics tool. Nepcha is already integrated with Soft UI Dashboard React. You can use it to gain insights into your sources of traffic.
 
-Haznos saber tus pensamientos a continuación. ¡Y buena suerte con el desarrollo!
+Let us know your thoughts below. And good luck with development!
 
-## Tabla de Contenidos
+## Table of Contents
 
-- [Versiones](#versiones)
+- [Versions](#versions)
 - [Demo](#demo)
-- [Inicio Rápido](#inicio-rápido)
-- [Documentación](#documentación)
-- [Estructura de Archivos](#estructura-de-archivos)
-- [Compatibilidad con Navegadores](#compatibilidad-con-navegadores)
-- [Recursos](#recursos)
-- [Reportar Problemas](#reportar-problemas)
-- [Soporte Técnico o Preguntas](#soporte-técnico-o-preguntas)
-- [Licencia](#licencia)
-- [Enlaces Útiles](#enlaces-útiles)
+- [Quick Start](#quick-start)
+- [Documentation](#documentation)
+- [File Structure](#file-structure)
+- [Browser Support](#browser-support)
+- [Resources](#resources)
+- [Reporting Issues](#reporting-issues)
+- [Technical Support or Questions](#technical-support-or-questions)
+- [Licensing](#licensing)
+- [Useful Links](#useful-links)
 
-## Versiones
+## Versions
 
 [<img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/logos/react-logo.jpg?raw=true" width="60" height="60" />](https://www.creative-tim.com/product/soft-ui-dashboard-pro-react?ref=readme-sudr)
 
@@ -66,32 +66,32 @@ Haznos saber tus pensamientos a continuación. ¡Y buena suerte con el desarroll
 
 ## Demo
 
-- [Panel de Control](http://demos.creative-tim.com/soft-ui-dashboard-react/#/dashboard?ref=readme-sudr)
-- [Perfil](https://demos.creative-tim.com/soft-ui-dashboard-react/#/profile?ref=readme-sudr)
+- [Dashboard](http://demos.creative-tim.com/soft-ui-dashboard-react/#/dashboard?ref=readme-sudr)
+- [Profile](https://demos.creative-tim.com/soft-ui-dashboard-react/#/profile?ref=readme-sudr)
 - [RTL](https://demos.creative-tim.com/soft-ui-dashboard-react/#/rtl?ref=readme-sudr)
-- [Iniciar Sesión](https://demos.creative-tim.com/soft-ui-dashboard-react/#/authentication/sign-in?ref=readme-sudr)
-- [Registrarse](https://demos.creative-tim.com/soft-ui-dashboard-react/#/authentication/sign-up?ref=readme-sudr)
+- [Sign In](https://demos.creative-tim.com/soft-ui-dashboard-react/#/authentication/sign-in?ref=readme-sudr)
+- [Sign Up](https://demos.creative-tim.com/soft-ui-dashboard-react/#/authentication/sign-up?ref=readme-sudr)
 
-[Ver Más](https://demos.creative-tim.com/soft-ui-dashboard-react/#/dashboard?ref=readme-sudr).
+[View More](https://demos.creative-tim.com/soft-ui-dashboard-react/#/dashboard?ref=readme-sudr).
 
-## Inicio Rápido
+## Quick start
 
-Opciones de inicio rápido:
+Quick start options:
 
-- Comprar en [Creative Tim](https://www.creative-tim.com/product/soft-ui-dashboard-react?ref=readme-sudr).
+- Buy from [Creative Tim](https://www.creative-tim.com/product/soft-ui-dashboard-react?ref=readme-sudr).
 
-## Comandos de Terminal
+## Terminal Commands
 
-1. Descargar e instalar la versión LTS de NodeJs desde la [Página Oficial de NodeJs](https://nodejs.org/en/download/).
-2. Navegar hasta el directorio raíz ./ del producto y ejecutar `yarn install` o `npm install` para instalar nuestras dependencias locales.
+1. Download and Install NodeJs LTS version from [NodeJs Official Page](https://nodejs.org/en/download/).
+2. Navigate to the root ./ directory of the product and run `yarn install` or `npm install` to install our local dependencies.
 
-## Documentación
+## Documentation
 
-La documentación para Soft UI Dashboard está alojada en nuestro [sitio web](https://www.creative-tim.com/learning-lab/react/overview/soft-ui-dashboard/?ref=readme-sudr).
+The documentation for the Soft UI Dashboard is hosted at our [website](https://www.creative-tim.com/learning-lab/react/overview/soft-ui-dashboard/?ref=readme-sudr).
 
-### Lo que está incluido
+### What's included
 
-Dentro de la descarga encontrarás los siguientes directorios y archivos:
+Within the download you'll find the following directories and files:
 
 ```
 soft-ui-dashboard-react
@@ -156,50 +156,50 @@ soft-ui-dashboard-react
     └── README.md
 ```
 
-## Soporte del Navegador
+## Browser Support
 
-En la actualidad, nuestro objetivo oficial es dar soporte a las dos últimas versiones de los siguientes navegadores:
+At present, we officially aim to support the last two versions of the following browsers:
 
 <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/chrome.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/firefox.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/edge.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/safari.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/opera.png" width="64" height="64">
 
-## Recursos
+## Resources
 
-- [Vista Previa en Vivo](https://demos.creative-tim.com/soft-ui-dashboard-react/#/dashboard?ref=readme-sudr)
-- [Página de Compra](https://www.creative-tim.com/product/soft-ui-dashboard-react?ref=readme-sudr)
-- La documentación está [aquí](https://www.creative-tim.com/learning-lab/react/overview/soft-ui-dashboard/?ref=readme-sudr)
-- [Acuerdo de Licencia](https://www.creative-tim.com/license?ref=readme-sudr)
-- [Soporte](https://www.creative-tim.com/contact-us?ref=readme-sudr)
-- Problemas: [Página de Problemas en Github](https://github.com/creativetimofficial/soft-ui-dashboard-react/issues)
-- [Nepcha Analytics](https://nepcha.com?ref=readme) - Herramienta de análisis para tu sitio web
+- [Live Preview](https://demos.creative-tim.com/soft-ui-dashboard-react/#/dashboard?ref=readme-sudr)
+- [Buy Page](https://www.creative-tim.com/product/soft-ui-dashboard-react?ref=readme-sudr)
+- Documentation is [here](https://www.creative-tim.com/learning-lab/react/overview/soft-ui-dashboard/?ref=readme-sudr)
+- [License Agreement](https://www.creative-tim.com/license?ref=readme-sudr)
+- [Support](https://www.creative-tim.com/contact-us?ref=readme-sudr)
+- Issues: [Github Issues Page](https://github.com/creativetimofficial/soft-ui-dashboard-react/issues)
+- [Nepcha Analytics](https://nepcha.com?ref=readme) - Analytics tool for your website
 
-## Reportar Problemas
+## Reporting Issues
 
-Usamos GitHub Issues como el rastreador de errores oficial para el Soft UI Dashboard React. Aquí tienes algunos consejos para nuestros usuarios que quieren informar un problema:
+We use GitHub Issues as the official bug tracker for the Soft UI Dashboard React. Here are some advices for our users that want to report an issue:
 
-1. Asegúrate de estar utilizando la última versión del Soft UI Dashboard React. Consulta el CHANGELOG desde tu panel en nuestro [sitio web](https://www.creative-tim.com/product/soft-ui-dashboard-react?ref=readme-sudr).
-2. Proporcionarnos pasos reproducibles para el problema acortará el tiempo que tomará resolverlo.
-3. Algunos problemas pueden ser específicos del navegador, por lo que especificar en qué navegador encontraste el problema podría ayudar.
+1. Make sure that you are using the latest version of the Soft UI Dashboard React. Check the CHANGELOG from your dashboard on our [website](https://www.creative-tim.com/product/soft-ui-dashboard-react?ref=readme-sudr).
+2. Providing us reproducible steps for the issue will shorten the time it takes for it to be fixed.
+3. Some issues may be browser specific, so specifying in what browser you encountered the issue might help.
 
-## Soporte Técnico o Preguntas
+## Technical Support or Questions
 
-Si tienes preguntas o necesitas ayuda para integrar el producto, por favor [contáctanos](https://www.creative-tim.com/contact-us?ref=readme-sudr) en lugar de abrir un problema.
+If you have questions or need help integrating the product please [contact us](https://www.creative-tim.com/contact-us?ref=readme-sudr) instead of opening an issue.
 
-## Licencia
+## Licensing
 
 - Copyright 2021 [Creative Tim](https://www.creative-tim.com?ref=readme-sudr)
-- [Licencia de Creative Tim](https://www.creative-tim.com/license?ref=readme-sudr)
+- Creative Tim [license](https://www.creative-tim.com/license?ref=readme-sudr)
 
-## Enlaces Útiles
+## Useful Links
 
-- [Más productos](https://www.creative-tim.com/templates?ref=readme-sudr) de Creative Tim
+- [More products](https://www.creative-tim.com/templates?ref=readme-sudr) from Creative Tim
 
-- [Tutoriales](https://www.youtube.com/channel/UCVyTG4sCw-rOvB9oHkzZD1w)
+- [Tutorials](https://www.youtube.com/channel/UCVyTG4sCw-rOvB9oHkzZD1w)
 
-- [Freebies](https://www.creative-tim.com/bootstrap-themes/free?ref=readme-sudr) de Creative Tim
+- [Freebies](https://www.creative-tim.com/bootstrap-themes/free?ref=readme-sudr) from Creative Tim
 
-- [Programa de Afiliados](https://www.creative-tim.com/affiliates/new?ref=readme-sudr) (gana dinero)
+- [Affiliate Program](https://www.creative-tim.com/affiliates/new?ref=readme-sudr) (earn money)
 
-##### Redes Sociales
+##### Social Media
 
 Twitter: <https://twitter.com/CreativeTim>
 
