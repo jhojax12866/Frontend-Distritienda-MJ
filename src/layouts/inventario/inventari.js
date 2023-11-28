@@ -35,6 +35,7 @@ const data_productos = {
 function Inventario() {
   const { columns } = data_productos;
   const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -54,9 +55,13 @@ function Inventario() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/productos/");
-        const data = await response.json();
-        setProductos(data);
+        const [productosData, categoriasData] = await Promise.all([
+          fetch("https://diplomadobd-06369030a7e4.herokuapp.com/productos/").then((response) => response.json()),
+          fetch("https://diplomadobd-06369030a7e4.herokuapp.com/categorias/").then((response) => response.json()),
+        ]);
+
+        setProductos(productosData);
+        setCategorias(categoriasData);
       } catch (error) {
         console.error("Error al obtener datos de la API", error);
       }
@@ -189,7 +194,24 @@ function Inventario() {
     acciones: getActionButtons(product),
     precio: `$${formatCurrency(product.precio)}`,
     fecha_vencimiento: formatDate(product.fecha_vencimiento),
-    estado: <Chip label={product.estado} color={product.estado === 'activo' ? 'primary' : 'default'} style={{ backgroundColor: product.estado === 'activo' ? '#4CAF50' : 'inherit', color: product.estado === 'activo' ? '#fff' : 'inherit' }} />,
+    estado: (
+      <Chip
+        label={product.estado}
+        color={product.estado === 'activo' ? 'primary' : 'default'}
+        style={{
+          backgroundColor: product.estado === 'activo' ? '#4CAF50' : 'inherit',
+          color: product.estado === 'activo' ? '#fff' : 'inherit',
+        }}
+      />
+    ),
+    imagen: (
+      <img
+        src={product.imagen}
+        alt={product.nombre}
+        style={{ maxWidth: '50px', maxHeight: '50px' }}
+      />
+    ),
+    categoria: categorias.find((categoria) => categoria.id === product.categoria)?.descripcion || '',
   }));
   
 
@@ -267,64 +289,59 @@ function Inventario() {
 
       {/* Diálogo para editar */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-  <DialogTitle>Editar Producto</DialogTitle>
-  <DialogContent>
-    <FormControl fullWidth margin="normal">
-      
-      <TextField
-        id="nombre"
-        value={editedProduct.nombre}
-        onChange={(e) => setEditedProduct({ ...editedProduct, nombre: e.target.value })}
-        fullWidth
-      />
-    </FormControl>
-    <FormControl fullWidth margin="normal">
-      
-      <TextField
-        id="descripcion"
-        value={editedProduct.descripcion}
-        onChange={(e) => setEditedProduct({ ...editedProduct, descripcion: e.target.value })}
-        fullWidth
-      />
-    </FormControl>
-    <FormControl fullWidth margin="normal">
-      
-      <TextField
-        id="categoria"
-        value={editedProduct.categoria}
-        onChange={(e) => setEditedProduct({ ...editedProduct, categoria: e.target.value })}
-        fullWidth
-      />
-    </FormControl>
-    <FormControl fullWidth margin="normal">
-      
-      <TextField
-        id="precio"
-        value={editedProduct.precio}
-        onChange={(e) => setEditedProduct({ ...editedProduct, precio: e.target.value })}
-        fullWidth
-      />
-    </FormControl>
-    <FormControl fullWidth margin="normal">
-      
-      <TextField
-        id="estado"
-        value={editedProduct.estado}
-        onChange={(e) => setEditedProduct({ ...editedProduct, estado: e.target.value })}
-        fullWidth
-      />
-    </FormControl>
-    {/* Agregar más campos según sea necesario */}
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={() => setEditDialogOpen(false)} color="primary">
-      Cancelar
-    </Button>
-    <Button onClick={editProduct} color="primary">
-      Guardar
-    </Button>
-  </DialogActions>
-</Dialog>
+        <DialogTitle>Editar Producto</DialogTitle>
+        <DialogContent>
+          <FormControl fullWidth margin="normal">
+            <TextField
+              id="nombre"
+              value={editedProduct.nombre}
+              onChange={(e) => setEditedProduct({ ...editedProduct, nombre: e.target.value })}
+              fullWidth
+            />
+          </FormControl>
+          <FormControl fullWidth margin="normal">
+            <TextField
+              id="descripcion"
+              value={editedProduct.descripcion}
+              onChange={(e) => setEditedProduct({ ...editedProduct, descripcion: e.target.value })}
+              fullWidth
+            />
+          </FormControl>
+          <FormControl fullWidth margin="normal">
+            <TextField
+              id="categoria"
+              value={editedProduct.categoria}
+              onChange={(e) => setEditedProduct({ ...editedProduct, categoria: e.target.value })}
+              fullWidth
+            />
+          </FormControl>
+          <FormControl fullWidth margin="normal">
+            <TextField
+              id="precio"
+              value={editedProduct.precio}
+              onChange={(e) => setEditedProduct({ ...editedProduct, precio: e.target.value })}
+              fullWidth
+            />
+          </FormControl>
+          <FormControl fullWidth margin="normal">
+            <TextField
+              id="estado"
+              value={editedProduct.estado}
+              onChange={(e) => setEditedProduct({ ...editedProduct, estado: e.target.value })}
+              fullWidth
+            />
+          </FormControl>
+          {/* Agregar más campos según sea necesario */}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialogOpen(false)} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={editProduct} color="primary">
+            Guardar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
     
 
@@ -383,5 +400,4 @@ function Inventario() {
     </DashboardLayout>
   );
 }
-
 export default Inventario;

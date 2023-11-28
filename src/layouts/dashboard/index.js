@@ -42,10 +42,10 @@ function Dashboard() {
         console.error('Error al obtener productos:', error);
       });
 
-    // Obtener información de stock
+    // información de stock
     axios.get('https://diplomadobd-06369030a7e4.herokuapp.com/stock/')
       .then(response => {
-        // Filtrar productos con cantidad
+        // Filtrar productos 
         const productsWithStock = response.data.filter(product => product.cantidad > 0);
         setStock(productsWithStock);
       })

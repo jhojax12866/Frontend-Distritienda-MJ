@@ -8,71 +8,79 @@ import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
 import { TextField } from "@mui/material";
 
-function Tabla_Creditos() {
-  const [creditos, setCreditos] = useState([]);
-  const [facturasVenta, setFacturasVenta] = useState([]);
-  const [personas, setPersonas] = useState([]);
-  const [carteraData, setCarteraData] = useState([]);
+function Tabla_FacturasCompra() {
+  const [facturasCompra, setFacturasCompra] = useState([]);
+  const [proveedores, setProveedores] = useState([]);
+  const [productos, setProductos] = useState([]);
+  const [detalleCompraData, setDetalleCompraData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responsePago = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/pago/");
-        const dataPago = await responsePago.json();
-        setCreditos(dataPago);
-
-        const responseFacturaVenta = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/factura_venta/");
-        const dataFacturaVenta = await responseFacturaVenta.json();
-        setFacturasVenta(dataFacturaVenta);
-
-        const responsePersonas = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/personas/");
-        const dataPersonas = await responsePersonas.json();
-        setPersonas(dataPersonas);
-
-        const responseCartera = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/cartera/");
-        const dataCartera = await responseCartera.json();
-        setCarteraData(dataCartera);
-
+        const responseFacturaCompra = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/factura_compra/");
+        const dataFacturaCompra = await responseFacturaCompra.json();
+        console.log("Facturas de Compra:", dataFacturaCompra); 
+        setFacturasCompra(dataFacturaCompra);
+  
+        const responseProveedores = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/personas/");
+        const dataProveedores = await responseProveedores.json();
+        console.log("Proveedores:", dataProveedores); 
+        setProveedores(dataProveedores);
+  
+        const responseProductos = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/productos/");
+        const dataProductos = await responseProductos.json();
+        console.log("Productos:", dataProductos); 
+        setProductos(dataProductos);
+  
+     
+        const responseDetalleCompra = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/detalle_compra/");
+        const dataDetalleCompra = await responseDetalleCompra.json();
+        console.log("Detalle de Compra:", dataDetalleCompra); 
+        setDetalleCompraData(dataDetalleCompra);
       } catch (error) {
         console.error("Error al obtener datos de la API", error);
       }
     };
-
+  
     fetchData();
   }, []);
 
-  // Función para obtener el nombre de una persona por su ID
-  const getNombrePersonaById = (personaId) => {
-    const persona = personas.find((p) => p.id === personaId);
-    return persona ? `${persona.nombre} ${persona.apellido}` : "N/A";
+  const getNombreProveedorById = (proveedorId) => {
+    const proveedor = proveedores.find((p) => p.id === proveedorId);
+    return proveedor ? `${proveedor.nombre} ${proveedor.apellido}` : "N/A";
   };
 
-  // Modificar la estructura de datos para incluir solo FACTURA_V en la tabla y facturas diferentes de null
-  const tablaData = creditos
-    .filter((credito) => credito.estado_pago.toLowerCase().includes(searchTerm.toLowerCase()))
-    .map((credito) => {
-      const facturaVenta = facturasVenta.find((factura) => factura.id === credito.factura_v);
-      const carteraInfo = carteraData.find((cartera) => cartera.pago === credito.id);
+ 
+  const tablaData = facturasCompra
+  .filter((factura) => factura.estado_pago && factura.estado_pago.toLowerCase().includes(searchTerm.toLowerCase()))
+  .map((factura) => {
+    const proveedorNombre = getNombreProveedorById(factura.proveedor);
+    const detalleCompraInfo = detalleCompraData.find((detalle) => detalle.factura_compra === factura.id);
 
-      // Verificar si la factura de venta y la información de cartera son diferentes de null
-      if (facturaVenta && carteraInfo) {
-        return {
-          proveedor: getNombrePersonaById(facturaVenta.cliente_f),
-          medio_pago: credito.medio_pago,
-          estado_pago: credito.estado_pago,
-          factura_v: facturaVenta.total_v,
-          fecha_facturacion: carteraInfo.fecha_facturacion,
-          fecha_vencimiento: carteraInfo.fecha_vencimiento,
-        };
-      }
+    if (proveedorNombre && detalleCompraInfo) {
+      const producto = productos.find((prod) => prod.id === detalleCompraInfo.producto);
+      const cantidadProducto = detalleCompraInfo.cantidad;
+      const precioUnitario = detalleCompraInfo.precio_unitario;
+      const fechaFacturacion = factura.fecha_facturacion;
+      const totalFactura = cantidadProducto * precioUnitario;
 
-      // Si la factura de venta o la información de cartera son null, devolver null para no incluirla en la tabla
-      return null;
-    })
-    .filter(Boolean); // Filtrar elementos nulos
+      return {
+        proveedor: proveedorNombre,
+        producto: producto ? producto.nombre : "N/A",
+        cantidad_producto: cantidadProducto,
+        precio_unitario: precioUnitario,
+        fecha_facturacion: fechaFacturacion,
+        total_factura: totalFactura,
+      };
+    }
 
-  // Función para filtrar elementos por término de búsqueda
+    
+    return null;
+  })
+  .filter(Boolean); 
+
+
   const filterBySearchTerm = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -104,7 +112,7 @@ function Tabla_Creditos() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">COMPRAS - PROVEEDORES</SoftTypography>
+              <SoftTypography variant="h6">TABLA FACTURAS DE COMPRA</SoftTypography>
             </SoftBox>
             <SoftBox
               sx={{
@@ -118,13 +126,12 @@ function Tabla_Creditos() {
             >
               <Table
                 columns={[
-                  { name: "id_factura_compra", align: "center" },
                   { name: "proveedor", align: "center" },
                   { name: "producto", align: "center" },
-                  { name: "cantidad", align: "center" },
+                  { name: "cantidad_producto", align: "center" },
                   { name: "precio_unitario", align: "center" },
                   { name: "fecha_facturacion", align: "center" },
-                  { name: "total", align: "center" },
+                  { name: "total_factura", align: "center" },
                 ]}
                 rows={tablaData}
               />
@@ -137,4 +144,4 @@ function Tabla_Creditos() {
   );
 }
 
-export default Tabla_Creditos;
+export default Tabla_FacturasCompra;
