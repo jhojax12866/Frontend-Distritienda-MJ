@@ -47,48 +47,31 @@ function Lotes() {
     fetchProductos();
   }, [selectedLot]);
 
-  useEffect(() => {
-    // Fetch nombre del producto para cada lote
-    const fetchNombreProducto = async () => {
-      try {
-        const lotesWithProductNames = await Promise.all(
-          lotes.map(async (lote) => {
-            const response = await fetch(
-              `https://diplomadobd-06369030a7e4.herokuapp.com/productos/${lote.producto_lote}/`
-            );
-            const productData = await response.json();
-            return {
-              ...lote,
-              nombreProducto: productData.nombre,
-            };
-          })
-        );
-        setLotes(lotesWithProductNames);
-      } catch (error) {
-        console.error("Error al obtener datos de la API", error);
-      }
-    };
-
-    fetchNombreProducto();
-  }, [lotes]);
-
   const handleRowClick = (lot) => {
     setSelectedLot(lot);
   };
 
   const lotesColumns = [
     { name: "numero_lote", align: "center" },
-    { name: "nombreProducto", align: "center", label: "Nombre del Producto" },
+    { name: "producto_lote", align: "center" },
     { name: "cantidad", align: "center" },
     { name: "fecha_ingreso", align: "left" },
+    
   ];
 
-  // Función para filtrar lotes por término de búsqueda
+  const productosColumns = [
+    { name: "id", align: "left" },
+    { name: "nombre", align: "left" },
+    { name: "descripcion", align: "center" },
+    // Add other product columns as needed
+  ];
+
+  // Función para filtrar productos por lote y término de búsqueda
   const filterLotes = (loteId) => {
-    return lotes.filter((lote) => {
-      const numeroLote = lote.numero_lote ? lote.numero_lote.toString() : '';
-      return numeroLote.includes(searchTerm.toLowerCase());
-    });
+    return lotes.filter(
+      (lote) =>
+        lote.numero_lote.toString().includes(searchTerm.toLowerCase())
+    );
   };
 
   // Manejar cambios en el término de búsqueda
@@ -148,7 +131,7 @@ function Lotes() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">PRODUCTOS DEL LOTE {selectedLot.numero_lote}</SoftTypography>
+              <SoftTypography variant="h6">PRODUCTOS DEL LOTE {selectedLot.producto_lote}</SoftTypography>
             </SoftBox>
             <SoftBox
               sx={{
