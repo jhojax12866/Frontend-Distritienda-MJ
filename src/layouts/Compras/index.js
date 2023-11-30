@@ -42,10 +42,14 @@ function Tabla_FacturasCompra() {
   };
 
   const tablaData = facturasCompra
-    .filter((factura) => factura.total_c && factura.total_c.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter((factura) => {
+      const proveedorNombre = getNombreProveedorById(factura.proveedor_f);
+      return proveedorNombre.toLowerCase().includes(searchTerm.toLowerCase());
+    })
     .map((factura) => {
       const proveedorNombre = getNombreProveedorById(factura.proveedor_f);
       const detalleCompraInfo = detalleCompraData.find((detalle) => detalle.factura_compra === factura.id);
+
 
       if (proveedorNombre && detalleCompraInfo) {
         const cantidadProducto = detalleCompraInfo.cantidad;
