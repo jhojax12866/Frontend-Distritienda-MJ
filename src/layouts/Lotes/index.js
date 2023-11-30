@@ -47,30 +47,49 @@ function Lotes() {
     fetchProductos();
   }, [selectedLot]);
 
+  useEffect(() => {
+    // Fetch productos names for lotes
+    const fetchProductosNames = async () => {
+      try {
+        const productosIds = lotes.map((lote) => lote.producto_lote);
+        const response = await fetch(
+          `https://diplomadobd-06369030a7e4.herokuapp.com/productos/?id=${productosIds.join(",")}`
+        );
+        const data = await response.json();
+        setLotes((prevLotes) =>
+          prevLotes.map((lote) => ({
+            ...lote,
+            producto_nombre: data.find((producto) => producto.id === lote.producto_lote)?.nombre || "",
+          }))
+        );
+      } catch (error) {
+        console.error("Error al obtener nombres de productos de la API", error);
+      }
+    };
+
+    fetchProductosNames();
+  }, [lotes]);
+
   const handleRowClick = (lot) => {
     setSelectedLot(lot);
   };
 
   const lotesColumns = [
     { name: "numero_lote", align: "center" },
-    { name: "producto_lote", align: "center" },
+    { name: "producto_nombre", align: "left" }, // Display product names instead of IDs
     { name: "cantidad", align: "center" },
     { name: "fecha_ingreso", align: "left" },
-    
   ];
 
-  const productosColumns = [
-    { name: "id", align: "left" },
-    { name: "nombre", align: "left" },
-    { name: "descripcion", align: "center" },
-    // Add other product columns as needed
-  ];
-
-  // Función para filtrar productos por lote y término de búsqueda
-  const filterLotes = (loteId) => {
-    return lotes.filter(
+  // Función para filtrar lotes por término de búsqueda
+  const filterLotes = () => {
+    return lotes.map((lote) => ({
+      ...lote,
+      cantidad: Math.round(parseFloat(lote.cantidad)), // Redondear la cantidad a un número entero
+    })).filter(
       (lote) =>
-        lote.numero_lote.toString().includes(searchTerm.toLowerCase())
+        lote.numero_lote.toString().includes(searchTerm.toLowerCase()) ||
+        lote.producto_nombre.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
 
@@ -83,9 +102,9 @@ function Lotes() {
   const filteredLotes = filterLotes();
 
   return (
-    <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
+    <DashboardLayout sx={{ backgroundColor: "rgba(173, 216, 230, 0.9)" }}>
       <DashboardNavbar />
-      <SoftTypography variant="body1" style={{ paddingLeft: '2px', paddingTop: '0px', fontSize: '19px' }}>
+      <SoftTypography variant="body1" style={{ paddingLeft: "2px", paddingTop: "0px", fontSize: "19px" }}>
         Buscar
       </SoftTypography>
       <TextField
@@ -98,10 +117,10 @@ function Lotes() {
         InputLabelProps={{ shrink: false }}
         InputProps={{
           style: {
-            fontSize: '14px',
-            backgroundColor: 'rgba(173, 216, 230, 0.9)',
-            borderRadius: '10px',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            fontSize: "14px",
+            backgroundColor: "rgba(173, 216, 230, 0.9)",
+            borderRadius: "10px",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
           },
         }}
       />

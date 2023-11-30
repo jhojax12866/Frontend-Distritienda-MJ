@@ -23,6 +23,7 @@ const data_productos = {
   columns: [
     { name: "nombre", align: "left" },
     { name: "descripcion", align: "left" },
+    { name: "cantidad", align: "center" }, 
     { name: "categoria", align: "center" },
     { name: "precio", align: "center" },
     { name: "estado", align: "center" },
@@ -36,6 +37,7 @@ function Inventario() {
   const { columns } = data_productos;
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
+  const [lotes, setLotes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -55,13 +57,15 @@ function Inventario() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [productosData, categoriasData] = await Promise.all([
+        const [productosData, categoriasData, lotesData] = await Promise.all([
           fetch("https://diplomadobd-06369030a7e4.herokuapp.com/productos/").then((response) => response.json()),
           fetch("https://diplomadobd-06369030a7e4.herokuapp.com/categorias/").then((response) => response.json()),
+          fetch("https://diplomadobd-06369030a7e4.herokuapp.com/lotes/").then((response) => response.json()),
         ]);
 
         setProductos(productosData);
         setCategorias(categoriasData);
+        setLotes(lotesData);
       } catch (error) {
         console.error("Error al obtener datos de la API", error);
       }
@@ -91,7 +95,7 @@ function Inventario() {
         method: "DELETE",
       });
 
-      // Actualizar la lista de productos después de la eliminación
+      // Update the list of products after deletion
       const updatedProducts = productos.filter((product) => product.id !== selectedProduct.id);
       setProductos(updatedProducts);
     } catch (error) {
@@ -104,20 +108,20 @@ function Inventario() {
   const editProduct = async () => {
     try {
       await fetch(`https://diplomadobd-06369030a7e4.herokuapp.com/productos/${editedProduct.id}/`, {
-        method: "PUT", // Puedes cambiar a "PATCH" si lo prefieres
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(editedProduct),
       });
-  
-      // Actualizar la lista de productos después de la edición
+
+      // Update the list of products after editing
       const updatedProducts = productos.map((product) =>
         product.id === editedProduct.id ? editedProduct : product
       );
       setProductos(updatedProducts);
-  
-      // Limpiar el estado después de la edición
+
+      // Clear the state after editing
       setEditedProduct({});
       setEditDialogOpen(false);
     } catch (error) {
@@ -134,20 +138,20 @@ function Inventario() {
         },
         body: JSON.stringify(newProduct),
       });
-  
+
       if (response.ok) {
-        // Actualizar la lista de productos después de la creación
+        // Update the list of products after creation
         const updatedProducts = await fetchData();
         setProductos(updatedProducts);
-  
-        // Limpiar el estado después de la creación
+
+        // Clear the state after creation
         setNewProduct({
           codigo: 0,
           nombre: "",
           descripcion: "",
           categoria: 1,
           precio: "0.00",
-          estado: "activo",
+          estado: "",
           fecha_vencimiento: "",
         });
         setNewProductDialogOpen(false);
@@ -179,40 +183,101 @@ function Inventario() {
       </IconButton>
     </div>
   );
-  
+
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
-  
+
   const formatCurrency = (amount) => {
     return parseFloat(amount).toFixed(2);
   };
+  const getChipColor = (estado) => {
+    switch (estado) {
+      case 'activo':
+        return 'primary';
+      case 'inactivo':
+        return 'warning'; // Amarillo
+      case 'agotado':
+        return 'error'; // Rojo
+      case 'ACTIVO':
+        return 'primary';
+      case 'INACTIVO':
+        return 'warning'; // Amarillo
+      case 'AGOTADO':
+        return 'error';
+      default:
+        return 'default';
+    }
+  };
   
-  const rowsWithActions = productos.map((product) => ({
-    ...product,
-    acciones: getActionButtons(product),
-    precio: `$${formatCurrency(product.precio)}`,
-    fecha_vencimiento: formatDate(product.fecha_vencimiento),
-    estado: (
-      <Chip
-        label={product.estado}
-        color={product.estado === 'activo' ? 'primary' : 'default'}
-        style={{
-          backgroundColor: product.estado === 'activo' ? '#4CAF50' : 'inherit',
-          color: product.estado === 'activo' ? '#fff' : 'inherit',
-        }}
-      />
-    ),
-    imagen: (
-      <img
-        src={product.imagen}
-        alt={product.nombre}
-        style={{ maxWidth: '50px', maxHeight: '50px' }}
-      />
-    ),
-    categoria: categorias.find((categoria) => categoria.id === product.categoria)?.descripcion || '',
-  }));
+  const getChipBackgroundColor = (estado) => {
+    switch (estado) {
+      case 'activo':
+        return '#4CAF50'; // Verde
+      case 'inactivo':
+        return '#FFEB3B'; // Amarillo
+      case 'agotado':
+        return '#FFF0001'; // Rojo
+      case 'ACTIVO':
+        return '#4CAF50'; // Verde
+      case 'INACTIVO':
+        return '#FFEB3B'; // Amarillo
+      case 'AGOTADO':
+        return '#FFF0001'
+      default:
+        return 'inherit';
+    }
+  };
+  const getChipTextColor = (estado) => {
+    switch (estado) {
+      case 'activo':
+        return '#FFF';
+      case 'inactivo':
+        return '#FFF';
+        case 'agotado':
+        return '#FFF' ;
+      case 'ACTIVO':
+        return '#FFF'; 
+      case 'INACTIVO':
+        return '#FFF'; // Amarillo
+      case 'AGOTADO':
+        return '#FFF'
+      default:
+        return 'inherit';
+    }
+  };
+  const rowsWithActions = productos.map((product) => {
+    const productLotes = lotes.filter((lote) => lote.producto_lote === product.id);
+    const totalQuantity = productLotes.reduce((acc, lote) => acc + parseFloat(lote.cantidad), 0);
+  
+    return {
+      ...product,
+      acciones: getActionButtons(product),
+      precio: `$${formatCurrency(product.precio)}`,
+      fecha_vencimiento: formatDate(product.fecha_vencimiento),
+      estado: (
+        <Chip
+          label={product.estado}
+          color={getChipColor(product.estado)}
+          style={{
+            backgroundColor: getChipBackgroundColor(product.estado),
+            color: getChipTextColor(product.estado),
+          }}
+        />
+      ),
+      imagen: (
+        <img
+          src={product.imagen}
+          alt={product.nombre}
+          style={{ maxWidth: '50px', maxHeight: '50px' }}
+        />
+      ),
+      categoria: categorias.find((categoria) => categoria.id === product.categoria)?.descripcion || '',
+      cantidad: Math.round(totalQuantity), // Redondear la cantidad a un número entero
+    };
+  });
+  
   
 
   const filteredProducts = rowsWithActions.filter((product) => {
@@ -271,7 +336,7 @@ function Inventario() {
       </SoftBox>
       <Footer />
 
-      {/* Diálogo de confirmación para eliminar */}
+      {/* Confirmation dialog for deletion */}
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Confirmar eliminación</DialogTitle>
         <DialogContent>
@@ -287,7 +352,7 @@ function Inventario() {
         </DialogActions>
       </Dialog>
 
-      {/* Diálogo para editar */}
+      {/* Edit dialog */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle>Editar Producto</DialogTitle>
         <DialogContent>
@@ -331,7 +396,7 @@ function Inventario() {
               fullWidth
             />
           </FormControl>
-          {/* Agregar más campos según sea necesario */}
+          {/* Add more fields as needed */}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditDialogOpen(false)} color="primary">
@@ -343,61 +408,61 @@ function Inventario() {
         </DialogActions>
       </Dialog>
 
-    
+      {/* New product dialog */}
+      <Dialog open={newProductDialogOpen} onClose={() => setNewProductDialogOpen(false)} fullWidth maxWidth="md">
+        <DialogTitle>Agregar Nuevo Producto</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel htmlFor="nombre">Nombre</InputLabel>
+                <TextField
+                  id="nombre"
+                  value={newProduct.nombre}
+                  onChange={(e) => setNewProduct({ ...newProduct, nombre: e.target.value })}
+                  fullWidth
+                />
+              </FormControl>
+            </Grid>
 
-<Dialog open={newProductDialogOpen} onClose={() => setNewProductDialogOpen(false)} fullWidth maxWidth="md">
-  <DialogTitle>Agregar Nuevo Producto</DialogTitle>
-  <DialogContent>
-    <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <FormControl fullWidth>
-          <InputLabel htmlFor="nombre">Nombre</InputLabel>
-          <TextField
-            id="nombre"
-            value={newProduct.nombre}
-            onChange={(e) => setNewProduct({ ...newProduct, nombre: e.target.value })}
-            fullWidth
-          />
-        </FormControl>
-      </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel htmlFor="descripcion">Descripción</InputLabel>
+                <TextField
+                  id="descripcion"
+                  value={newProduct.descripcion}
+                  onChange={(e) => setNewProduct({ ...newProduct, descripcion: e.target.value })}
+                  fullWidth
+                />
+              </FormControl>
+            </Grid>
 
-      <Grid item xs={12}>
-        <FormControl fullWidth>
-          <InputLabel htmlFor="descripcion">Descripción</InputLabel>
-          <TextField
-            id="descripcion"
-            value={newProduct.descripcion}
-            onChange={(e) => setNewProduct({ ...newProduct, descripcion: e.target.value })}
-            fullWidth
-          />
-        </FormControl>
-      </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel htmlFor="categoria">Categoría</InputLabel>
+                <TextField
+                  id="categoria"
+                  value={newProduct.categoria}
+                  onChange={(e) => setNewProduct({ ...newProduct, categoria: e.target.value })}
+                  fullWidth
+                />
+              </FormControl>
+            </Grid>
 
-      <Grid item xs={12}>
-        <FormControl fullWidth>
-          <InputLabel htmlFor="categoria">Categoría</InputLabel>
-          <TextField
-            id="categoria"
-            value={newProduct.categoria}
-            onChange={(e) => setNewProduct({ ...newProduct, categoria: e.target.value })}
-            fullWidth
-          />
-        </FormControl>
-      </Grid>
-
-      {/* Agrega más campos según sea necesario */}
-    </Grid>
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={() => setNewProductDialogOpen(false)} color="primary">
-      Cancelar
-    </Button>
-    <Button onClick={addNewProduct} color="primary">
-      Guardar
-    </Button>
-  </DialogActions>
-</Dialog>
+            {/* Add more fields as needed */}
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setNewProductDialogOpen(false)} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={addNewProduct} color="primary">
+            Guardar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </DashboardLayout>
   );
 }
+
 export default Inventario;
