@@ -19,6 +19,7 @@ function DashboardLayout({ children }) {
         p: 3,
         position: "relative",
         background: "linear-gradient(to bottom, #ffffff, #3498db)", // Ajusta los colores según tu preferencia
+        minHeight: "100vh", // Establece la altura al 100% de la altura visible de la ventana
 
         [breakpoints.up("xl")]: {
           marginLeft: miniSidenav ? pxToRem(120) : pxToRem(274),

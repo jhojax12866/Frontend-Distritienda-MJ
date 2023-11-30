@@ -242,7 +242,7 @@ function Inventario() {
       case 'INACTIVO':
         return '#FFF'; // Amarillo
       case 'AGOTADO':
-        return '#FFF'
+        return '#FFF0001'
       default:
         return 'inherit';
     }
@@ -334,7 +334,7 @@ function Inventario() {
           </Card>
         </SoftBox>
       </SoftBox>
-      <Footer />
+      
 
       {/* Confirmation dialog for deletion */}
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>

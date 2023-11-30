@@ -22,6 +22,7 @@
     "@testing-library/react": "14.0.0",
     "@testing-library/user-event": "14.4.3",
     "axios": "^1.6.2",
+    "bootstrap": "^5.3.2",
     "chart.js": "3.9.1",
     "chroma-js": "2.4.2",
     "datos_api": "github:jhojax12866/datos_api",

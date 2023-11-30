@@ -131,7 +131,7 @@ function Tabla_Creditos() {
           </Card>
         </SoftBox>
       </SoftBox>
-      <Footer />
+      
     </DashboardLayout>
   );
 }

@@ -168,7 +168,7 @@ function Lotes() {
         </SoftBox>
       )}
 
-      <Footer />
+      
     </DashboardLayout>
   );
 }

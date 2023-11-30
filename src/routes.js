@@ -20,6 +20,8 @@ import Tabla_Creditos from "layouts/Tabla Creditos";
 import Lotes from "layouts/Lotes";
 import { Shop2 } from "@mui/icons-material";
 import Compras from "layouts/Compras";
+import NuevoProducto from "layouts/New Producto";
+import New_Producto from "layouts/New Producto";
 
 const routes = [
   {
@@ -49,6 +51,15 @@ const routes = [
     route: "/Lotes",
     icon: <Shop2 size="12px" />,
     component: <Lotes/>,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "NuevoProducto",
+    key: "New_Producto",
+    route: "/New_Producto",
+    icon: <Shop size="12px" />,
+    component: <New_Producto />,
     noCollapse: true,
   },
   {

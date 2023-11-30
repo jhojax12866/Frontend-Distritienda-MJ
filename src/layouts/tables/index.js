@@ -59,7 +59,7 @@ function Tables() {
           </SoftBox>
         </Card>
       </SoftBox>
-      <Footer />
+     
     </DashboardLayout>
   );
 }
