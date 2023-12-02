@@ -60,7 +60,7 @@ function Dashboard() {
       <DashboardNavbar/>
       <SoftBox py={3}>
         <SoftBox mb={3}>
-        <Grid container spacing={3}>
+          <Grid container spacing={3}>
           
             {products.map(product => (
               
@@ -126,16 +126,9 @@ function Dashboard() {
             </Grid>
           </Grid>
         </SoftBox>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={8}>
-            <Projects />
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            
-          </Grid>
-        </Grid>
+        
       </SoftBox>
-      <Footer />
+      
     </DashboardLayout>
   );
 }

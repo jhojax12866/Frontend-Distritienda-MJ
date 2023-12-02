@@ -315,9 +315,7 @@ function Inventario() {
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
               <SoftTypography variant="h6">TABLA DE PRODUCTOS</SoftTypography>
-              <IconButton onClick={() => setNewProductDialogOpen(true)} color="primary">
-                <AddIcon />
-              </IconButton>
+              
             </SoftBox>
             <SoftBox
               sx={{
@@ -398,14 +396,7 @@ function Inventario() {
           </FormControl>
           {/* Add more fields as needed */}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditDialogOpen(false)} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={editProduct} color="primary">
-            Guardar
-          </Button>
-        </DialogActions>
+        
       </Dialog>
 
       {/* New product dialog */}
