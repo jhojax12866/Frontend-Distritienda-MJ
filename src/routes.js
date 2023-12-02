@@ -53,15 +53,7 @@ const routes = [
     component: <Lotes/>,
     noCollapse: true,
   },
-  {
-    type: "collapse",
-    name: "NuevoProducto",
-    key: "New_Producto",
-    route: "/New_Producto",
-    icon: <Shop size="12px" />,
-    component: <New_Producto />,
-    noCollapse: true,
-  },
+  
   {
     type: "collapse",
     name: "Tabla Creditos",
