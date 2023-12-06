@@ -26,7 +26,7 @@
     "chart.js": "3.9.1",
     "chroma-js": "2.4.2",
     "datos_api": "github:jhojax12866/datos_api",
-    "prop-types": "15.8.1",
+    "prop-types": "^15.8.1",
     "react": ">=16.8.0",
     "react-chartjs-2": "3.0.5",
     "react-countup": "6.4.2",

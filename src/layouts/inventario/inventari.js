@@ -18,9 +18,11 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import { Chip, FormControl, InputLabel } from "@mui/material";
 import { DialogContentText, Grid } from "@mui/material";
+import select from "assets/theme/components/form/select";
 
 const data_productos = {
   columns: [
+    { name: "id", align: "left" },
     { name: "nombre", align: "left" },
     { name: "descripcion", align: "left" },
     { name: "cantidad", align: "center" }, 
@@ -28,10 +30,12 @@ const data_productos = {
     { name: "precio", align: "center" },
     { name: "estado", align: "center" },
     { name: "fecha_vencimiento", align: "center" },
-    { name: "imagen", align: "center" },
+    //{ name: "imagen", align: "center" },
     { name: "acciones", align: "center" },
   ],
 };
+
+
 
 function Inventario() {
   const { columns } = data_productos;
@@ -78,9 +82,9 @@ function Inventario() {
     setSearchTerm(event.target.value);
   };
 
-  const handleEdit = (product) => {
+   const handleEdit = (product) => {
     setSelectedProduct(product);
-    setEditedProduct(product);
+    setEditedProduct({ ...product }); // Copiar el producto para evitar modificar el original directamente
     setEditDialogOpen(true);
   };
 
@@ -91,13 +95,29 @@ function Inventario() {
 
   const deleteProduct = async () => {
     try {
-      await fetch(`https://diplomadobd-06369030a7e4.herokuapp.com/productos/${selectedProduct.id}/`, {
-        method: "DELETE",
-      });
+      const accessToken = localStorage.getItem("accessToken");
 
-      // Update the list of products after deletion
+      if (!accessToken) {
+        console.error("No se encontró el token de acceso");
+        return;
+      }
+
+      console.log("Deleting product...");
+      const requestOptions = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      };
+
+      await fetch(`https://diplomadobd-06369030a7e4.herokuapp.com/productos/${selectedProduct.id}/`, requestOptions);
+
+      // Actualizar la lista de productos después de la eliminación
       const updatedProducts = productos.filter((product) => product.id !== selectedProduct.id);
       setProductos(updatedProducts);
+
+      console.log("Product deleted successfully!");
     } catch (error) {
       console.error("Error al eliminar el producto", error);
     }
@@ -107,21 +127,22 @@ function Inventario() {
 
   const editProduct = async () => {
     try {
-      await fetch(`https://diplomadobd-06369030a7e4.herokuapp.com/productos/${editedProduct.id}/`, {
+      const requestOptions = {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxNTY1MzI3LCJpYXQiOjE3MDE1NjUwMjcsImp0aSI6ImJkNzM1YTdlYWRkMzQyZjVhZjFhMmM1YWU2NmQwNGYxIiwidXNlcl9pZCI6M30.UbUadmd3QLkgb_ev8E9_x7i4l1NothArzBAw1Cfkqkw`,  // Replace YOUR_ACCESS_TOKEN with the actual token
         },
         body: JSON.stringify(editedProduct),
-      });
-
-      // Update the list of products after editing
-      const updatedProducts = productos.map((product) =>
-        product.id === editedProduct.id ? editedProduct : product
-      );
+      };
+  
+      await fetch(`https://diplomadobd-06369030a7e4.herokuapp.com/productos/${editedProduct.id}/`, requestOptions);
+  
+      // Actualizar la lista de productos después de la edición
+      const updatedProducts = await fetchData();
       setProductos(updatedProducts);
-
-      // Clear the state after editing
+  
+      // Limpiar el estado después de la edición
       setEditedProduct({});
       setEditDialogOpen(false);
     } catch (error) {
@@ -140,11 +161,11 @@ function Inventario() {
       });
 
       if (response.ok) {
-        // Update the list of products after creation
+        // Actualizar la lista de productos después de la creación
         const updatedProducts = await fetchData();
         setProductos(updatedProducts);
 
-        // Clear the state after creation
+        // Limpiar el estado después de la creación
         setNewProduct({
           codigo: 0,
           nombre: "",
@@ -266,15 +287,15 @@ function Inventario() {
           }}
         />
       ),
-      imagen: (
+      /*imagen: (
         <img
           src={product.imagen}
           alt={product.nombre}
           style={{ maxWidth: '50px', maxHeight: '50px' }}
         />
-      ),
+      ),*/
       categoria: categorias.find((categoria) => categoria.id === product.categoria)?.descripcion || '',
-      cantidad: Math.round(totalQuantity), // Redondear la cantidad a un número entero
+      cantidad: Math.round(totalQuantity), 
     };
   });
   
@@ -336,7 +357,7 @@ function Inventario() {
       </SoftBox>
       
 
-      {/* Confirmation dialog for deletion */}
+      {/* confirmar borrar */}
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Confirmar eliminación</DialogTitle>
         <DialogContent>
@@ -352,7 +373,7 @@ function Inventario() {
         </DialogActions>
       </Dialog>
 
-      {/* Edit dialog */}
+      {/* dialogo de edicion */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle>Editar Producto</DialogTitle>
         <DialogContent>
@@ -396,7 +417,6 @@ function Inventario() {
               fullWidth
             />
           </FormControl>
-          {/* Add more fields as needed */}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditDialogOpen(false)} color="primary">
@@ -408,7 +428,7 @@ function Inventario() {
         </DialogActions>
       </Dialog>
 
-      {/* New product dialog */}
+      {/* dialogo de crear producto */}
       <Dialog open={newProductDialogOpen} onClose={() => setNewProductDialogOpen(false)} fullWidth maxWidth="md">
         <DialogTitle>Agregar Nuevo Producto</DialogTitle>
         <DialogContent>

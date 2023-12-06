@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Switch from "@mui/material/Switch";
 import SoftBox from "components/SoftBox";
@@ -8,29 +8,44 @@ import SoftButton from "components/SoftButton";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 import curved9 from "assets/images/curved-images/curved14.jpg";
 
-
-
 function SignIn() {
   const [rememberMe, setRememberMe] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  const [accessToken, setAccessToken] = useState(""); // State to store the access token
   const navigate = useNavigate();
+
+  // Check for stored token on component mount
+  useEffect(() => {
+    const storedToken = localStorage.getItem("accessToken");
+    if (storedToken) {
+      setAccessToken(storedToken);
+    }
+  }, []);
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   const handleSignIn = async () => {
     try {
-      const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/apiauth/me", {
-        method: "GET",
+      const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/apiauth/login/", {
+        method: "POST",
         headers: {
-          Authorization: `Basic ${btoa(`${username}:${password}`)}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          email: username,
+          password: password,
+        }),
       });
 
       if (response.ok) {
         const userData = await response.json();
-        // Aquí podrías realizar acciones adicionales con los datos del usuario
+        const { access } = userData;
+
+        setAccessToken(access);
+        localStorage.setItem("accessToken", access); // Store in localStorage
+
         console.log("Inicio de sesión exitoso", userData);
         navigate("/Inicio");
       } else {
@@ -41,10 +56,32 @@ function SignIn() {
     }
   };
 
+  const fetchDataWithAuthorization = async (accessToken) => {
+    try {
+      const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/tu_ruta", {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Datos obtenidos:", data);
+      } else {
+        console.error("Error al obtener datos");
+      }
+    } catch (error) {
+      console.error("Error al realizar la solicitud con autorización", error);
+    }
+  };
+
   return (
     <CoverLayout
       title="BIENVENIDO NUEVAMENTE"
-      description="Sistema de gestion de inventario, ventas, compras y creditos"
+      description="Sistema de gestión de inventario, ventas, compras y créditos"
       image={curved9}
     >
       <SoftBox component="form" role="form">
@@ -79,12 +116,12 @@ function SignIn() {
             fullWidth
             onClick={handleSignIn}
           >
-            Inicia Sesion
+            Inicia Sesión
           </SoftButton>
         </SoftBox>
         <SoftBox mt={3} textAlign="center">
           <SoftTypography variant="button" color="text" fontWeight="regular">
-            Aun no estas registrado?{" "}
+            Aún no estás registrado?{" "}
             <SoftTypography
               component={Link}
               to="/authentication/sign-up"
@@ -93,7 +130,7 @@ function SignIn() {
               fontWeight="medium"
               textGradient
             >
-              registrate
+              Regístrate
             </SoftTypography>
           </SoftTypography>
         </SoftBox>
