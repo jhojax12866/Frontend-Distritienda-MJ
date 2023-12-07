@@ -56,25 +56,10 @@ function SignIn() {
     }
   };
 
-  const fetchDataWithAuthorization = async (accessToken) => {
-    try {
-      const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/tu_ruta", {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Datos obtenidos:", data);
-      } else {
-        console.error("Error al obtener datos");
-      }
-    } catch (error) {
-      console.error("Error al realizar la solicitud con autorización", error);
+  const handleKeyPress = (event) => {
+    // Verificar si la tecla presionada es Enter
+    if (event.key === "Enter") {
+      handleSignIn();
     }
   };
 
@@ -107,6 +92,7 @@ function SignIn() {
             type="password"
             placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
+            onKeyPress={handleKeyPress} // Añadir el controlador de eventos para Enter
           />
         </SoftBox>
         <SoftBox mt={4} mb={1}>
@@ -137,6 +123,4 @@ function SignIn() {
       </SoftBox>
     </CoverLayout>
   );
-}
-
-export default SignIn;
+}export default SignIn;

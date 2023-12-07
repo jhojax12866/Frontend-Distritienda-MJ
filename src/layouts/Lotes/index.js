@@ -85,7 +85,9 @@ function Lotes() {
   const filterLotes = () => {
     return lotes.map((lote) => ({
       ...lote,
-      cantidad: Math.round(parseFloat(lote.cantidad)), // Redondear la cantidad a un número entero
+      cantidad: Math.round(parseFloat(lote.cantidad)),
+
+      
     })).filter(
       (lote) =>
         lote.numero_lote.toString().includes(searchTerm.toLowerCase()) ||

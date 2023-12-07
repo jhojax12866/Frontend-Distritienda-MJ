@@ -30,7 +30,7 @@ const data_productos = {
     { name: "precio", align: "center" },
     { name: "estado", align: "center" },
     { name: "fecha_vencimiento", align: "center" },
-    //{ name: "imagen", align: "center" },
+    { name: "imagen", align: "center" },
     { name: "acciones", align: "center" },
   ],
 };
@@ -81,7 +81,15 @@ function Inventario() {
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
   };
-
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+  
+    if (file) {
+      // Puedes realizar acciones con el archivo, como subirlo a tu servidor o mostrar una vista previa.
+      // En este ejemplo, simplemente almacenamos el nombre del archivo en el estado.
+      setEditedProduct({ ...editedProduct, imagen: file.name });
+    }
+  };
    const handleEdit = (product) => {
     setSelectedProduct(product);
     setEditedProduct({ ...product }); // Copiar el producto para evitar modificar el original directamente
@@ -92,7 +100,9 @@ function Inventario() {
     setSelectedProduct(product);
     setDeleteDialogOpen(true);
   };
-
+  const handleCreate = () => {
+    setNewProductDialogOpen(true);
+  };
   const deleteProduct = async () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
@@ -127,29 +137,60 @@ function Inventario() {
 
   const editProduct = async () => {
     try {
+      const accessToken = localStorage.getItem("accessToken");
+  
+      if (!editedProduct.id) {
+        console.error("El ID del producto a editar no está definido.");
+        return;
+      }
+  
+      const editedProductData = {
+  codigo: [parseInt(editedProduct.codigo)], // Assuming "codigo" is an integer, wrap it in an array
+  nombre: editedProduct.nombre,
+  descripcion: editedProduct.descripcion,
+  categoria: parseInt(editedProduct.categoria),
+  precio: editedProduct.precio,
+  estado: editedProduct.estado,
+  fecha_vencimiento: editedProduct.fecha_vencimiento,
+};
+  
       const requestOptions = {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
-          'Authorization': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxNTY1MzI3LCJpYXQiOjE3MDE1NjUwMjcsImp0aSI6ImJkNzM1YTdlYWRkMzQyZjVhZjFhMmM1YWU2NmQwNGYxIiwidXNlcl9pZCI6M30.UbUadmd3QLkgb_ev8E9_x7i4l1NothArzBAw1Cfkqkw`,  // Replace YOUR_ACCESS_TOKEN with the actual token
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(editedProduct),
+        body: JSON.stringify(editedProductData),
       };
   
-      await fetch(`https://diplomadobd-06369030a7e4.herokuapp.com/productos/${editedProduct.id}/`, requestOptions);
+      const response = await fetch(
+        `https://diplomadobd-06369030a7e4.herokuapp.com/productos/${editedProduct.id}/`,
+        requestOptions
+      );
   
-      // Actualizar la lista de productos después de la edición
-      const updatedProducts = await fetchData();
-      setProductos(updatedProducts);
+      console.log(response.status, response.statusText);
   
-      // Limpiar el estado después de la edición
-      setEditedProduct({});
-      setEditDialogOpen(false);
+      if (response.ok) {
+        // Assuming fetchData is a function that fetches and returns the updated product list
+        const updatedProducts = await fetchData();
+        setProductos(updatedProducts);
+  
+        // Clear editedProduct and close the edit dialog
+        setEditedProduct({});
+        setEditDialogOpen(false);
+      } else if (response.status === 401) {
+        console.error("Error de autorización: El token no es válido o ha caducado.");
+      } else {
+        console.error("Error al editar el producto:", response.statusText);
+        console.log(await response.json());
+      }
     } catch (error) {
       console.error("Error al editar el producto", error);
     }
   };
-
+  
+  
+  
   const addNewProduct = async () => {
     try {
       const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/productos/", {
@@ -287,13 +328,13 @@ function Inventario() {
           }}
         />
       ),
-      /*imagen: (
+      imagen: (
         <img
           src={product.imagen}
           alt={product.nombre}
           style={{ maxWidth: '50px', maxHeight: '50px' }}
         />
-      ),*/
+      ),
       categoria: categorias.find((categoria) => categoria.id === product.categoria)?.descripcion || '',
       cantidad: Math.round(totalQuantity), 
     };
@@ -373,60 +414,80 @@ function Inventario() {
         </DialogActions>
       </Dialog>
 
-      {/* dialogo de edicion */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-        <DialogTitle>Editar Producto</DialogTitle>
-        <DialogContent>
-          <FormControl fullWidth margin="normal">
-            <TextField
-              id="nombre"
-              value={editedProduct.nombre}
-              onChange={(e) => setEditedProduct({ ...editedProduct, nombre: e.target.value })}
-              fullWidth
-            />
-          </FormControl>
-          <FormControl fullWidth margin="normal">
-            <TextField
-              id="descripcion"
-              value={editedProduct.descripcion}
-              onChange={(e) => setEditedProduct({ ...editedProduct, descripcion: e.target.value })}
-              fullWidth
-            />
-          </FormControl>
-          <FormControl fullWidth margin="normal">
-            <TextField
-              id="categoria"
-              value={editedProduct.categoria}
-              onChange={(e) => setEditedProduct({ ...editedProduct, categoria: e.target.value })}
-              fullWidth
-            />
-          </FormControl>
-          <FormControl fullWidth margin="normal">
-            <TextField
-              id="precio"
-              value={editedProduct.precio}
-              onChange={(e) => setEditedProduct({ ...editedProduct, precio: e.target.value })}
-              fullWidth
-            />
-          </FormControl>
-          <FormControl fullWidth margin="normal">
-            <TextField
-              id="estado"
-              value={editedProduct.estado}
-              onChange={(e) => setEditedProduct({ ...editedProduct, estado: e.target.value })}
-              fullWidth
-            />
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditDialogOpen(false)} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={editProduct} color="primary">
-            Guardar
-          </Button>
-        </DialogActions>
-      </Dialog>
+  <DialogTitle>Editar Producto</DialogTitle>
+  <DialogContent>
+    <FormControl fullWidth margin="normal">
+      <TextField
+        id="nombre"
+        label="Nombre"
+        value={editedProduct.nombre}
+        onChange={(e) => setEditedProduct({ ...editedProduct, nombre: e.target.value })}
+        fullWidth
+      />
+    </FormControl>
+    <FormControl fullWidth margin="normal">
+      <TextField
+        id="descripcion"
+        label="Descripción"
+        value={editedProduct.descripcion}
+        onChange={(e) => setEditedProduct({ ...editedProduct, descripcion: e.target.value })}
+        fullWidth
+      />
+    </FormControl>
+    <FormControl fullWidth margin="normal">
+      <TextField
+        id="categoria"
+        label="Categoría"
+        value={editedProduct.categoria}
+        onChange={(e) => setEditedProduct({ ...editedProduct, categoria: e.target.value })}
+        fullWidth
+      />
+    </FormControl>
+    <FormControl fullWidth margin="normal">
+      <TextField
+        id="precio"
+        label="Precio"
+        value={editedProduct.precio}
+        onChange={(e) => setEditedProduct({ ...editedProduct, precio: e.target.value })}
+        fullWidth
+      />
+    </FormControl>
+    <FormControl fullWidth margin="normal">
+      <TextField
+        id="estado"
+        label="Estado"
+        value={editedProduct.estado}
+        onChange={(e) => setEditedProduct({ ...editedProduct, estado: e.target.value })}
+        fullWidth
+      />
+    </FormControl>
+    <FormControl fullWidth margin="normal">
+      <TextField
+        id="fecha_vencimiento"
+        label="Fecha de Vencimiento"
+        value={editedProduct.fecha_vencimiento}
+        onChange={(e) => setEditedProduct({ ...editedProduct, fecha_vencimiento: e.target.value })}
+        fullWidth
+      />
+    </FormControl>
+    <FormControl fullWidth margin="normal">
+      <input
+        accept="image/*"
+        type="file"
+        onChange={handleImageChange} // Agrega esta función para manejar el cambio de la imagen
+      />
+    </FormControl>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setEditDialogOpen(false)} color="primary">
+      Cancelar
+    </Button>
+    <Button onClick={editProduct} color="primary">
+      Guardar
+    </Button>
+  </DialogActions>
+</Dialog>
 
       {/* dialogo de crear producto */}
       <Dialog open={newProductDialogOpen} onClose={() => setNewProductDialogOpen(false)} fullWidth maxWidth="md">
@@ -476,9 +537,9 @@ function Inventario() {
           <Button onClick={() => setNewProductDialogOpen(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={addNewProduct} color="primary">
+          <IconButton onClick={handleCreate} color="primary">
             Guardar
-          </Button>
+          </IconButton>
         </DialogActions>
       </Dialog>
     </DashboardLayout>

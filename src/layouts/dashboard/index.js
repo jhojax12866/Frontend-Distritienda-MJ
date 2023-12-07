@@ -37,23 +37,24 @@ function Dashboard() {
     // Obtener productos
     axios.get('https://diplomadobd-06369030a7e4.herokuapp.com/productos/')
       .then(response => {
+        console.log('Productos recibidos:', response.data);
         setProducts(response.data);
       })
       .catch(error => {
         console.error('Error al obtener productos:', error);
       });
-
-    // información de stock
-    axios.get('https://diplomadobd-06369030a7e4.herokuapp.com/stock/')
-      .then(response => {
-        // Filtrar productos 
-        const productsWithStock = response.data.filter(product => product.cantidad > 0);
-        setStock(productsWithStock);
-      })
-      .catch(error => {
-        console.error('Error al obtener información de stock:', error);
-      });
-  }, []);
+  
+     // información de stock
+     axios.get('https://diplomadobd-06369030a7e4.herokuapp.com/stock/')
+     .then(response => {
+       // Filtrar productos 
+       const productsWithStock = response.data.filter(product => product.cantidad > 0);
+       setStock(productsWithStock);
+     })
+     .catch(error => {
+       console.error('Error al obtener información de stock:', error);
+     });
+ }, []);
 
   return (
     <DashboardLayout>

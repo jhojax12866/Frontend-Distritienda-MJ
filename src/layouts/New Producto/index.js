@@ -1,151 +1,183 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  IconButton,
+  Grid,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-const New_Producto = ({ onProductoCreado }) => {
+const NewProductDialog = ({ open, onClose, onProductCreate }) => {
   const [categorias, setCategorias] = useState([]);
-  const [formData, setFormData] = useState({
+  const [newProduct, setNewProduct] = useState({
     nombre: '',
     descripcion: '',
     categoria: '',
     cantidad: 0,
-    fecha_vencimiento: '',
+    precio: '0.00',
     estado: '',
+    fecha_vencimiento: '',
+    imagen: null,
   });
 
-  // Estados predefinidos
-  const estadosOptions = ['activo', 'inactivo', 'agotado'];
-  New_Producto.propTypes = {
-    onProductoCreado: PropTypes.func.isRequired,
-  };
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Obtener categorías
         const categoriasResponse = await fetch('https://diplomadobd-06369030a7e4.herokuapp.com/categorias');
         const categoriasData = await categoriasResponse.json();
         setCategorias(categoriasData);
       } catch (error) {
-        console.error('Error al obtener datos de la API:', error);
+        console.error('Error fetching categorias:', error);
       }
     };
 
     fetchData();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  const handleCreate = () => {
+    // Handle product creation logic here
+    onProductCreate(newProduct);
+    // Reset the form and close the dialog
+    setNewProduct({
+      nombre: '',
+      descripcion: '',
+      categoria: '',
+      cantidad: 0,
+      precio: '0.00',
+      estado: '',
+      fecha_vencimiento: '',
+      imagen: null,
+    });
+    onClose();
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewProduct({ ...newProduct, imagen: file });
+    }
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <form>
-            <div className="mb-3">
-              <label htmlFor="nombre" className="form-label">
-                Nombre:
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                name="nombre"
-                value={formData.nombre}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="descripcion" className="form-label">
-                Descripción:
-              </label>
-              <textarea
-                className="form-control"
-                name="descripcion"
-                value={formData.descripcion}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="categoria" className="form-label">
-                Categoría:
-              </label>
-              <select
-                className="form-select"
-                name="categoria"
-                value={formData.categoria}
-                onChange={handleChange}
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+      <DialogTitle>Agregar Nuevo Producto</DialogTitle>
+      <DialogContent>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <TextField
+              label="Nombre"
+              fullWidth
+              value={newProduct.nombre}
+              onChange={(e) => setNewProduct({ ...newProduct, nombre: e.target.value })}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Descripción"
+              fullWidth
+              value={newProduct.descripcion}
+              onChange={(e) => setNewProduct({ ...newProduct, descripcion: e.target.value })}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel>Categoría</InputLabel>
+              <Select
+                value={newProduct.categoria}
+                onChange={(e) => setNewProduct({ ...newProduct, categoria: e.target.value })}
               >
-                <option value="">Seleccionar</option>
+                <MenuItem value="">Seleccionar</MenuItem>
                 {categorias.map((categoria) => (
-                  <option key={categoria.id} value={categoria.id}>
+                  <MenuItem key={categoria.id} value={categoria.id}>
                     {categoria.descripcion}
-                  </option>
+                  </MenuItem>
                 ))}
-              </select>
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="cantidad" className="form-label">
-                Cantidad:
-              </label>
-              <input
-                type="number"
-                className="form-control"
-                name="cantidad"
-                value={formData.cantidad}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="fecha_vencimiento" className="form-label">
-                Fecha de Vencimiento:
-              </label>
-              <input
-                type="date"
-                className="form-control"
-                name="fecha_vencimiento"
-                value={formData.fecha_vencimiento}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="estado" className="form-label">
-                Estado:
-              </label>
-              <select
-                className="form-select"
-                name="estado"
-                value={formData.estado}
-                onChange={handleChange}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Cantidad"
+              type="number"
+              fullWidth
+              value={newProduct.cantidad}
+              onChange={(e) => setNewProduct({ ...newProduct, cantidad: e.target.value })}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Precio"
+              type="number"
+              fullWidth
+              value={newProduct.precio}
+              onChange={(e) => setNewProduct({ ...newProduct, precio: e.target.value })}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Estado"
+              fullWidth
+              value={newProduct.estado}
+              onChange={(e) => setNewProduct({ ...newProduct, estado: e.target.value })}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Fecha de Vencimiento"
+              type="date"
+              fullWidth
+              value={newProduct.fecha_vencimiento}
+              onChange={(e) => setNewProduct({ ...newProduct, fecha_vencimiento: e.target.value })}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <input
+              accept="image/*"
+              id="contained-button-file"
+              type="file"
+              style={{ display: 'none' }}
+              onChange={handleImageChange}
+            />
+            <label htmlFor="contained-button-file">
+              <Button
+                variant="contained"
+                color="default"
+                component="span"
+                startIcon={<CloudUploadIcon />}
               >
-                <option value="">Seleccionar</option>
-                {estadosOptions.map((estadoOption) => (
-                  <option key={estadoOption} value={estadoOption}>
-                    {estadoOption}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => onProductoCreado(formData)}
-            >
-              Crear Producto
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
+                Subir Imagen
+              </Button>
+            </label>
+            {newProduct.imagen && <span>{newProduct.imagen.name}</span>}
+          </Grid>
+        </Grid>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="primary">
+          Cancelar
+        </Button>
+        <IconButton onClick={handleCreate} color="primary">
+          <AddIcon />
+        </IconButton>
+      </DialogActions>
+    </Dialog>
   );
 };
 
-export default New_Producto;
+NewProductDialog.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onProductCreate: PropTypes.func.isRequired,
+};
+
+export default NewProductDialog;
