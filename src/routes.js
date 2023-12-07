@@ -24,6 +24,7 @@ import NuevoProducto from "layouts/New Producto";
 import New_Producto from "layouts/New Producto";
 
 const routes = [
+  { type: "title", title: "menu", key: "account-pages" },
   {
     type: "collapse",
     name: "Inicio",
@@ -92,7 +93,7 @@ const routes = [
   },
   
   
-  { type: "title", title: "Account Pages", key: "account-pages" },
+  { type: "title", title: "Accesos", key: "account-pages" },
   {
     type: "collapse",
     name: "Profile",

@@ -144,7 +144,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                     fontWeight="medium"
                     color={light ? "white" : "dark"}
                   >
-                    Sign in
+                    Cerrar sesion
                   </SoftTypography>
                 </IconButton>
               </Link>
