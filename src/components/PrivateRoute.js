@@ -1,17 +1,11 @@
-// PrivateRoute.js
-import React from "react";
-import { Route, Navigate } from "react-router-dom";
+import { Navigate, useLocation } from 'react-router-dom';
 
 // eslint-disable-next-line react/prop-types
-const PrivateRoute = ({ element, fallbackPath }) => {
-  const isAuthenticated = !!localStorage.getItem("accessToken");
+const PrivateRoute = ({ children }) => {
+  const token = localStorage.getItem('token');
+  const location = useLocation();
 
-  return isAuthenticated ? (
-    <Route element={element} />
-  ) : (
-    <Navigate to={authentication/sign-up} replace />
-  );
+  return token ? children : <Navigate to="/signin" replace state={{ from: location }} />;
 };
 
 export default PrivateRoute;
-

@@ -33,6 +33,7 @@ import { useSoftUIController, setMiniSidenav, setOpenConfigurator } from "contex
 
 import brand from "assets/images/Distritienda.png";
 
+
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
   const { miniSidenav, direction, layout, openConfigurator, sidenavColor } = controller;
