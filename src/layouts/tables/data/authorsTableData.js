@@ -43,11 +43,11 @@ function Function({ job, org }) {
 
 const authorsTableData = {
   columns: [
-    { name: "author", align: "left" },
-    { name: "function", align: "left" },
-    { name: "status", align: "center" },
-    { name: "employed", align: "center" },
-    { name: "action", align: "center" },
+    { name: "Cliente", align: "left" },
+    { name: "Producto", align: "left" },
+    { name: "Fecha", align: "center" },
+    { name: "Cantidad", align: "center" },
+    { name: "Total", align: "center" },
   ],
 
   rows: [

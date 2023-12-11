@@ -30,7 +30,6 @@ function Tabla_Creditos() {
         const dataPersonas = await responsePersonas.json();
         setPersonas(dataPersonas);
 
-        // Nueva llamada a la API de cartera
         const responseCartera = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/cartera/");
         const dataCartera = await responseCartera.json();
         setCarteraData(dataCartera);
@@ -42,37 +41,32 @@ function Tabla_Creditos() {
     fetchData();
   }, []);
 
-  // Función para obtener el nombre de una persona por su ID
   const getNombrePersonaById = (personaId) => {
     const persona = personas.find((p) => p.id === personaId);
     return persona ? `${persona.nombre} ${persona.apellido}` : "N/A";
   };
 
-  // Modificar la estructura de datos para incluir solo FACTURA_V en la tabla y facturas diferentes de null
   const tablaData = creditos
     .filter((credito) => credito.estado_pago.toLowerCase().includes(searchTerm.toLowerCase()))
     .map((credito) => {
       const facturaVenta = facturasVenta.find((factura) => factura.id === credito.factura_v);
       const carteraInfo = carteraData.find((cartera) => cartera.pago === credito.id);
 
-      // Verificar si la factura de venta y la información de cartera son diferentes de null
       if (facturaVenta && carteraInfo) {
         return {
           cliente_nombre: getNombrePersonaById(facturaVenta.cliente_f),
           medio_pago: credito.medio_pago,
           estado_pago: credito.estado_pago,
-          factura_v: facturaVenta.total_v,
+          total: facturaVenta.total_v,
           fecha_facturacion: carteraInfo.fecha_facturacion,
           fecha_vencimiento: carteraInfo.fecha_vencimiento,
+          id_venta: facturaVenta.id_venta,
         };
       }
-
-      // Si la factura de venta o la información de cartera son null, devolver null para no incluirla en la tabla
       return null;
     })
-    .filter(Boolean); // Filtrar elementos nulos
+    .filter(Boolean);
 
-  // Función para filtrar elementos por término de búsqueda
   const filterBySearchTerm = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -104,7 +98,7 @@ function Tabla_Creditos() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">TABLA CREDITOS VALLEJOS</SoftTypography>
+              <SoftTypography variant="h6">CREDITOS</SoftTypography>
             </SoftBox>
             <SoftBox
               sx={{
@@ -119,11 +113,12 @@ function Tabla_Creditos() {
               <Table
                 columns={[
                   { name: "cliente_nombre", align: "center" },
+                  { name: "id_venta", align: "center" },
+                  { name: "total", align: "center" },
                   { name: "medio_pago", align: "center" },
                   { name: "estado_pago", align: "center" },
-                  { name: "factura_v", align: "center" },
-                  { name: "fecha_facturacion", align: "center" }, // Agregar columna de fecha de facturación
-                  { name: "fecha_vencimiento", align: "center" }, // Agregar columna de fecha de vencimiento
+                  { name: "fecha_facturacion", align: "center" },
+                  { name: "fecha_vencimiento", align: "center" }, 
                 ]}
                 rows={tablaData}
               />
