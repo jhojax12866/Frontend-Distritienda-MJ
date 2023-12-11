@@ -35,10 +35,10 @@ const data_productos = {
   ],
 };
 
-
-
 function Inventario() {
   const { columns } = data_productos;
+  const [stock, setStock] = useState([]);
+
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [lotes, setLotes] = useState([]);
@@ -58,41 +58,46 @@ function Inventario() {
     fecha_vencimiento: "",
   });
 
+  // Declare accessToken globally
+  const accessToken = localStorage.getItem("accessToken");
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [productosData, categoriasData, lotesData] = await Promise.all([
+        const [productosData, categoriasData, lotesData, stockData] = await Promise.all([
           fetch("https://diplomadobd-06369030a7e4.herokuapp.com/productos/").then((response) => response.json()),
           fetch("https://diplomadobd-06369030a7e4.herokuapp.com/categorias/").then((response) => response.json()),
           fetch("https://diplomadobd-06369030a7e4.herokuapp.com/lotes/").then((response) => response.json()),
+          fetch("https://diplomadobd-06369030a7e4.herokuapp.com/stock/").then((response) => response.json()),
         ]);
-
+  
         setProductos(productosData);
         setCategorias(categoriasData);
         setLotes(lotesData);
+        setStock(stockData);
       } catch (error) {
         console.error("Error al obtener datos de la API", error);
       }
     };
-
+  
     fetchData();
   }, []);
 
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
   };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-  
+
     if (file) {
-      // Puedes realizar acciones con el archivo, como subirlo a tu servidor o mostrar una vista previa.
-      // En este ejemplo, simplemente almacenamos el nombre del archivo en el estado.
       setEditedProduct({ ...editedProduct, imagen: file.name });
     }
   };
-   const handleEdit = (product) => {
+
+  const handleEdit = (product) => {
     setSelectedProduct(product);
-    setEditedProduct({ ...product }); // Copiar el producto para evitar modificar el original directamente
+    setEditedProduct({ ...product });
     setEditDialogOpen(true);
   };
 
@@ -100,19 +105,19 @@ function Inventario() {
     setSelectedProduct(product);
     setDeleteDialogOpen(true);
   };
+
   const handleCreate = () => {
     setNewProductDialogOpen(true);
   };
+  
+
   const deleteProduct = async () => {
     try {
-      const accessToken = localStorage.getItem("accessToken");
-
       if (!accessToken) {
         console.error("No se encontró el token de acceso");
         return;
       }
 
-      console.log("Deleting product...");
       const requestOptions = {
         method: 'DELETE',
         headers: {
@@ -123,7 +128,6 @@ function Inventario() {
 
       await fetch(`https://diplomadobd-06369030a7e4.herokuapp.com/productos/${selectedProduct.id}/`, requestOptions);
 
-      // Actualizar la lista de productos después de la eliminación
       const updatedProducts = productos.filter((product) => product.id !== selectedProduct.id);
       setProductos(updatedProducts);
 
@@ -137,22 +141,21 @@ function Inventario() {
 
   const editProduct = async () => {
     try {
-      const accessToken = localStorage.getItem("accessToken");
-  
       if (!editedProduct.id) {
         console.error("El ID del producto a editar no está definido.");
         return;
       }
   
       const editedProductData = {
-  codigo: [parseInt(editedProduct.codigo)], // Assuming "codigo" is an integer, wrap it in an array
-  nombre: editedProduct.nombre,
-  descripcion: editedProduct.descripcion,
-  categoria: parseInt(editedProduct.categoria),
-  precio: editedProduct.precio,
-  estado: editedProduct.estado,
-  fecha_vencimiento: editedProduct.fecha_vencimiento,
-};
+        codigo: parseInt(editedProduct.codigo),
+        nombre: editedProduct.nombre,
+        descripcion: editedProduct.descripcion,
+        cantidad: parseInt(editedProduct.cantidad),
+        categoria: parseInt(editedProduct.categoria), // Parse the categoria to an integer
+        precio: editedProduct.precio,
+        estado: editedProduct.estado,
+        fecha_vencimiento: editedProduct.fecha_vencimiento,
+      };
   
       const requestOptions = {
         method: "PUT",
@@ -168,14 +171,11 @@ function Inventario() {
         requestOptions
       );
   
-      console.log(response.status, response.statusText);
-  
       if (response.ok) {
-        // Assuming fetchData is a function that fetches and returns the updated product list
+        // Update the state after editing the product
         const updatedProducts = await fetchData();
         setProductos(updatedProducts);
   
-        // Clear editedProduct and close the edit dialog
         setEditedProduct({});
         setEditDialogOpen(false);
       } else if (response.status === 401) {
@@ -188,25 +188,22 @@ function Inventario() {
       console.error("Error al editar el producto", error);
     }
   };
-  
-  
-  
+
   const addNewProduct = async () => {
     try {
       const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/productos/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${accessToken}`,
         },
         body: JSON.stringify(newProduct),
       });
 
       if (response.ok) {
-        // Actualizar la lista de productos después de la creación
         const updatedProducts = await fetchData();
         setProductos(updatedProducts);
 
-        // Limpiar el estado después de la creación
         setNewProduct({
           codigo: 0,
           nombre: "",
@@ -254,93 +251,94 @@ function Inventario() {
   const formatCurrency = (amount) => {
     return parseFloat(amount).toFixed(2);
   };
+
   const getChipColor = (estado) => {
     switch (estado) {
       case 'activo':
         return 'primary';
       case 'inactivo':
-        return 'warning'; // Amarillo
+        return 'warning';
       case 'agotado':
-        return 'error'; // Rojo
+        return 'error';
       case 'ACTIVO':
         return 'primary';
       case 'INACTIVO':
-        return 'warning'; // Amarillo
+        return 'warning';
       case 'AGOTADO':
         return 'error';
       default:
         return 'default';
     }
   };
-  
+
   const getChipBackgroundColor = (estado) => {
     switch (estado) {
       case 'activo':
-        return '#4CAF50'; // Verde
+        return '#4CAF50';
       case 'inactivo':
-        return '#FFEB3B'; // Amarillo
+        return '#FFEB3B';
       case 'agotado':
-        return '#FFF0001'; // Rojo
+        return '#FFF0001';
       case 'ACTIVO':
-        return '#4CAF50'; // Verde
+        return '#4CAF50';
       case 'INACTIVO':
-        return '#FFEB3B'; // Amarillo
+        return '#FFEB3B';
       case 'AGOTADO':
-        return '#FFF0001'
+        return '#FFF0001';
       default:
         return 'inherit';
     }
   };
+
   const getChipTextColor = (estado) => {
     switch (estado) {
       case 'activo':
         return '#FFF';
       case 'inactivo':
         return '#FFF';
-        case 'agotado':
-        return '#FFF' ;
+      case 'agotado':
+        return '#FFF';
       case 'ACTIVO':
-        return '#FFF'; 
+        return '#FFF';
       case 'INACTIVO':
-        return '#FFF'; // Amarillo
+        return '#FFF';
       case 'AGOTADO':
-        return '#FFF0001'
+        return '#FFF0001';
       default:
         return 'inherit';
     }
   };
+
   const rowsWithActions = productos.map((product) => {
-    const productLotes = lotes.filter((lote) => lote.producto_lote === product.id);
-    const totalQuantity = productLotes.reduce((acc, lote) => acc + parseFloat(lote.cantidad), 0);
-  
+    const productStock = stock.find((item) => item.producto_stock === product.id);
+    const totalQuantity = productStock ? productStock.cantidad : 0;
+
     return {
-      ...product,
-      acciones: getActionButtons(product),
-      precio: `$${formatCurrency(product.precio)}`,
-      fecha_vencimiento: formatDate(product.fecha_vencimiento),
-      estado: (
-        <Chip
-          label={product.estado}
-          color={getChipColor(product.estado)}
-          style={{
-            backgroundColor: getChipBackgroundColor(product.estado),
-            color: getChipTextColor(product.estado),
-          }}
-        />
-      ),
-      imagen: (
-        <img
-          src={product.imagen}
-          alt={product.nombre}
-          style={{ maxWidth: '50px', maxHeight: '50px' }}
-        />
-      ),
-      categoria: categorias.find((categoria) => categoria.id === product.categoria)?.descripcion || '',
-      cantidad: Math.round(totalQuantity), 
-    };
-  });
-  
-  
+    ...product,
+    acciones: getActionButtons(product),
+    precio: `$${formatCurrency(product.precio)}`,
+    fecha_vencimiento: formatDate(product.fecha_vencimiento),
+    estado: (
+      <Chip
+        label={product.estado}
+        color={getChipColor(product.estado)}
+        style={{
+          backgroundColor: getChipBackgroundColor(product.estado),
+          color: getChipTextColor(product.estado),
+        }}
+      />
+    ),
+    imagen: (
+      <img
+        src={product.imagen}
+        alt={product.nombre}
+        style={{ maxWidth: '50px', maxHeight: '50px' }}
+      />
+    ),
+    categoria: categorias.find((categoria) => categoria.id === product.categoria)?.descripcion || '',
+    cantidad: Math.round(totalQuantity),
+  };
+});
 
   const filteredProducts = rowsWithActions.filter((product) => {
     return (
@@ -396,9 +394,7 @@ function Inventario() {
           </Card>
         </SoftBox>
       </SoftBox>
-      
 
-      {/* confirmar borrar */}
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Confirmar eliminación</DialogTitle>
         <DialogContent>
@@ -413,6 +409,7 @@ function Inventario() {
           </Button>
         </DialogActions>
       </Dialog>
+
 
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
   <DialogTitle>Editar Producto</DialogTitle>
@@ -437,13 +434,22 @@ function Inventario() {
     </FormControl>
     <FormControl fullWidth margin="normal">
       <TextField
-        id="categoria"
-        label="Categoría"
-        value={editedProduct.categoria}
-        onChange={(e) => setEditedProduct({ ...editedProduct, categoria: e.target.value })}
+        id="cantidad"
+        label="Cantidad"
+        value={editedProduct.cantidad}
+        onChange={(e) => setEditedProduct({ ...editedProduct, cantidad: e.target.value })}
         fullWidth
       />
     </FormControl>
+    <FormControl fullWidth margin="normal">
+  <TextField
+    id="categoria"
+    label="Categoría"
+    value={editedProduct.categoria}
+    onChange={(e) => setEditedProduct({ ...editedProduct, categoria: e.target.value })}
+    fullWidth
+  />
+</FormControl>
     <FormControl fullWidth margin="normal">
       <TextField
         id="precio"
@@ -489,8 +495,8 @@ function Inventario() {
   </DialogActions>
 </Dialog>
 
-      {/* dialogo de crear producto */}
-      <Dialog open={newProductDialogOpen} onClose={() => setNewProductDialogOpen(false)} fullWidth maxWidth="md">
+     {/* dialogo de crear producto */}
+     <Dialog open={newProductDialogOpen} onClose={() => setNewProductDialogOpen(false)} fullWidth maxWidth="md">
         <DialogTitle>Agregar Nuevo Producto</DialogTitle>
         <DialogContent>
           <Grid container spacing={3}>
@@ -537,9 +543,9 @@ function Inventario() {
           <Button onClick={() => setNewProductDialogOpen(false)} color="primary">
             Cancelar
           </Button>
-          <IconButton onClick={handleCreate} color="primary">
+          <Button onClick={handleCreate} color="primary">
             Guardar
-          </IconButton>
+          </Button>
         </DialogActions>
       </Dialog>
     </DashboardLayout>
