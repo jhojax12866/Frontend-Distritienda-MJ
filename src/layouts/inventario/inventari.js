@@ -109,7 +109,6 @@ function Inventario() {
   const handleCreate = () => {
     setNewProductDialogOpen(true);
   };
-  
 
   const deleteProduct = async () => {
     try {
@@ -347,6 +346,7 @@ function Inventario() {
     );
   });
 
+
   return (
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
       <DashboardNavbar />
@@ -497,56 +497,101 @@ function Inventario() {
 
      {/* dialogo de crear producto */}
      <Dialog open={newProductDialogOpen} onClose={() => setNewProductDialogOpen(false)} fullWidth maxWidth="md">
-        <DialogTitle>Agregar Nuevo Producto</DialogTitle>
-        <DialogContent>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel htmlFor="nombre">Nombre</InputLabel>
-                <TextField
-                  id="nombre"
-                  value={newProduct.nombre}
-                  onChange={(e) => setNewProduct({ ...newProduct, nombre: e.target.value })}
-                  fullWidth
-                />
-              </FormControl>
-            </Grid>
+     <DialogTitle>Agregar Nuevo Producto</DialogTitle>
+<DialogContent>
+  <Grid container spacing={3}>
+    <Grid item xs={12}>
+      <FormControl fullWidth>
+        <InputLabel htmlFor="nombre">Nombre</InputLabel>
+        <TextField
+          id="nombre"
+          value={newProduct.nombre}
+          onChange={(e) => setNewProduct({ ...newProduct, nombre: e.target.value })}
+          fullWidth
+        />
+      </FormControl>
+    </Grid>
 
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel htmlFor="descripcion">Descripción</InputLabel>
-                <TextField
-                  id="descripcion"
-                  value={newProduct.descripcion}
-                  onChange={(e) => setNewProduct({ ...newProduct, descripcion: e.target.value })}
-                  fullWidth
-                />
-              </FormControl>
-            </Grid>
+    <Grid item xs={12}>
+      <FormControl fullWidth>
+        <InputLabel htmlFor="descripcion">Descripción</InputLabel>
+        <TextField
+          id="descripcion"
+          value={newProduct.descripcion}
+          onChange={(e) => setNewProduct({ ...newProduct, descripcion: e.target.value })}
+          fullWidth
+        />
+      </FormControl>
+    </Grid>
 
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel htmlFor="categoria">Categoría</InputLabel>
-                <TextField
-                  id="categoria"
-                  value={newProduct.categoria}
-                  onChange={(e) => setNewProduct({ ...newProduct, categoria: e.target.value })}
-                  fullWidth
-                />
-              </FormControl>
-            </Grid>
+    <Grid item xs={12}>
+      <FormControl fullWidth>
+        <InputLabel htmlFor="categoria">Categoría</InputLabel>
+        <TextField
+          id="categoria"
+          value={newProduct.categoria}
+          onChange={(e) => setNewProduct({ ...newProduct, categoria: e.target.value })}
+          fullWidth
+        />
+      </FormControl>
+    </Grid>
 
-            {/* Add more fields as needed */}
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setNewProductDialogOpen(false)} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={handleCreate} color="primary">
-            Guardar
-          </Button>
-        </DialogActions>
+    <Grid item xs={12}>
+      <FormControl fullWidth>
+        <InputLabel htmlFor="precio">Precio</InputLabel>
+        <TextField
+          id="precio"
+          value={newProduct.precio}
+          onChange={(e) => setNewProduct({ ...newProduct, precio: e.target.value })}
+          fullWidth
+        />
+      </FormControl>
+    </Grid>
+
+    <Grid item xs={12}>
+      <FormControl fullWidth>
+        <InputLabel htmlFor="estado">Estado</InputLabel>
+        <TextField
+          id="estado"
+          value={newProduct.estado}
+          onChange={(e) => setNewProduct({ ...newProduct, estado: e.target.value })}
+          fullWidth
+        />
+      </FormControl>
+    </Grid>
+
+    <Grid item xs={12}>
+      <FormControl fullWidth>
+        <InputLabel htmlFor="fecha_vencimiento">Fecha de Vencimiento</InputLabel>
+        <TextField
+          id="fecha_vencimiento"
+          value={newProduct.fecha_vencimiento}
+          onChange={(e) => setNewProduct({ ...newProduct, fecha_vencimiento: e.target.value })}
+          fullWidth
+        />
+      </FormControl>
+    </Grid>
+
+    <Grid item xs={12}>
+      <FormControl fullWidth>
+        <InputLabel htmlFor="imagen">Imagen</InputLabel>
+        <input
+          accept="image/*"
+          type="file"
+          onChange={handleImageChange}
+        />
+      </FormControl>
+    </Grid>
+  </Grid>
+</DialogContent>
+<DialogActions>
+  <Button onClick={() => setNewProductDialogOpen(false)} color="primary">
+    Cancelar
+  </Button>
+  <Button onClick={addNewProduct} color="primary">
+    Guardar
+  </Button>
+</DialogActions>
       </Dialog>
     </DashboardLayout>
   );
