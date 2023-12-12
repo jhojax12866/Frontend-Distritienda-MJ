@@ -57,7 +57,7 @@ const routes = [
   
   {
     type: "collapse",
-    name: "Tabla Creditos",
+    name: "Creditos",
     key: "tabla_creditos",
     route: "/Tabla Creditos",
     icon: <Shop size="12px" />,
@@ -75,7 +75,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Tables",
+    name: "Ventas",
     key: "tables",
     route: "/tables",
     icon: <Shop size="12px" />,
