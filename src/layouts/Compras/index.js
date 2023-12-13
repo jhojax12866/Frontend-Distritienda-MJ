@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
+import TextField from "@mui/material/TextField";
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import { TextField } from "@mui/material";
+import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -15,167 +16,197 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import { FormControl } from "@mui/material";
+import { FormControl, InputLabel } from "@mui/material";
+import { DialogContentText, Grid } from "@mui/material";
 
-function Tabla_FacturasCompra() {
-  const [facturasCompra, setFacturasCompra] = useState([]);
-  const [proveedores, setProveedores] = useState([]);
-  const [detalleCompraData, setDetalleCompraData] = useState([]);
+const data_cartera = {
+  columns: [
+    { name: "id", align: "left" },
+    { name: "fecha_facturacion", align: "left" },
+    { name: "fecha_vencimiento", align: "center" },
+    { name: "pago", align: "center" },
+    { name: "acciones", align: "center" },
+  ],
+};
+
+function Cartera() {
+  const { columns } = data_cartera;
+  const [cartera, setCartera] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedFactura, setSelectedFactura] = useState(null);
-  const [deleteFacturaDialogOpen, setDeleteFacturaDialogOpen] = useState(false);
-  const [editFacturaDialogOpen, setEditFacturaDialogOpen] = useState(false);
-  const [newFacturaDialogOpen, setNewFacturaDialogOpen] = useState(false);
-  const [editedFactura, setEditedFactura] = useState({});
-  const [newFactura, setNewFactura] = useState({
-    // Agrega los campos necesarios para la nueva factura
+  const [selectedCartera, setSelectedCartera] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [newCarteraDialogOpen, setNewCarteraDialogOpen] = useState(false);
+  const [editedCartera, setEditedCartera] = useState({});
+  const [newCartera, setNewCartera] = useState({
+    fecha_vencimiento: "2023-12-27",
+    pago: 0,
   });
 
+  const handleNewCarteraChange = (field, value) => {
+    setNewCartera((prev) => ({ ...prev, [field]: value }));
+  };
+  const accessToken = localStorage.getItem("accessToken");
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseFacturaCompra = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/factura_compra/");
-        const dataFacturaCompra = await responseFacturaCompra.json();
-        setFacturasCompra(dataFacturaCompra);
-
-        const responseProveedores = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/personas/");
-        const dataProveedores = await responseProveedores.json();
-        setProveedores(dataProveedores);
-
-        const responseDetalleCompra = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/detalle_compra/");
-        const dataDetalleCompra = await responseDetalleCompra.json();
-        setDetalleCompraData(dataDetalleCompra);
+        const carteraData = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/cartera/").then((response) => response.json());
+        setCartera(carteraData);
       } catch (error) {
-        console.error("Error al obtener datos de la API", error);
+        console.error("Error fetching data from cartera API", error);
       }
     };
 
     fetchData();
   }, []);
 
-  const getNombreProveedorById = (proveedorId) => {
-    const proveedor = proveedores.find((p) => p.id === proveedorId);
-    return proveedor ? `${proveedor.nombre} ${proveedor.apellido}` : "N/A";
-  };
-
-  const tablaData = facturasCompra
-    .filter((factura) => {
-      const proveedorNombre = getNombreProveedorById(factura.proveedor_f);
-      return proveedorNombre.toLowerCase().includes(searchTerm.toLowerCase());
-    })
-    .map((factura) => {
-      const proveedorNombre = getNombreProveedorById(factura.proveedor_f);
-      const detalleCompraInfo = detalleCompraData.find((detalle) => detalle.factura_compra === factura.id);
-
-      if (proveedorNombre && detalleCompraInfo) {
-        const cantidadProducto = detalleCompraInfo.cantidad;
-        const precioUnitario = parseFloat(detalleCompraInfo.precio_unitario);
-        const fechaFacturacion = new Date(factura.fecha_ingreso).toLocaleDateString();
-        const totalFactura = cantidadProducto * precioUnitario;
-
-        return {
-          proveedor: proveedorNombre,
-          cantidad_producto: cantidadProducto,
-          precio_unitario: precioUnitario.toFixed(2),
-          fecha_facturacion: fechaFacturacion,
-          total_factura: totalFactura.toFixed(2),
-        };
-      }
-
-      return null;
-    })
-    .filter(Boolean);
-
-  const filterBySearchTerm = (event) => {
+  const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleEditFactura = (factura) => {
-    setSelectedFactura(factura);
-    setEditedFactura({ ...factura });
-    setEditFacturaDialogOpen(true);
+  const handleEdit = (carteraItem) => {
+    setSelectedCartera(carteraItem);
+    setEditedCartera({ ...carteraItem });
+    setEditDialogOpen(true);
   };
 
-  const handleDeleteFactura = (factura) => {
-    setSelectedFactura(factura);
-    setDeleteFacturaDialogOpen(true);
+  const handleDelete = (carteraItem) => {
+    setSelectedCartera(carteraItem);
+    setDeleteDialogOpen(true);
   };
 
-  const editFactura = async () => {
+  const handleCreate = () => {
+    setNewCarteraDialogOpen(true);
+  };
+  
+  const deleteCartera = async () => {
     try {
-      // Implementa la lógica para editar la factura utilizando editedFactura y la API correspondiente
-      const response = await fetch(`https://diplomadobd-06369030a7e4.herokuapp.com/cartera/${selectedFactura.id}`, {
+      if (!accessToken) {
+        console.error("No se encontró el token de acceso");
+        return;
+      }
+  
+      const requestOptions = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      };
+  
+      await fetch(`https://diplomadobd-06369030a7e4.herokuapp.com/cartera/${selectedCartera.id}/`, requestOptions);
+  
+      const updatedCartera = cartera.filter((item) => item.id !== selectedCartera.id);
+      setCartera(updatedCartera);
+  
+      console.log("Cartera item deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting cartera item", error);
+    }
+  
+    setDeleteDialogOpen(false);
+  };
+  
+  // ... (existing code)
+  
+  const editCartera = async () => {
+    try {
+      if (!editedCartera.id) {
+        console.error("ID del item de cartera a editar no está definido.");
+        return;
+      }
+  
+      const editedCarteraData = {
+        fecha_vencimiento: editedCartera.fecha_vencimiento,
+        pago: editedCartera.pago,
+      };
+  
+      const requestOptions = {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(editedFactura),
-      });
+        body: JSON.stringify(editedCarteraData),
+      };
+  
+      const response = await fetch(
+        `https://diplomadobd-06369030a7e4.herokuapp.com/cartera/${editedCartera.id}/`,
+        requestOptions
+      );
   
       if (response.ok) {
-        // Actualiza el estado o realiza otras acciones necesarias después de la edición
-        console.log("Factura editada correctamente");
-        setEditFacturaDialogOpen(false);
-        // Puedes recargar los datos para reflejar los cambios
-        fetchData();
+        const updatedCartera = await fetchData();
+        setCartera(updatedCartera);
+  
+        setEditedCartera({});
+        setEditDialogOpen(false);
       } else {
-        console.error("Error al editar la factura");
+        console.error("Error al editar el item de cartera:", response.statusText);
+        console.log(await response.json());
       }
     } catch (error) {
-      console.error("Error en la solicitud de edición", error);
+      console.error("Error al editar el item de cartera", error);
     }
   };
+  // ... (existing code)
   
-  const deleteFactura = async () => {
+  const addNewCartera = async () => {
     try {
-      // Implementa la lógica para eliminar la factura utilizando selectedFactura.id y la API correspondiente
-      const response = await fetch(`https://diplomadobd-06369030a7e4.herokuapp.com/cartera//${selectedFactura.id}`, {
-        method: "DELETE",
-      });
-  
-      if (response.ok) {
-        // Actualiza el estado o realiza otras acciones necesarias después de la eliminación
-        console.log("Factura eliminada correctamente");
-        setDeleteFacturaDialogOpen(false);
-        // Puedes recargar los datos para reflejar los cambios
-        fetchData();
-      } else {
-        console.error("Error al eliminar la factura");
-      }
-    } catch (error) {
-      console.error("Error en la solicitud de eliminación", error);
-    }
-  };
-  
-  const addNewFactura = async () => {
-    try {
-      // Implementa la lógica para agregar una nueva factura utilizando newFactura y la API correspondiente
-      const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/cartera/", {
+      const requestOptions = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(newFactura),
-      });
+        body: JSON.stringify(newCartera),
+      };
+  
+      const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/cartera/", requestOptions);
   
       if (response.ok) {
-        // Actualiza el estado o realiza otras acciones necesarias después de la adición
-        console.log("Nueva factura agregada correctamente");
-        setNewFacturaDialogOpen(false);
-        // Puedes recargar los datos para reflejar los cambios
-        fetchData();
+        const updatedCartera = await fetchData();
+        setCartera(updatedCartera);
+  
+        setNewCartera({
+          fecha_vencimiento: "2023-12-27",
+          pago: 0,
+        });
+        setNewCarteraDialogOpen(false);
       } else {
-        console.error("Error al agregar la nueva factura");
+        console.error("Error al agregar el nuevo item de cartera");
       }
     } catch (error) {
-      console.error("Error en la solicitud de nueva factura", error);
+      console.error("Error al agregar el nuevo item de cartera", error);
     }
   };
-  
+
+  const getActionButtons = (carteraItem) => (
+    <div>
+      <IconButton onClick={() => handleEdit(carteraItem)} color="info">
+        <EditIcon />
+      </IconButton>
+      <IconButton onClick={() => handleDelete(carteraItem)} color="error">
+        <DeleteIcon />
+      </IconButton>
+    </div>
+  );
+
+  const rowsWithActions = cartera.map((carteraItem) => ({
+    ...carteraItem,
+    acciones: getActionButtons(carteraItem),
+  }));
+
+  const filteredCartera = rowsWithActions.filter((carteraItem) => {
+    return (
+      carteraItem.fecha_vencimiento.includes(searchTerm) ||
+      carteraItem.pago.toString().includes(searchTerm)
+    );
+  });
 
   return (
-    <DashboardLayout>
-       <DashboardNavbar />
+    <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
+      <DashboardNavbar />
       <SoftTypography variant="body1" style={{ paddingLeft: '2px', paddingTop: '0px', fontSize: '19px' }}>
         Buscar
       </SoftTypography>
@@ -184,7 +215,7 @@ function Tabla_FacturasCompra() {
         variant="filled"
         color="secondary"
         value={searchTerm}
-        onChange={filterBySearchTerm}
+        onChange={handleSearchTermChange}
         fullWidth
         InputLabelProps={{ shrink: false }}
         InputProps={{
@@ -196,76 +227,138 @@ function Tabla_FacturasCompra() {
           },
         }}
       />
-      <SoftBox mb={3}>
-        
-        <Card>
-          <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-            <SoftTypography variant="h6">TABLA FACTURAS DE COMPRA</SoftTypography>
-            <IconButton onClick={() => setNewFacturaDialogOpen(true)} color="primary">
-              <AddIcon />
-            </IconButton>
-          </SoftBox>
-          <SoftBox
-            sx={{
-              "& .MuiTableRow-root:not(:last-child)": {
-                "& td": {
-                  borderBottom: ({ borders: { borderWidth, borderColor } }) =>
-                    `${borderWidth[1]} solid ${borderColor}`,
+      <SoftBox py={3}>
+        <SoftBox mb={3}>
+          <Card>
+            <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+              <SoftTypography variant="h6">TABLA DE CARTERA</SoftTypography>
+              <IconButton onClick={() => setNewCarteraDialogOpen(true)} color="primary">
+                <AddIcon />
+              </IconButton>
+            </SoftBox>
+            <SoftBox
+              sx={{
+                "& .MuiTableRow-root:not(:last-child)": {
+                  "& td": {
+                    borderBottom: ({ borders: { borderWidth, borderColor } }) =>
+                      `${borderWidth[1]} solid ${borderColor}`,
+                  },
                 },
-              },
-            }}
-          >
-            <Table
-              columns={[
-                { name: "proveedor", align: "center" },
-                { name: "cantidad_producto", align: "center" },
-                { name: "precio_unitario", align: "center" },
-                { name: "fecha_facturacion", align: "center" },
-                { name: "total_factura", align: "center" },
-                { name: "acciones", align: "center" }, // Agrega columna para acciones
-              ]}
-              rows={tablaData.map((factura) => ({
-                ...factura,
-                acciones: (
-                  <div>
-                    <IconButton onClick={() => handleEditFactura(factura)} color="info">
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleDeleteFactura(factura)} color="error">
-                      <DeleteIcon />
-                    </IconButton>
-                  </div>
-                ),
-              }))}
-            />
-          </SoftBox>
-        </Card>
+              }}
+            >
+              <Table columns={columns} rows={filteredCartera} />
+            </SoftBox>
+          </Card>
+        </SoftBox>
       </SoftBox>
 
-      <Dialog open={deleteFacturaDialogOpen} onClose={() => setDeleteFacturaDialogOpen(false)}>
+      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Confirmar eliminación</DialogTitle>
         <DialogContent>
-          ¿Estás seguro de que deseas eliminar la factura?
+          ¿Estás seguro de que deseas eliminar el item de cartera?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteFacturaDialogOpen(false)} color="primary">
+          <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={deleteFactura} color="secondary">
+          <Button onClick={deleteCartera} color="secondary">
             Eliminar
           </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={editFacturaDialogOpen} onClose={() => setEditFacturaDialogOpen(false)}>
-        {/* Agregar contenido del diálogo de edición similar al de lotes */}
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
+        <DialogTitle>Editar Item de Cartera</DialogTitle>
+        <DialogContent>
+          {/* Adjust the form fields for editing cartera items */}
+          <FormControl fullWidth margin="normal">
+            <TextField
+              id="fecha_vencimiento"
+              label="Fecha de Vencimiento"
+              type="date"
+              variant="filled"
+              color="secondary"
+              value={editedCartera.fecha_vencimiento}
+              onChange={(e) => setEditedCartera({ ...editedCartera, fecha_vencimiento: e.target.value })}
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+          </FormControl>
+          <FormControl fullWidth margin="normal">
+            <TextField
+              id="pago"
+              label="Pago"
+              variant="filled"
+              color="secondary"
+              type="number"
+              value={editedCartera.pago}
+              onChange={(e) => setEditedCartera({ ...editedCartera, pago: e.target.value })}
+              fullWidth
+            />
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialogOpen(false)} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={editCartera} color="primary">
+            Guardar
+          </Button>
+        </DialogActions>
       </Dialog>
-
-      <Dialog open={newFacturaDialogOpen} onClose={() => setNewFacturaDialogOpen(false)}>
-        {/* Agregar contenido del diálogo de nueva factura similar al de lotes */}
+      {/* Include the dialog for creating a new cartera item */}
+      <Dialog open={newCarteraDialogOpen} onClose={() => setNewCarteraDialogOpen(false)} fullWidth maxWidth="md">
+        <DialogTitle>Add New Cartera Item</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                label="Fecha Facturación"
+                type="date"
+                variant="filled"
+                color="secondary"
+                value={newCartera.fecha_facturacion}
+                onChange={(e) => handleNewCarteraChange("fecha_facturacion", e.target.value)}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Fecha Vencimiento"
+                type="date"
+                variant="filled"
+                color="secondary"
+                value={newCartera.fecha_vencimiento}
+                onChange={(e) => handleNewCarteraChange("fecha_vencimiento", e.target.value)}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Pago"
+                variant="filled"
+                color="secondary"
+                type="number"
+                value={newCartera.pago}
+                onChange={(e) => handleNewCarteraChange("pago", e.target.value)}
+                fullWidth
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setNewCarteraDialogOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={addNewCartera} color="primary">
+            Save
+          </Button>
+        </DialogActions>
       </Dialog>
     </DashboardLayout>
   );
 }
 
-export default Tabla_FacturasCompra;
+export default Cartera;
