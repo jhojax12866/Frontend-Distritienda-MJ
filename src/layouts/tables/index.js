@@ -18,19 +18,7 @@ function Tabla_Creditos() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responsePago = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/pago/");
-        const dataPago = await responsePago.json();
-        setCreditos(dataPago);
-
-        const responseFacturaVenta = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/factura_venta/");
-        const dataFacturaVenta = await responseFacturaVenta.json();
-        setFacturasVenta(dataFacturaVenta);
-
-        const responsePersonas = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/personas/");
-        const dataPersonas = await responsePersonas.json();
-        setPersonas(dataPersonas);
-
-        const responseCartera = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/cartera/");
+        const responseCartera = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/cartera/"); // Cambié la URL de la API
         const dataCartera = await responseCartera.json();
         setCarteraData(dataCartera);
       } catch (error) {
@@ -54,13 +42,12 @@ function Tabla_Creditos() {
 
       if (facturaVenta && carteraInfo) {
         return {
-          cliente_nombre: getNombrePersonaById(facturaVenta.cliente_f),
+          cliente: getNombrePersonaById(facturaVenta.cliente_f),
+          productos: "N/A", // Debes ajustar esto según la estructura de tu nueva API
+          total: facturaVenta.total_v,
           medio_pago: credito.medio_pago,
           estado_pago: credito.estado_pago,
-          total: facturaVenta.total_v,
-          fecha_facturacion: carteraInfo.fecha_facturacion,
-          fecha_vencimiento: carteraInfo.fecha_vencimiento,
-          id_venta: facturaVenta.id_venta,
+          fecha: carteraInfo.fecha_facturacion, // Ajustar según la estructura de tu nueva API
         };
       }
       return null;
@@ -98,7 +85,7 @@ function Tabla_Creditos() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">CREDITOS</SoftTypography>
+              <SoftTypography variant="h6">TABLA DE VENTAS</SoftTypography>
             </SoftBox>
             <SoftBox
               sx={{
@@ -112,13 +99,12 @@ function Tabla_Creditos() {
             >
               <Table
                 columns={[
-                  { name: "cliente_nombre", align: "center" },
-                  { name: "id_venta", align: "center" },
-                  { name: "total", align: "center" },
+                  { name: "cliente", align: "center" },
+                  { name: "productos", align: "center" },
                   { name: "medio_pago", align: "center" },
                   { name: "estado_pago", align: "center" },
-                  { name: "fecha_facturacion", align: "center" },
-                  { name: "fecha_vencimiento", align: "center" }, 
+                  { name: "fecha", align: "center" },
+                  { name: "total", align: "center" },
                 ]}
                 rows={tablaData}
               />
