@@ -54,7 +54,7 @@ function Inventario() {
     nombre: "",
     descripcion: "",
     categoria: "",
-    precio: "0.00",
+    precio: "",
     estado: "",
     fecha_vencimiento: "",
   });
@@ -68,7 +68,7 @@ function Inventario() {
         const [productosData, categoriasData, lotesData, stockData, estadosData] = await Promise.all([
           fetch("https://diplomadobd-06369030a7e4.herokuapp.com/productos/").then((response) => response.json()),
           fetch("https://diplomadobd-06369030a7e4.herokuapp.com/categorias/").then((response) => response.json()),
-          fetch("https://simplificado-48e1a3e2d000.herokuapp.com/lotes/").then((response) => response.json()),
+          fetch("https://diplomadobd-06369030a7e4.herokuapp.com/lotes/").then((response) => response.json()),
           fetch("https://diplomadobd-06369030a7e4.herokuapp.com/stock/").then((response) => response.json()),
         ]);
   
@@ -91,11 +91,13 @@ function Inventario() {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-
+  
     if (file) {
-      setEditedProduct({ ...editedProduct, imagen: file.name });
+      setNewProduct({ ...newProduct, imagen: file });
     }
   };
+  
+  
 
   const handleEdit = (product) => {
     setSelectedProduct(product);
@@ -142,6 +144,9 @@ function Inventario() {
 
   const editProduct = async () => {
     try {
+      const formData = new FormData();
+      formData.append("imagen", editedProduct.imagen);
+      console.log("Edited Product Data:", editedProduct);
       if (!editedProduct.id) {
         console.error("El ID del producto a editar no está definido.");
         return;
@@ -412,218 +417,291 @@ function Inventario() {
         </DialogActions>
       </Dialog>
 
-
-      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-  <DialogTitle>Editar Producto</DialogTitle>
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
+  <DialogTitle style={{  backgroundColor: '#3498db', color: '#fff' }}>Editar Producto</DialogTitle>
   <DialogContent>
-    <FormControl fullWidth margin="normal">
-      <TextField
-        id="nombre"
-        label="Nombre"
-        value={editedProduct.nombre}
-        onChange={(e) => setEditedProduct({ ...editedProduct, nombre: e.target.value })}
-        fullWidth
-      />
-    </FormControl>
-    <FormControl fullWidth margin="normal">
-      <TextField
-        id="descripcion"
-        label="Descripción"
-        value={editedProduct.descripcion}
-        onChange={(e) => setEditedProduct({ ...editedProduct, descripcion: e.target.value })}
-        fullWidth
-      />
-    </FormControl>
-    <FormControl fullWidth margin="normal">
-      <TextField
-        id="cantidad"
-        label="Cantidad"
-        value={editedProduct.cantidad}
-        onChange={(e) => setEditedProduct({ ...editedProduct, cantidad: e.target.value })}
-        fullWidth
-      />
-    </FormControl>
-    <FormControl fullWidth margin="normal">
-  <InputLabel htmlFor="categoria">Categoría</InputLabel>
-  <TextField
-    select
-    id="categoria"
-    value={editedProduct.categoria}
-    onChange={(e) => setEditedProduct({ ...editedProduct, categoria: e.target.value })}
-    fullWidth
-  >
-    {categorias.map((categoria) => (
-      <MenuItem key={categoria.id} value={categoria.id}>
-        {categoria.descripcion}
-      </MenuItem>
-    ))}
-  </TextField>
-</FormControl>
-    <FormControl fullWidth margin="normal">
-      <TextField
-        id="precio"
-        label="Precio"
-        value={editedProduct.precio}
-        onChange={(e) => setEditedProduct({ ...editedProduct, precio: e.target.value })}
-        fullWidth
-      />
-    </FormControl>
-    <FormControl fullWidth margin="normal">
-  <InputLabel htmlFor="estado">Estado</InputLabel>
-  <TextField
-    id="estado"
-    select
-    value={editedProduct.estado}
-    onChange={(e) => setEditedProduct({ ...editedProduct, estado: e.target.value })}
-    fullWidth
-  >
-    {["activo", "inactivo", "agotado"].map((option) => (
-      <MenuItem key={option} value={option}>
-        {option.charAt(0).toUpperCase() + option.slice(1)} {/* Capitalize the first letter */}
-      </MenuItem>
-    ))}
-  </TextField>
-</FormControl>
-    <FormControl fullWidth margin="normal">
-      <TextField
-        id="fecha_vencimiento"
-        label="Fecha de Vencimiento"
-        value={editedProduct.fecha_vencimiento}
-        onChange={(e) => setEditedProduct({ ...editedProduct, fecha_vencimiento: e.target.value })}
-        fullWidth
-      />
-    </FormControl>
-    <FormControl fullWidth margin="normal">
-      <input
-        accept="image/*"
-        type="file"
-        onChange={handleImageChange} // Agrega esta función para manejar el cambio de la imagen
-      />
-    </FormControl>
+    <form>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+        <InputLabel htmlFor="nombre">Nombre</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="nombre"
+              value={editedProduct.nombre}
+              onChange={(e) => setEditedProduct({ ...editedProduct, nombre: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+        
+        <Grid item xs={12}>
+        <InputLabel htmlFor="descripcion">Descripción</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="descripcion"
+              value={editedProduct.descripcion}
+              onChange={(e) => setEditedProduct({ ...editedProduct, descripcion: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={6}>
+        <InputLabel htmlFor="cantidad">Cantidad</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="cantidad"
+              value={editedProduct.cantidad}
+              onChange={(e) => setEditedProduct({ ...editedProduct, cantidad: e.target.value })}
+              fullWidth
+              type="number"
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={6}>
+        <InputLabel htmlFor="categoria">Categoría</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+
+            <TextField
+              select
+              id="categoria"
+              value={editedProduct.categoria}
+              onChange={(e) => setEditedProduct({ ...editedProduct, categoria: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            >
+              {categorias.map((categoria) => (
+                <MenuItem key={categoria.id} value={categoria.id}>
+                  {categoria.descripcion}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={6}>
+        <InputLabel htmlFor="precio">Precio</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="precio"
+              value={editedProduct.precio}
+              onChange={(e) => setEditedProduct({ ...editedProduct, precio: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={6}>
+          <InputLabel htmlFor="estado">Estado</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="estado"
+              select
+              value={editedProduct.estado} 
+              onChange={(e) => setEditedProduct({ ...editedProduct, estado: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            >
+              {["activo", "inactivo", "agotado"].map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option.charAt(0).toUpperCase() + option.slice(1)}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={12}>
+          <InputLabel htmlFor="fecha_vencimiento">Fecha de Vencimiento</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="fecha_vencimiento"
+              value={editedProduct.fecha_vencimiento}
+              onChange={(e) => setEditedProduct({ ...editedProduct, fecha_vencimiento: e.target.value })}
+              fullWidth
+              type="date"
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={12}>
+          <FormControl fullWidth margin="normal">
+            <input
+              accept="image/*"
+              type="file"
+              onChange={handleImageChange}
+            />
+          </FormControl>
+        </Grid>
+      </Grid>
+    </form>
   </DialogContent>
   <DialogActions>
-    <Button onClick={() => setEditDialogOpen(false)} color="primary">
+    <Button onClick={() => setEditDialogOpen(false)} color="secondary">
       Cancelar
     </Button>
-    <Button onClick={editProduct} color="primary">
+    <Button onClick={editProduct} color="primary" variant="contained">
       Guardar
     </Button>
   </DialogActions>
 </Dialog>
 
-     {/* dialogo de crear producto */}
-     <Dialog open={newProductDialogOpen} onClose={() => setNewProductDialogOpen(false)} fullWidth maxWidth="md">
-     <DialogTitle>Agregar Nuevo Producto</DialogTitle>
-<DialogContent>
-  <Grid container spacing={3}>
-    <Grid item xs={12}>
-      <FormControl fullWidth>
-        <InputLabel htmlFor="nombre">Nombre</InputLabel>
-        <TextField
-          id="nombre"
-          value={newProduct.nombre}
-          onChange={(e) => setNewProduct({ ...newProduct, nombre: e.target.value })}
-          fullWidth
-        />
-      </FormControl>
-    </Grid>
 
-    <Grid item xs={12}>
-      <FormControl fullWidth>
-        <InputLabel htmlFor="descripcion">Descripción</InputLabel>
-        <TextField
-          id="descripcion"
-          value={newProduct.descripcion}
-          onChange={(e) => setNewProduct({ ...newProduct, descripcion: e.target.value })}
-          fullWidth
-        />
-      </FormControl>
-    </Grid>
+     {/* Diálogo de crear producto */}
+<Dialog open={newProductDialogOpen} onClose={() => setNewProductDialogOpen(false)} fullWidth maxWidth="sm">
+  <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nuevo Producto</DialogTitle>
+  <DialogContent>
+    <form>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <InputLabel htmlFor="nombre">Nombre</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="nombre"
+              value={newProduct.nombre}
+              onChange={(e) => setNewProduct({ ...newProduct, nombre: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
 
-    <Grid item xs={12}>
-    <FormControl fullWidth margin="normal">
-  <InputLabel htmlFor="categoria">Categoría</InputLabel>
-  <TextField
-    select
-    id="categoria"
-    value={newProduct.categoria}
-    onChange={(e) => setNewProduct({ ...newProduct, categoria: e.target.value })}
-    fullWidth
-  >
-    {categorias.map((categoria) => (
-      <MenuItem key={categoria.id} value={categoria.id}>
-        {categoria.descripcion}
-      </MenuItem>
-    ))}
-  </TextField>
-</FormControl>
-    </Grid>
+        <Grid item xs={12}>
+          <InputLabel htmlFor="descripcion">Descripción</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="descripcion"
+              value={newProduct.descripcion}
+              onChange={(e) => setNewProduct({ ...newProduct, descripcion: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
 
-    <Grid item xs={12}>
-      <FormControl fullWidth>
-        <InputLabel htmlFor="precio">Precio</InputLabel>
-        <TextField
-          id="precio"
-          value={newProduct.precio}
-          onChange={(e) => setNewProduct({ ...newProduct, precio: e.target.value })}
-          fullWidth
-        />
-      </FormControl>
-    </Grid>
+        <Grid item xs={6}>
+          <InputLabel htmlFor="cantidad">Cantidad</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="cantidad"
+              value={newProduct.cantidad}
+              onChange={(e) => setNewProduct({ ...newProduct, cantidad: e.target.value })}
+              fullWidth
+              type="number"
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
 
-    <Grid item xs={12}>
-  <FormControl fullWidth>
-    <InputLabel htmlFor="estado">Estado</InputLabel>
-    <TextField
-      id="estado"
-      select
-      value={newProduct.estado}
-      onChange={(e) => setNewProduct({ ...newProduct, estado: e.target.value })}
-      fullWidth
-    >
-      {["activo", "inactivo", "agotado"].map((option) => (
-        <MenuItem key={option} value={option}>
-          {option.charAt(0).toUpperCase() + option.slice(1)} {/* Capitalize the first letter */}
-        </MenuItem>
-      ))}
-    </TextField>
-  </FormControl>
-</Grid>
+        <Grid item xs={6}>
+          <InputLabel htmlFor="categoria">Categoría</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              select
+              id="categoria"
+              value={newProduct.categoria}
+              onChange={(e) => setNewProduct({ ...newProduct, categoria: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            >
+              {categorias.map((categoria) => (
+                <MenuItem key={categoria.id} value={categoria.id}>
+                  {categoria.descripcion}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FormControl>
+        </Grid>
 
+        <Grid item xs={6}>
+          <InputLabel htmlFor="precio">Precio</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="precio"
+              value={newProduct.precio}
+              onChange={(e) => setNewProduct({ ...newProduct, precio: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
 
-    <Grid item xs={12}>
-      <FormControl fullWidth>
-        <InputLabel htmlFor="fecha_vencimiento">Fecha de Vencimiento</InputLabel>
-        <TextField
-          id="fecha_vencimiento"
-          value={newProduct.fecha_vencimiento}
-          onChange={(e) => setNewProduct({ ...newProduct, fecha_vencimiento: e.target.value })}
-          fullWidth
-        />
-      </FormControl>
-    </Grid>
+        <Grid item xs={6}>
+          <InputLabel htmlFor="estado">Estado</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="estado"
+              select
+              value={newProduct.estado}
+              onChange={(e) => setNewProduct({ ...newProduct, estado: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            >
+              {["activo", "inactivo", "agotado"].map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option.charAt(0).toUpperCase() + option.slice(1)}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FormControl>
+        </Grid>
 
-    <Grid item xs={12}>
-      <FormControl fullWidth>
-        <InputLabel htmlFor="imagen">Imagen</InputLabel>
-        <input
-          accept="image/*"
-          type="file"
-          onChange={handleImageChange}
-        />
-      </FormControl>
-    </Grid>
-  </Grid>
-</DialogContent>
-<DialogActions>
-  <Button onClick={() => setNewProductDialogOpen(false)} color="primary">
-    Cancelar
-  </Button>
-  <Button onClick={addNewProduct} color="primary">
-    Guardar
-  </Button>
-</DialogActions>
-      </Dialog>
+        <Grid item xs={12}>
+          <InputLabel htmlFor="fecha_vencimiento">Fecha de Vencimiento</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="fecha_vencimiento"
+              value={newProduct.fecha_vencimiento}
+              onChange={(e) => setNewProduct({ ...newProduct, fecha_vencimiento: e.target.value })}
+              fullWidth
+              type="date"
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={12}>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <input
+              accept="image/*"
+              type="file"
+              onChange={handleImageChange}
+            />
+          </FormControl>
+        </Grid>
+      </Grid>
+    </form>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setNewProductDialogOpen(false)} color="secondary">
+      Cancelar
+    </Button>
+    <Button onClick={addNewProduct} color="primary" variant="contained">
+      Guardar
+    </Button>
+  </DialogActions>
+</Dialog>
+
     </DashboardLayout>
   );
 }
