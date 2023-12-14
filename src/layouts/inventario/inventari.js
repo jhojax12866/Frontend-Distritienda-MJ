@@ -91,13 +91,11 @@ function Inventario() {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-  
+
     if (file) {
-      setNewProduct({ ...newProduct, imagen: file });
+      setEditedProduct({ ...editedProduct, imagen: file.name });
     }
   };
-  
-  
 
   const handleEdit = (product) => {
     setSelectedProduct(product);
@@ -144,9 +142,6 @@ function Inventario() {
 
   const editProduct = async () => {
     try {
-      const formData = new FormData();
-      formData.append("imagen", editedProduct.imagen);
-      console.log("Edited Product Data:", editedProduct);
       if (!editedProduct.id) {
         console.error("El ID del producto a editar no está definido.");
         return;
@@ -382,9 +377,19 @@ function Inventario() {
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
               <SoftTypography variant="h6">TABLA DE PRODUCTOS</SoftTypography>
-              <IconButton onClick={() => setNewProductDialogOpen(true)} color="primary">
-                <AddIcon />
-              </IconButton>
+              <Button
+                onClick={() => setNewProductDialogOpen(true)}
+                variant="contained"
+                color="primary"
+                style={{
+                  backgroundColor: '#3498db',
+                  borderRadius: '8px',
+                  color: '#ffffff', // Color blanco para el texto
+                }}
+                startIcon={<AddIcon />}
+              >
+                Agregar Producto
+              </Button>
             </SoftBox>
             <SoftBox
               sx={{

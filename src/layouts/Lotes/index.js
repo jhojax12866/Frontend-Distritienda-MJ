@@ -16,13 +16,13 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import { FormControl, InputLabel } from "@mui/material";
+import { Chip, FormControl, InputLabel } from "@mui/material";
 import { DialogContentText, Grid } from "@mui/material";
 
 const data_lotes = {
   columns: [
     { name: "id", align: "left" },
-    { name: "fecha_ingreso", align: "left" },
+    { name: "fecha_ingreso", align: "center" },
     { name: "producto_lote", align: "center" },
     { name: "cantidad", align: "center" },
     { name: "numero_lote", align: "center" },
@@ -42,11 +42,9 @@ function Lotes() {
   const [newLote, setNewLote] = useState({
     producto_lote: 1,
     cantidad: "0.00",
-    numero_lote: 0,
+    numero_lote: 1,
   });
-  const handleNewLoteChange = (field, value) => {
-    setNewLote((prev) => ({ ...prev, [field]: value }));
-  };
+
   // Declare accessToken globally
   const accessToken = localStorage.getItem("accessToken");
 
@@ -56,7 +54,7 @@ function Lotes() {
         const lotesData = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/lotes/").then((response) => response.json());
         setLotes(lotesData);
       } catch (error) {
-        console.error("Error al obtener datos de la API de lotes", error);
+        console.error("Error fetching data from API", error);
       }
     };
 
@@ -85,7 +83,7 @@ function Lotes() {
   const deleteLote = async () => {
     try {
       if (!accessToken) {
-        console.error("No se encontró el token de acceso");
+        console.error("Access token not found");
         return;
       }
 
@@ -104,7 +102,7 @@ function Lotes() {
 
       console.log("Lote deleted successfully!");
     } catch (error) {
-      console.error("Error al eliminar el lote", error);
+      console.error("Error deleting lot", error);
     }
 
     setDeleteDialogOpen(false);
@@ -113,7 +111,7 @@ function Lotes() {
   const editLote = async () => {
     try {
       if (!editedLote.id) {
-        console.error("El ID del lote a editar no está definido.");
+        console.error("Lote ID is not defined.");
         return;
       }
 
@@ -138,20 +136,19 @@ function Lotes() {
       );
 
       if (response.ok) {
-        // Update the state after editing the lote
         const updatedLotes = await fetchData();
         setLotes(updatedLotes);
 
         setEditedLote({});
         setEditDialogOpen(false);
       } else if (response.status === 401) {
-        console.error("Error de autorización: El token no es válido o ha caducado.");
+        console.error("Authorization error: Token is invalid or expired.");
       } else {
-        console.error("Error al editar el lote:", response.statusText);
+        console.error("Error editing lot:", response.statusText);
         console.log(await response.json());
       }
     } catch (error) {
-      console.error("Error al editar el lote", error);
+      console.error("Error editing lot", error);
     }
   };
 
@@ -173,14 +170,14 @@ function Lotes() {
         setNewLote({
           producto_lote: 1,
           cantidad: "0.00",
-          numero_lote: 0,
+          numero_lote: 1,
         });
         setNewLoteDialogOpen(false);
       } else {
-        console.error("Error al agregar el nuevo lote");
+        console.error("Error adding new lot");
       }
     } catch (error) {
-      console.error("Error al agregar el nuevo lote", error);
+      console.error("Error adding new lot", error);
     }
   };
 
@@ -190,7 +187,7 @@ function Lotes() {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error al obtener datos de la API de lotes", error);
+      console.error("Error fetching data from API", error);
     }
   };
 
@@ -205,23 +202,23 @@ function Lotes() {
     </div>
   );
 
-  const rowsWithActions = lotes.map((lote) => ({
-    ...lote,
-    acciones: getActionButtons(lote),
-  }));
+  const rowsWithActions = lotes.map((lote) => {
+    return {
+      ...lote,
+      acciones: getActionButtons(lote),
+    };
+  });
 
   const filteredLotes = rowsWithActions.filter((lote) => {
-    return (
-      lote.producto_lote.toString().includes(searchTerm) ||
-      lote.numero_lote.toString().includes(searchTerm)
-    );
+    return lote.numero_lote.toString().includes(searchTerm) ||
+      lote.producto_lote.toString().includes(searchTerm);
   });
 
   return (
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
       <DashboardNavbar />
       <SoftTypography variant="body1" style={{ paddingLeft: '2px', paddingTop: '0px', fontSize: '19px' }}>
-        Buscar
+        Search
       </SoftTypography>
       <TextField
         label=""
@@ -244,10 +241,20 @@ function Lotes() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">TABLA DE LOTES</SoftTypography>
-              <IconButton onClick={() => setNewLoteDialogOpen(true)} color="primary">
-                <AddIcon />
-              </IconButton>
+              <SoftTypography variant="h6">LOTS TABLE</SoftTypography>
+              <Button
+                onClick={() => setNewLoteDialogOpen(true)}
+                variant="contained"
+                color="primary"
+                style={{
+                  backgroundColor: '#3498db',
+                  borderRadius: '8px',
+                  color: '#ffffff', // Color blanco para el texto
+                }}
+                startIcon={<AddIcon />}
+              >
+                Agregar Producto
+              </Button>
             </SoftBox>
             <SoftBox
               sx={{
@@ -265,123 +272,129 @@ function Lotes() {
         </SoftBox>
       </SoftBox>
 
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-        <DialogTitle>Confirmar eliminación</DialogTitle>
-        <DialogContent>
-          ¿Estás seguro de que deseas eliminar el lote?
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={deleteLote} color="secondary">
-            Eliminar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-        <DialogTitle>Editar Lote</DialogTitle>
-        <DialogContent>
-          {/* Adjust the form fields for editing lotes */}
-          <FormControl fullWidth margin="normal">
+      {/* Diálogo de edición de lote */}
+<Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
+  <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Lote</DialogTitle>
+  <DialogContent>
+    <form>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <InputLabel htmlFor="producto_lote">Producto Lote</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
             <TextField
               id="producto_lote"
-              label="Producto Lote"
               value={editedLote.producto_lote}
               onChange={(e) => setEditedLote({ ...editedLote, producto_lote: e.target.value })}
               fullWidth
+              variant="outlined"
             />
           </FormControl>
-          <FormControl fullWidth margin="normal">
+        </Grid>
+        <Grid item xs={12}>
+          <InputLabel htmlFor="cantidad">Cantidad</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
             <TextField
               id="cantidad"
-              label="Cantidad"
               value={editedLote.cantidad}
               onChange={(e) => setEditedLote({ ...editedLote, cantidad: e.target.value })}
               fullWidth
+              variant="outlined"
             />
           </FormControl>
-          <FormControl fullWidth margin="normal">
+        </Grid>
+        <Grid item xs={12}>
+          <InputLabel htmlFor="numero_lote">Numero Lote</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
             <TextField
               id="numero_lote"
-              label="Numero Lote"
               value={editedLote.numero_lote}
               onChange={(e) => setEditedLote({ ...editedLote, numero_lote: e.target.value })}
               fullWidth
+              variant="outlined"
             />
           </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditDialogOpen(false)} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={editLote} color="primary">
-            Guardar
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/* Include the dialog for creating a new lot */}
-      <Dialog open={newLoteDialogOpen} onClose={() => setNewLoteDialogOpen(false)} fullWidth maxWidth="md">
-        <DialogTitle>Add New Lot</DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <TextField
-                label="Fecha Ingreso"
-                type="date"
-                variant="filled"
-                color="secondary"
-                value={newLote.fecha_ingreso}
-                onChange={(e) => handleNewLoteChange("fecha_ingreso", e.target.value)}
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Producto Lote"
-                variant="filled"
-                color="secondary"
-                value={newLote.producto_lote}
-                onChange={(e) => handleNewLoteChange("producto_lote", e.target.value)}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Cantidad"
-                variant="filled"
-                color="secondary"
-                type="number"
-                value={newLote.cantidad}
-                onChange={(e) => handleNewLoteChange("cantidad", e.target.value)}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Número Lote"
-                variant="filled"
-                color="secondary"
-                type="number"
-                value={newLote.numero_lote}
-                onChange={(e) => handleNewLoteChange("numero_lote", e.target.value)}
-                fullWidth
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setNewLoteDialogOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={addNewLote} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-      
+        </Grid>
+      </Grid>
+    </form>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setEditDialogOpen(false)} color="primary">
+      Cancelar
+    </Button>
+    <Button onClick={editLote} color="primary">
+      Guardar
+    </Button>
+  </DialogActions>
+</Dialog>
+
+{/* Diálogo de creación de lote */}
+<Dialog open={newLoteDialogOpen} onClose={() => setNewLoteDialogOpen(false)} fullWidth maxWidth="md">
+  <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nuevo Lote</DialogTitle>
+  <DialogContent>
+    <form>
+      <Grid container spacing={1}>
+        <Grid item xs={6}>
+          <InputLabel htmlFor="fecha_ingreso">Fecha Ingreso</InputLabel>
+          <TextField
+            
+            type="date"
+            variant="filled"
+            color="secondary"
+            value={newLote.fecha_ingreso}
+            onChange={(e) => handleNewLoteChange("fecha_ingreso", e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <InputLabel htmlFor="producto_lote">Producto Lote</InputLabel>
+          <TextField
+           
+            variant="filled"
+            color="secondary"
+            value={newLote.producto_lote}
+            onChange={(e) => handleNewLoteChange("producto_lote", e.target.value)}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <InputLabel htmlFor="cantidad">Cantidad</InputLabel>
+          <TextField
+            
+            variant="filled"
+            color="secondary"
+            type="number"
+            value={newLote.cantidad}
+            onChange={(e) => handleNewLoteChange("cantidad", e.target.value)}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <InputLabel htmlFor="numero_lote">Número Lote</InputLabel>
+          <TextField
+            
+            variant="filled"
+            color="secondary"
+            type="number"
+            value={newLote.numero_lote}
+            onChange={(e) => handleNewLoteChange("numero_lote", e.target.value)}
+            fullWidth
+          />
+        </Grid>
+      </Grid>
+    </form>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setNewLoteDialogOpen(false)} color="primary">
+      Cancelar
+    </Button>
+    <Button onClick={addNewLote} color="primary">
+      Guardar
+    </Button>
+  </DialogActions>
+</Dialog>
+
+
     </DashboardLayout>
   );
 }
