@@ -19,6 +19,7 @@ import Button from "@mui/material/Button";
 import { Chip, FormControl, InputLabel } from "@mui/material";
 import { DialogContentText, Grid } from "@mui/material";
 import select from "assets/theme/components/form/select";
+import MenuItem from "@mui/material/MenuItem";
 
 const data_productos = {
   columns: [
@@ -38,9 +39,9 @@ const data_productos = {
 function Inventario() {
   const { columns } = data_productos;
   const [stock, setStock] = useState([]);
-
-  const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
+  const [estados, setEstados] = useState([]);
+  const [productos, setProductos] = useState([]);
   const [lotes, setLotes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -52,9 +53,9 @@ function Inventario() {
     codigo: 0,
     nombre: "",
     descripcion: "",
-    categoria: 1,
+    categoria: "",
     precio: "0.00",
-    estado: "activo",
+    estado: "",
     fecha_vencimiento: "",
   });
 
@@ -64,14 +65,15 @@ function Inventario() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [productosData, categoriasData, lotesData, stockData] = await Promise.all([
+        const [productosData, categoriasData, lotesData, stockData, estadosData] = await Promise.all([
           fetch("https://diplomadobd-06369030a7e4.herokuapp.com/productos/").then((response) => response.json()),
           fetch("https://diplomadobd-06369030a7e4.herokuapp.com/categorias/").then((response) => response.json()),
-          fetch("https://diplomadobd-06369030a7e4.herokuapp.com/lotes/").then((response) => response.json()),
+          fetch("https://simplificado-48e1a3e2d000.herokuapp.com/lotes/").then((response) => response.json()),
           fetch("https://diplomadobd-06369030a7e4.herokuapp.com/stock/").then((response) => response.json()),
         ]);
   
         setProductos(productosData);
+        setEstados(estadosData);
         setCategorias(categoriasData);
         setLotes(lotesData);
         setStock(stockData);
@@ -207,7 +209,7 @@ function Inventario() {
           codigo: 0,
           nombre: "",
           descripcion: "",
-          categoria: 1,
+          categoria: "",
           precio: "0.00",
           estado: "",
           fecha_vencimiento: "",
@@ -442,13 +444,20 @@ function Inventario() {
       />
     </FormControl>
     <FormControl fullWidth margin="normal">
+  <InputLabel htmlFor="categoria">Categoría</InputLabel>
   <TextField
+    select
     id="categoria"
-    label="Categoría"
     value={editedProduct.categoria}
     onChange={(e) => setEditedProduct({ ...editedProduct, categoria: e.target.value })}
     fullWidth
-  />
+  >
+    {categorias.map((categoria) => (
+      <MenuItem key={categoria.id} value={categoria.id}>
+        {categoria.descripcion}
+      </MenuItem>
+    ))}
+  </TextField>
 </FormControl>
     <FormControl fullWidth margin="normal">
       <TextField
@@ -460,14 +469,21 @@ function Inventario() {
       />
     </FormControl>
     <FormControl fullWidth margin="normal">
-      <TextField
-        id="estado"
-        label="Estado"
-        value={editedProduct.estado}
-        onChange={(e) => setEditedProduct({ ...editedProduct, estado: e.target.value })}
-        fullWidth
-      />
-    </FormControl>
+  <InputLabel htmlFor="estado">Estado</InputLabel>
+  <TextField
+    id="estado"
+    select
+    value={editedProduct.estado}
+    onChange={(e) => setEditedProduct({ ...editedProduct, estado: e.target.value })}
+    fullWidth
+  >
+    {["activo", "inactivo", "agotado"].map((option) => (
+      <MenuItem key={option} value={option}>
+        {option.charAt(0).toUpperCase() + option.slice(1)} {/* Capitalize the first letter */}
+      </MenuItem>
+    ))}
+  </TextField>
+</FormControl>
     <FormControl fullWidth margin="normal">
       <TextField
         id="fecha_vencimiento"
@@ -525,15 +541,22 @@ function Inventario() {
     </Grid>
 
     <Grid item xs={12}>
-      <FormControl fullWidth>
-        <InputLabel htmlFor="categoria">Categoría</InputLabel>
-        <TextField
-          id="categoria"
-          value={newProduct.categoria}
-          onChange={(e) => setNewProduct({ ...newProduct, categoria: e.target.value })}
-          fullWidth
-        />
-      </FormControl>
+    <FormControl fullWidth margin="normal">
+  <InputLabel htmlFor="categoria">Categoría</InputLabel>
+  <TextField
+    select
+    id="categoria"
+    value={newProduct.categoria}
+    onChange={(e) => setNewProduct({ ...newProduct, categoria: e.target.value })}
+    fullWidth
+  >
+    {categorias.map((categoria) => (
+      <MenuItem key={categoria.id} value={categoria.id}>
+        {categoria.descripcion}
+      </MenuItem>
+    ))}
+  </TextField>
+</FormControl>
     </Grid>
 
     <Grid item xs={12}>
@@ -549,16 +572,24 @@ function Inventario() {
     </Grid>
 
     <Grid item xs={12}>
-      <FormControl fullWidth>
-        <InputLabel htmlFor="estado">Estado</InputLabel>
-        <TextField
-          id="estado"
-          value={newProduct.estado}
-          onChange={(e) => setNewProduct({ ...newProduct, estado: e.target.value })}
-          fullWidth
-        />
-      </FormControl>
-    </Grid>
+  <FormControl fullWidth>
+    <InputLabel htmlFor="estado">Estado</InputLabel>
+    <TextField
+      id="estado"
+      select
+      value={newProduct.estado}
+      onChange={(e) => setNewProduct({ ...newProduct, estado: e.target.value })}
+      fullWidth
+    >
+      {["activo", "inactivo", "agotado"].map((option) => (
+        <MenuItem key={option} value={option}>
+          {option.charAt(0).toUpperCase() + option.slice(1)} {/* Capitalize the first letter */}
+        </MenuItem>
+      ))}
+    </TextField>
+  </FormControl>
+</Grid>
+
 
     <Grid item xs={12}>
       <FormControl fullWidth>
