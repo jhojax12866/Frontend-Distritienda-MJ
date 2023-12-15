@@ -86,15 +86,7 @@ const routes = [
   
   
   { type: "title", title: "Accesos", key: "account-pages" },
-  {
-    type: "collapse",
-    name: "Profile",
-    key: "profile",
-    route: "/profile",
-    icon: <CustomerSupport size="12px" />,
-    component: <Profile />,
-    noCollapse: true,
-  },
+  
   {
     type: "collapse",
     name: "Sign In",
