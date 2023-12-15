@@ -20,6 +20,8 @@ import { Chip, FormControl, InputLabel } from "@mui/material";
 import { DialogContentText, Grid } from "@mui/material";
 import select from "assets/theme/components/form/select";
 import MenuItem from "@mui/material/MenuItem";
+import LotesTable from "./tablas/lotes";
+import StockTable from "./tablas/stock";
 
 const data_productos = {
   columns: [
@@ -57,6 +59,7 @@ function Inventario() {
     precio: "",
     estado: "",
     fecha_vencimiento: "",
+    lote_p:"",
     cantidad: "",
   });
 
@@ -118,6 +121,7 @@ function Inventario() {
     estado: "",
     fecha_vencimiento: "",
     cantidad: "",
+    lote_p:"",
     imagen: null, 
   });
   
@@ -189,6 +193,7 @@ function Inventario() {
       formData.append('categoria', editedProduct.categoria);
       formData.append('precio', editedProduct.precio);
       formData.append('estado', editedProduct.estado);
+      formData.append('lote_p', editedProduct.lote_p);
       formData.append('fecha_vencimiento', editedProduct.fecha_vencimiento);
       
       // Asegúrate de agregar la imagen con el nombre de campo correcto ('imagen')
@@ -420,7 +425,7 @@ const resetForm = () => {
     ),
     categoria: categorias.find((categoria) => categoria.id === product.categoria)?.descripcion || '',
     cantidad: Math.round(product.cantidad),
-    lote_p: product.lote_p,
+    lote_p: lotes.find((lote) => lote.id === product.lote_p)?.numero_lote || '',
   };
 });
 
@@ -879,7 +884,8 @@ const resetForm = () => {
     </Button>
   </DialogActions>
 </Dialog>
-
+<LotesTable />
+<StockTable />
     </DashboardLayout>
   );
 }

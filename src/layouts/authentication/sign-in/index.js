@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Switch from "@mui/material/Switch";
+import MuiAlert from "@mui/material/Alert"; // Rename the import to avoid conflicts
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 import SoftInput from "components/SoftInput";
@@ -12,10 +13,10 @@ function SignIn() {
   const [rememberMe, setRememberMe] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [accessToken, setAccessToken] = useState(""); // State to store the access token
+  const [accessToken, setAccessToken] = useState("");
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Check for stored token on component mount
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken");
     if (storedToken) {
@@ -44,12 +45,11 @@ function SignIn() {
         const { access } = userData;
 
         setAccessToken(access);
-        localStorage.setItem("accessToken", access); // Store in localStorage
+        localStorage.setItem("accessToken", access);
 
-        console.log("Inicio de sesión exitoso", userData);
         navigate("/Inicio");
       } else {
-        console.error("Error al iniciar sesión");
+        setError("El usuario o la contraseña son incorrectos. Inténtalo de nuevo.");
       }
     } catch (error) {
       console.error("Error al realizar la solicitud", error);
@@ -57,7 +57,6 @@ function SignIn() {
   };
 
   const handleKeyPress = (event) => {
-    // Verificar si la tecla presionada es Enter
     if (event.key === "Enter") {
       handleSignIn();
     }
@@ -70,6 +69,8 @@ function SignIn() {
       image={curved9}
     >
       <SoftBox component="form" role="form">
+        {error && <MuiAlert severity="error">{error}</MuiAlert>}
+        
         <SoftBox mb={2}>
           <SoftBox mb={1} ml={0.5}>
             <SoftTypography component="label" variant="caption" fontWeight="bold">

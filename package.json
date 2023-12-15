@@ -13,10 +13,7 @@
   },
   "dependencies": {
     "@emotion/cache": "11.11.0",
-    "@emotion/react": "^11.11.0",
-    "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "5.11.16",
-    "@mui/material": "^5.13.0",
     "@mui/styled-engine": "5.12.3",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "14.0.0",
@@ -28,6 +25,7 @@
     "datos_api": "github:jhojax12866/datos_api",
     "prop-types": "^15.8.1",
     "react": ">=16.8.0",
+    "react-bootstrap": "^2.9.1",
     "react-chartjs-2": "3.0.5",
     "react-countup": "6.4.2",
     "react-dom": ">=16.8.0",
@@ -67,6 +65,9 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.0",
     "@openapitools/openapi-generator-cli": "^2.7.0",
     "eslint": "8.40.0",
     "eslint-config-prettier": "8.8.0",
