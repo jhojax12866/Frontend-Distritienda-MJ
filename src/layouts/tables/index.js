@@ -279,6 +279,21 @@ function Tabla_Ventas() {
           </Card>
         </SoftBox>
       </SoftBox>
+
+      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+        <DialogTitle>Confirmar eliminación</DialogTitle>
+        <DialogContent>
+          ¿Estás seguro de que deseas eliminar el producto?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={deleteFactura} color="secondary">
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
       
 <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
   <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Factura</DialogTitle>
@@ -299,19 +314,22 @@ function Tabla_Ventas() {
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-  <InputLabel htmlFor="fecha_ingreso">Fecha de Ingreso</InputLabel>
-  <FormControl fullWidth variant="outlined" margin="normal">
-    <TextField
-      id="fecha_ingreso"
-      value={editedFactura.fecha_ingreso}
-      onChange={(e) => setEditedFactura({ ...editedFactura, fecha_ingreso: e.target.value })}
-      fullWidth
-      type="date"
-      variant="outlined"
-      required
-    />
-  </FormControl>
-</Grid>
+              <InputLabel htmlFor="fecha_ingreso">Fecha de Ingreso</InputLabel>
+              <FormControl fullWidth variant="outlined" margin="normal">
+              <TextField
+              id="fecha_ingreso"
+              value={editedFactura.fecha_ingreso}
+              onChange={(e) => {
+                const formattedDate = e.target.value; // Adjust the formatting if needed
+                setEditedFactura({ ...editedFactura, fecha_ingreso: formattedDate });
+              }}
+              fullWidth
+              type="date"
+              variant="outlined"
+              required
+            />
+            </FormControl>
+            </Grid>
 
 
 
@@ -394,15 +412,15 @@ function Tabla_Ventas() {
         <Grid item xs={12}>
   <InputLabel htmlFor="fecha_ingreso">Fecha de Ingreso</InputLabel>
   <FormControl fullWidth variant="outlined" margin="normal">
-    <TextField
-      id="fecha_ingreso"
-      value={editedFactura.fecha_ingreso}
-      onChange={(e) => setEditedFactura({ ...editedFactura, fecha_ingreso: e.target.value })}
-      fullWidth
-      type="date"
-      variant="outlined"
-      required
-    />
+  <TextField
+  id="fecha_ingreso"
+  value={newFactura.fecha_ingreso}
+  onChange={(e) => setNewFactura({ ...newFactura, fecha_ingreso: e.target.value })}
+  fullWidth
+  type="date"
+  variant="outlined"
+  required
+/>
   </FormControl>
 </Grid>
 
@@ -447,7 +465,7 @@ function Tabla_Ventas() {
         </Grid>
       </Grid>
     </form>
-  </DialogContent>
+    </DialogContent>
   <DialogActions>
     <Button onClick={() => setNewFacturaDialogOpen(false)} color="secondary">
       Cancelar
@@ -456,7 +474,7 @@ function Tabla_Ventas() {
       onClick={addNewFactura}
       color="primary"
       variant="contained"
-      style={{ color: 'white' }} // Establecer el color blanco
+      style={{ color: 'white' }}
     >
       Guardar
     </Button>

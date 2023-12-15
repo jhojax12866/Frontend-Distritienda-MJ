@@ -32,29 +32,28 @@ function Dashboard() {
   const [products, setProducts] = useState([]);
   const [stock, setStock] = useState([]);
   const { size } = typography;
+  const [leastSoldProduct, setLeastSoldProduct] = useState(null);
+
   const { chart, items } = reportsBarChartData;
   useEffect(() => {
     // Obtener productos
     axios.get('https://simplificado-48e1a3e2d000.herokuapp.com/productos/')
-      .then(response => {
-        console.log('Productos recibidos:', response.data);
-        setProducts(response.data);
-      })
-      .catch(error => {
-        console.error('Error al obtener productos:', error);
-      });
-  
-     // información de stock
-     axios.get('https://simplificado-48e1a3e2d000.herokuapp.com/stock/')
-     .then(response => {
-       // Filtrar productos 
-       const productsWithStock = response.data.filter(product => product.cantidad > 0);
-       setStock(productsWithStock);
-     })
-     .catch(error => {
-       console.error('Error al obtener información de stock:', error);
-     });
- }, []);
+    .then(response => {
+      console.log('Productos recibidos:', response.data);
+      setProducts(response.data);
+      
+      const leastSold = response.data.reduce((minProduct, product) => {
+        return product.ventas < minProduct.ventas ? product : minProduct;
+      }, response.data[0]);
+
+      setLeastSoldProduct(leastSold);
+    })
+    .catch(error => {
+      console.error('Error al obtener productos:', error);
+    });
+
+  // ... existing code ...
+}, []);
 
   return (
     <DashboardLayout>
@@ -66,14 +65,14 @@ function Dashboard() {
             {products.map(product => (
               
               <Grid key={product.id} item xs={12} sm={6} xl={3}>
-                <Productcard
-                  title={product.nombre} // Cambia esta línea
-                  count={product.precio}
-                  subcount={`Categoría: ${product.categoria}`}
-                  percentage={{ color: "success", text: "+55%" }}
-                  icon={{ color: "info", component: "paid" }}
-                  image={product.imagen}
-/>
+               <Productcard
+                            title={leastSoldProduct.nombre}
+                            count={leastSoldProduct.ventas}
+                            subcount={`Categoría: ${leastSoldProduct.categoria}`}
+                            percentage={{ color: "danger", text: "-5%" }} // You may customize this as needed
+                            icon={{ color: "info", component: "paid" }}
+                            image={leastSoldProduct.imagen}
+                          />
               </Grid>
               
             ))}
