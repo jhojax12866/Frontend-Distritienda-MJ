@@ -24,6 +24,7 @@ import NuevoProducto from "layouts/New Producto";
 import New_Producto from "layouts/New Producto";
 import Tabla_Ventas from "layouts/tables";
 import { Productos } from "datos_api";
+import Detalles from "layouts/Detalles/detalles";
 
 const routes = [
   { type: "title", title: "menu", key: "account-pages" },
@@ -82,6 +83,15 @@ const routes = [
     route: "/tables",
     icon: <Shop size="12px" />,
     component: <Tabla_Ventas />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Detalles",
+    key: "detalles",
+    route: "/detalles",
+    icon: <Shop size="12px" />,
+    component: <Detalles />,
     noCollapse: true,
   },
   

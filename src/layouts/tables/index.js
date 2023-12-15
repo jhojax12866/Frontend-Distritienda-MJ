@@ -48,7 +48,7 @@ function Tabla_Ventas() {
     fecha_ingreso: "",
     medio_pago_v: "", // Valor inicial
     estado_pago_v: "",
-    total_v: "0.00",
+    total_v: "0",
   });
 
   // Declare accessToken globally
@@ -91,8 +91,7 @@ function Tabla_Ventas() {
 
   const handleVerProductos = async (factura) => {
   try {
-    const response = await fetch(
-      `https://simplificado-48e1a3e2d000.herokuapp.com/detalle_venta/?factura_venta=${factura.id}`
+    const response = await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/detalle_venta/?factura_venta=${factura.id}`
     );
     const productos = await response.json();
 
@@ -109,6 +108,8 @@ function Tabla_Ventas() {
         };
       })
     );
+
+    console.log(productosConNombre)
 
     setProductosFactura(productosConNombre);
     setVerProductosDialogOpen(true);

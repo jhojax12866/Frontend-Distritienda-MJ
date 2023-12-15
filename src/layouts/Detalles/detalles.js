@@ -33,7 +33,7 @@ const data_cartera = {
   ],
 };
 
-function Cartera() {
+function Detalles() {
   const { columns } = data_cartera;
   const [cartera, setCartera] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -365,4 +365,4 @@ function Cartera() {
   );
 }
 
-export default Cartera;
+export default Detalles;
