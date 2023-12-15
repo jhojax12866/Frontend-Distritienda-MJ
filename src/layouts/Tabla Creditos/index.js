@@ -231,7 +231,7 @@ function Cartera() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">TABLA DE CARTERA</SoftTypography>
+              <SoftTypography variant="h6">TABLA DE CREDITOS</SoftTypography>
               <IconButton onClick={() => setNewCarteraDialogOpen(true)} color="primary">
                 <AddIcon />
               </IconButton>

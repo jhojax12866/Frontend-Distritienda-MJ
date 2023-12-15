@@ -267,96 +267,79 @@ function Cartera() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-        <DialogTitle>Editar Item de Cartera</DialogTitle>
-        <DialogContent>
-          {/* Adjust the form fields for editing cartera items */}
-          <FormControl fullWidth margin="normal">
-            <TextField
-              id="fecha_vencimiento"
-              label="Fecha de Vencimiento"
-              type="date"
-              variant="filled"
-              color="secondary"
-              value={editedCartera.fecha_vencimiento}
-              onChange={(e) => setEditedCartera({ ...editedCartera, fecha_vencimiento: e.target.value })}
-              fullWidth
-              InputLabelProps={{ shrink: true }}
-            />
-          </FormControl>
-          <FormControl fullWidth margin="normal">
-            <TextField
-              id="pago"
-              label="Pago"
-              variant="filled"
-              color="secondary"
-              type="number"
-              value={editedCartera.pago}
-              onChange={(e) => setEditedCartera({ ...editedCartera, pago: e.target.value })}
-              fullWidth
-            />
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditDialogOpen(false)} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={editCartera} color="primary">
-            Guardar
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/* Include the dialog for creating a new cartera item */}
       <Dialog open={newCarteraDialogOpen} onClose={() => setNewCarteraDialogOpen(false)} fullWidth maxWidth="md">
-        <DialogTitle>Add New Cartera Item</DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <TextField
-                label="Fecha Facturación"
-                type="date"
-                variant="filled"
-                color="secondary"
-                value={newCartera.fecha_facturacion}
-                onChange={(e) => handleNewCarteraChange("fecha_facturacion", e.target.value)}
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Fecha Vencimiento"
-                type="date"
-                variant="filled"
-                color="secondary"
-                value={newCartera.fecha_vencimiento}
-                onChange={(e) => handleNewCarteraChange("fecha_vencimiento", e.target.value)}
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Pago"
-                variant="filled"
-                color="secondary"
-                type="number"
-                value={newCartera.pago}
-                onChange={(e) => handleNewCarteraChange("pago", e.target.value)}
-                fullWidth
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setNewCarteraDialogOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={addNewCartera} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+  <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nueva Factura</DialogTitle>
+  <DialogContent>
+    <form>
+      <Grid container spacing={2}>
+
+        <Grid item xs={6}>
+          <InputLabel htmlFor="fecha_ingreso">Fecha de Ingreso</InputLabel>
+          <TextField
+            id="fecha_ingreso"
+            
+            type="date"
+            variant="filled"
+            color="secondary"
+            value={newCartera.fecha_ingreso}
+            onChange={(e) => handleCreate("fecha_ingreso", e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+
+        <Grid item xs={6}>
+          <InputLabel htmlFor="medio_pago_v">Medio de Pago</InputLabel>
+          <TextField
+            id="medio_pago_v"
+           
+            variant="filled"
+            color="secondary"
+            value={newCartera.medio_pago_v}
+            onChange={(e) => handleCreate("medio_pago_v", e.target.value)}
+            fullWidth
+          />
+        </Grid>
+
+        <Grid item xs={6}>
+          <InputLabel htmlFor="estado_pago_v">Estado de Pago</InputLabel>
+          <TextField
+            id="estado_pago_v"
+           
+            variant="filled"
+            color="secondary"
+            value={newCartera.estado_pago_v}
+            onChange={(e) => handleCreate("estado_pago_v", e.target.value)}
+            fullWidth
+          />
+        </Grid>
+
+        <Grid item xs={6}>
+          <InputLabel htmlFor="total_v">Total</InputLabel>
+          <TextField
+            id="total_v"
+            
+            variant="filled"
+            color="secondary"
+            type="number"
+            value={newCartera.total_v}
+            onChange={(e) => handleCreate("total_v", e.target.value)}
+            fullWidth
+          />
+        </Grid>
+
+      </Grid>
+    </form>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setNewCarteraDialogOpen(false)} color="primary">
+      Cancelar
+    </Button>
+    <Button onClick={addNewCartera} color="primary">
+      Guardar
+    </Button>
+  </DialogActions>
+</Dialog>
     </DashboardLayout>
   );
 }

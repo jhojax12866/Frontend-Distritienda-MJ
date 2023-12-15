@@ -92,12 +92,22 @@ function Inventario() {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    setNewProduct((prevProduct) => ({
+      ...prevProduct,
+      imagen: file,
+    }));
+  };
+  
+
+  /*
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
 
     if (file) {
       setEditedProduct({ ...editedProduct, imagen: file.name });
     }
   };
-
+*/
   const handleEdit = (product) => {
     setSelectedProduct(product);
     setEditedProduct({ ...product });
@@ -191,38 +201,77 @@ function Inventario() {
     }
   };
 
+
+
+/*codigo de resetear el formulario */
+const resetForm = () => {
+  // Lógica para restablecer los valores del formulario
+  // Por ejemplo, podrías establecer los valores predeterminados o limpiar los campos.
+  setNewProduct({
+    codigo: '',
+    nombre: '',
+    descripcion: '',
+    cantidad: '',
+    categoria: '',
+    precio: '',
+    estado: '',
+    fecha_vencimiento: '',
+    imagen: null,
+  });
+};
+
+
+
   const addNewProduct = async () => {
     try {
-      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/productos/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(newProduct),
-      });
+      const formData = new FormData();
+      formData.append('codigo', newProduct.codigo);
 
+      formData.append('nombre', newProduct.nombre);
+      formData.append('descripcion', newProduct.descripcion);
+      formData.append('cantidad', newProduct.cantidad);
+      formData.append('categoria', newProduct.categoria);
+      formData.append('precio', newProduct.precio);
+      formData.append('estado', newProduct.estado);
+      formData.append('fecha_vencimiento', newProduct.fecha_vencimiento);
+      formData.append('imagen', newProduct.imagen); // Aquí se añade directamente el archivo
+  
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      };
+      for (var pair of formData.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
+      }
+      console.log('Tipo de imagen:', typeof newProduct.imagen);
+
+      const response = await fetch('https://simplificado-48e1a3e2d000.herokuapp.com/productos/', requestOptions);
+  
       if (response.ok) {
+        // Restablecer el formulario después de una creación exitosa
+        resetForm();
+        
+        // Cerrar el diálogo después de la creación exitosa
+        setNewProductDialogOpen(false);
+  
+        // Actualizar la lista de productos después de agregar uno nuevo
         const updatedProducts = await fetchData();
         setProductos(updatedProducts);
-
-        setNewProduct({
-          codigo: 0,
-          nombre: "",
-          descripcion: "",
-          categoria: "",
-          precio: "0.00",
-          estado: "",
-          fecha_vencimiento: "",
-        });
-        setNewProductDialogOpen(false);
+      } else if (response.status === 401) {
+        console.error('Error de autorización: El token no es válido o ha caducado.');
       } else {
-        console.error("Error al agregar el nuevo producto");
+        console.error('Error al crear el producto:', response.statusText);
+        console.log(await response.json());
       }
     } catch (error) {
-      console.error("Error al agregar el nuevo producto", error);
+      console.error('Error al crear el producto', error);
     }
   };
+  
+  
 
   const fetchData = async () => {
     try {
@@ -696,6 +745,22 @@ function Inventario() {
             />
           </FormControl>
         </Grid>
+
+        <Grid item xs={12}>
+          <InputLabel htmlFor="codigo">codigo</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="codigo"
+              value={newProduct.codigo}
+              onChange={(e) => setNewProduct({ ...newProduct, codigo: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+
+
       </Grid>
     </form>
   </DialogContent>
