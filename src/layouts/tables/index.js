@@ -160,6 +160,8 @@ function Tabla_Ventas() {
 
   const addNewFactura = async () => {
     try {
+      console.log("Nueva Factura:", newFactura);
+  
       const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/factura_venta/", {
         method: "POST",
         headers: {
@@ -168,11 +170,13 @@ function Tabla_Ventas() {
         },
         body: JSON.stringify(newFactura),
       });
-
+  
+      console.log("Respuesta:", response);
+  
       if (response.ok) {
         const updatedFacturas = await fetchData();
         setFacturas(updatedFacturas);
-
+  
         setNewFactura({
           cliente: "",
           fecha_ingreso: "",
@@ -182,12 +186,13 @@ function Tabla_Ventas() {
         });
         setNewFacturaDialogOpen(false);
       } else {
-        console.error("Error adding new factura");
+        console.error("Error al agregar nueva factura");
       }
     } catch (error) {
-      console.error("Error adding new factura", error);
+      console.error("Error al agregar nueva factura", error);
     }
   };
+  
 
   const fetchData = async () => {
     try {

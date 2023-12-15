@@ -21,8 +21,8 @@ import { DialogContentText, Grid } from "@mui/material";
 
 const data_cartera = {
   columns: [
-    { name: "id", align: "left" },
-    { name: "fecha_facturacion", align: "left" },
+    { name: "id", align: "center" },
+    { name: "fecha_facturacion", align: "center" },
     { name: "fecha_vencimiento", align: "center" },
     { name: "pago", align: "center" },
     { name: "acciones", align: "center" },
