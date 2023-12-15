@@ -83,15 +83,6 @@ const routes = [
     component: <Tabla_Ventas />,
     noCollapse: true,
   },
-  {
-    type: "collapse",
-    name: "Billing",
-    key: "billing",
-    route: "/billing",
-    icon: <CreditCard size="12px" />,
-    component: <Billing />,
-    noCollapse: true,
-  },
   
   
   { type: "title", title: "Accesos", key: "account-pages" },

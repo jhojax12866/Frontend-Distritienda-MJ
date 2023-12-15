@@ -554,31 +554,7 @@ const resetForm = () => {
           </FormControl>
         </Grid>
 
-        <Grid item xs={12}>
-          <InputLabel htmlFor="lote_p">Lote</InputLabel>
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <TextField
-              select
-              id="lote_p"
-              value={editedProduct.lote_p}
-              onChange={(e) =>
-                setEditedProduct({
-                  ...editedProduct,
-                  lote_p: e.target.value,
-                })
-              }
-              fullWidth
-              variant="outlined"
-              required
-            >
-              {lotes.map((lote) => (
-                <MenuItem key={lote.id} value={lote.id}>
-                  {lote.numero_lote}
-                </MenuItem>
-              ))}
-            </TextField>
-          </FormControl>
-        </Grid>
+        
         <Grid item xs={6}>
         <InputLabel htmlFor="categoria">Categoría</InputLabel>
           <FormControl fullWidth variant="outlined" margin="normal">
@@ -614,6 +590,7 @@ const resetForm = () => {
             />
           </FormControl>
         </Grid>
+        
 
         <Grid item xs={6}>
           <InputLabel htmlFor="estado">Estado</InputLabel>
@@ -635,7 +612,31 @@ const resetForm = () => {
             </TextField>
           </FormControl>
         </Grid>
-
+        <Grid item xs={12}>
+          <InputLabel htmlFor="lote_p">Lote</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              select
+              id="lote_p"
+              value={editedProduct.lote_p}
+              onChange={(e) =>
+                setEditedProduct({
+                  ...editedProduct,
+                  lote_p: e.target.value,
+                })
+              }
+              fullWidth
+              variant="outlined"
+              required
+            >
+              {lotes.map((lote) => (
+                <MenuItem key={lote.id} value={lote.id}>
+                  {lote.numero_lote}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FormControl>
+        </Grid>
 
         <Grid item xs={12}>
           <InputLabel htmlFor="fecha_vencimiento">Fecha de Vencimiento</InputLabel>
@@ -796,7 +797,31 @@ const resetForm = () => {
             </TextField>
           </FormControl>
         </Grid>
-
+        <Grid item xs={12}>
+          <InputLabel htmlFor="lote_p">Lote</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              select
+              id="lote_p"
+              value={newProduct.lote_p}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  lote_p: e.target.value,
+                })
+              }
+              fullWidth
+              variant="outlined"
+              required
+            >
+              {lotes.map((lote) => (
+                <MenuItem key={lote.id} value={lote.id}>
+                  {lote.numero_lote}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FormControl>
+        </Grid>
         <Grid item xs={12}>
           <InputLabel htmlFor="fecha_vencimiento">Fecha de Vencimiento</InputLabel>
           <FormControl fullWidth variant="outlined" margin="normal">

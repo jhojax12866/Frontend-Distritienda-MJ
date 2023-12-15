@@ -34,7 +34,7 @@ function SignIn() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: username,
+          email: username,
           password: password,
         }),
       });
