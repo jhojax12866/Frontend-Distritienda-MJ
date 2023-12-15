@@ -18,6 +18,8 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import { Chip, FormControl, InputLabel } from "@mui/material";
 import { DialogContentText, Grid } from "@mui/material";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 
 const data_facturas = {
   columns: [
@@ -43,7 +45,7 @@ function Tabla_Ventas() {
   const [newFactura, setNewFactura] = useState({
     cliente: "",
     fecha_ingreso: "",
-    medio_pago_v: "",
+    medio_pago_v: "", // Valor inicial
     estado_pago_v: "",
     total_v: "0.00",
   });
@@ -430,31 +432,39 @@ function Tabla_Ventas() {
 </Grid>
 
         <Grid item xs={12}>
-          <InputLabel htmlFor="medio_pago_v">Medio de Pago</InputLabel>
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <TextField
-              id="medio_pago_v"
-              value={newFactura.medio_pago_v}
-              onChange={(e) => setNewFactura({ ...newFactura, medio_pago_v: e.target.value })}
-              fullWidth
-              variant="outlined"
-              required
-            />
-          </FormControl>
-        </Grid>
+                <InputLabel htmlFor="medio_pago_v">Medio de Pago</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <Select
+                    id="medio_pago_v"
+                    value={newFactura.medio_pago_v}
+                    onChange={(e) => setNewFactura({ ...newFactura, medio_pago_v: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  >
+                    <MenuItem value="Efectivo">Efectivo</MenuItem>
+                    <MenuItem value="Transferencia Bancaria">Transferencia Bancaria</MenuItem>
+                    {/* Agrega más opciones según sea necesario */}
+                  </Select>
+                </FormControl>
+              </Grid>
         <Grid item xs={12}>
-          <InputLabel htmlFor="estado_pago_v">Estado de Pago</InputLabel>
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <TextField
-              id="estado_pago_v"
-              value={newFactura.estado_pago_v}
-              onChange={(e) => setNewFactura({ ...newFactura, estado_pago_v: e.target.value })}
-              fullWidth
-              variant="outlined"
-              required
-            />
-          </FormControl>
-        </Grid>
+                <InputLabel htmlFor="estado_pago_v">Estado de Pago</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <Select
+                    id="estado_pago_v"
+                    value={newFactura.estado_pago_v}
+                    onChange={(e) => setNewFactura({ ...newFactura, estado_pago_v: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  >
+                    <MenuItem value="APROBADO">APROBADO</MenuItem>
+                    <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+                    <MenuItem value="RECHAZADO">RECHAZADO</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
         <Grid item xs={12}>
           <InputLabel htmlFor="total_v">Total</InputLabel>
           <FormControl fullWidth variant="outlined" margin="normal">
