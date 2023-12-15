@@ -22,6 +22,7 @@ import { Shop2 } from "@mui/icons-material";
 import Compras from "layouts/Compras";
 import NuevoProducto from "layouts/New Producto";
 import New_Producto from "layouts/New Producto";
+import Tabla_Ventas from "layouts/tables";
 
 const routes = [
   { type: "title", title: "menu", key: "account-pages" },
@@ -79,7 +80,7 @@ const routes = [
     key: "tables",
     route: "/tables",
     icon: <Shop size="12px" />,
-    component: <Tables />,
+    component: <Tabla_Ventas />,
     noCollapse: true,
   },
   {
