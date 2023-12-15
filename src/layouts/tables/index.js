@@ -279,46 +279,189 @@ function Tabla_Ventas() {
           </Card>
         </SoftBox>
       </SoftBox>
+      
+<Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
+  <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Factura</DialogTitle>
+  <DialogContent>
+    <form>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <InputLabel htmlFor="cliente">Cliente</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="cliente"
+              value={editedFactura.cliente}
+              onChange={(e) => setEditedFactura({ ...editedFactura, cliente: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+  <InputLabel htmlFor="fecha_ingreso">Fecha de Ingreso</InputLabel>
+  <FormControl fullWidth variant="outlined" margin="normal">
+    <TextField
+      id="fecha_ingreso"
+      value={editedFactura.fecha_ingreso}
+      onChange={(e) => setEditedFactura({ ...editedFactura, fecha_ingreso: e.target.value })}
+      fullWidth
+      type="date"
+      variant="outlined"
+      required
+    />
+  </FormControl>
+</Grid>
 
-      {/* Diálogo de edición de factura */}
-      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Factura</DialogTitle>
-        <DialogContent>
-          <form>
-            <Grid container spacing={1}>
-              {/* ... (similar modifications as before) */}
-            </Grid>
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditDialogOpen(false)} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={editFactura} color="primary">
-            Guardar
-          </Button>
-        </DialogActions>
-      </Dialog>
 
-      {/* Diálogo de creación de factura */}
-      <Dialog open={newFacturaDialogOpen} onClose={() => setNewFacturaDialogOpen(false)} fullWidth maxWidth="md">
-        <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nueva Factura</DialogTitle>
-        <DialogContent>
-          <form>
-            <Grid container spacing={1}>
-              {/* ... (similar modifications as before) */}
-            </Grid>
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setNewFacturaDialogOpen(false)} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={addNewFactura} color="primary">
-            Guardar
-          </Button>
-        </DialogActions>
-      </Dialog>
+
+        <Grid item xs={12}>
+          <InputLabel htmlFor="medio_pago_v">Medio de Pago</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="medio_pago_v"
+              value={editedFactura.medio_pago_v}
+              onChange={(e) => setEditedFactura({ ...editedFactura, medio_pago_v: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <InputLabel htmlFor="estado_pago_v">Estado de Pago</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="estado_pago_v"
+              value={editedFactura.estado_pago_v}
+              onChange={(e) => setEditedFactura({ ...editedFactura, estado_pago_v: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <InputLabel htmlFor="total_v">Total</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="total_v"
+              value={editedFactura.total_v}
+              onChange={(e) => setEditedFactura({ ...editedFactura, total_v: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+      </Grid>
+    </form>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setEditDialogOpen(false)} color="secondary">
+      Cancelar
+    </Button>
+    <Button
+      onClick={editFactura}
+      color="primary"
+      variant="contained"
+      style={{ color: 'white' }} // Establecer el color blanco
+    >
+      Guardar
+    </Button>
+  </DialogActions>
+</Dialog>
+
+
+<Dialog open={newFacturaDialogOpen} onClose={() => setNewFacturaDialogOpen(false)} fullWidth maxWidth="sm">
+  <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nueva Factura</DialogTitle>
+  <DialogContent>
+    <form>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <InputLabel htmlFor="cliente">Cliente</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="cliente"
+              value={newFactura.cliente}
+              onChange={(e) => setNewFactura({ ...newFactura, cliente: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+  <InputLabel htmlFor="fecha_ingreso">Fecha de Ingreso</InputLabel>
+  <FormControl fullWidth variant="outlined" margin="normal">
+    <TextField
+      id="fecha_ingreso"
+      value={editedFactura.fecha_ingreso}
+      onChange={(e) => setEditedFactura({ ...editedFactura, fecha_ingreso: e.target.value })}
+      fullWidth
+      type="date"
+      variant="outlined"
+      required
+    />
+  </FormControl>
+</Grid>
+
+        <Grid item xs={12}>
+          <InputLabel htmlFor="medio_pago_v">Medio de Pago</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="medio_pago_v"
+              value={newFactura.medio_pago_v}
+              onChange={(e) => setNewFactura({ ...newFactura, medio_pago_v: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <InputLabel htmlFor="estado_pago_v">Estado de Pago</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="estado_pago_v"
+              value={newFactura.estado_pago_v}
+              onChange={(e) => setNewFactura({ ...newFactura, estado_pago_v: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <InputLabel htmlFor="total_v">Total</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="total_v"
+              value={newFactura.total_v}
+              onChange={(e) => setNewFactura({ ...newFactura, total_v: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+      </Grid>
+    </form>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setNewFacturaDialogOpen(false)} color="secondary">
+      Cancelar
+    </Button>
+    <Button
+      onClick={addNewFactura}
+      color="primary"
+      variant="contained"
+      style={{ color: 'white' }} // Establecer el color blanco
+    >
+      Guardar
+    </Button>
+  </DialogActions>
+</Dialog>
 
     </DashboardLayout>
   );
