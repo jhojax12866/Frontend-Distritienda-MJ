@@ -27,6 +27,7 @@ const data_productos = {
     { name: "nombre", align: "left" },
     { name: "descripcion", align: "left" },
     { name: "cantidad", align: "center" }, 
+    { name: "lote_p", align: "center", label: "Lote P" },
     { name: "categoria", align: "center" },
     { name: "precio", align: "center" },
     { name: "estado", align: "center" },
@@ -48,7 +49,6 @@ function Inventario() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [newProductDialogOpen, setNewProductDialogOpen] = useState(false);
-  const [editedProduct, setEditedProduct] = useState({});
   const [newProduct, setNewProduct] = useState({
     codigo: 0,
     nombre: "",
@@ -96,24 +96,46 @@ function Inventario() {
       ...prevProduct,
       imagen: file,
     }));
+    
+  };
+  const handleEditImageChanger = (e) => {
+    const file = e.target.files[0];
+    setEditedProduct((prevProduct) => ({
+      ...prevProduct,
+      imagen: file,
+    }));
   };
   
 
-  /*
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  
+  const [editedProduct, setEditedProduct] = useState({
+    id: null,
+    codigo: 0,
+    nombre: "",
+    descripcion: "",
+    categoria: "",
+    precio: "",
+    estado: "",
+    fecha_vencimiento: "",
+    cantidad: "",
+    imagen: null, 
+  });
+  
 
-    if (file) {
-      setEditedProduct({ ...editedProduct, imagen: file.name });
-    }
-  };
-*/
+
   const handleEdit = (product) => {
     setSelectedProduct(product);
-    setEditedProduct({ ...product });
-    setEditDialogOpen(true);
+  
+    // Verificar si el ID del producto está definido antes de abrir el diálogo de edición
+    if (product.id) {
+      setEditedProduct({ ...product });
+      setEditDialogOpen(true);
+    } else {
+      console.error("El ID del producto a editar no está definido.");
+    }
   };
-
+  
+  
   const handleDelete = (product) => {
     setSelectedProduct(product);
     setDeleteDialogOpen(true);
@@ -151,31 +173,33 @@ function Inventario() {
     setDeleteDialogOpen(false);
   };
 
+  
   const editProduct = async () => {
     try {
-      if (!editedProduct.id) {
+      if (!editedProduct || !editedProduct.id) {
         console.error("El ID del producto a editar no está definido.");
         return;
       }
   
-      const editedProductData = {
-        codigo: parseInt(editedProduct.codigo),
-        nombre: editedProduct.nombre,
-        descripcion: editedProduct.descripcion,
-        cantidad: editedProduct.cantidad,
-        categoria: parseInt(editedProduct.categoria), // Parse the categoria to an integer
-        precio: editedProduct.precio,
-        estado: editedProduct.estado,
-        fecha_vencimiento: editedProduct.fecha_vencimiento,
-      };
+      const formData = new FormData();
+      formData.append('codigo', editedProduct.codigo);
+      formData.append('nombre', editedProduct.nombre);
+      formData.append('descripcion', editedProduct.descripcion);
+      formData.append('cantidad', editedProduct.cantidad);
+      formData.append('categoria', editedProduct.categoria);
+      formData.append('precio', editedProduct.precio);
+      formData.append('estado', editedProduct.estado);
+      formData.append('fecha_vencimiento', editedProduct.fecha_vencimiento);
+      
+      // Asegúrate de agregar la imagen con el nombre de campo correcto ('imagen')
+      formData.append('imagen', editedProduct.imagen);
   
       const requestOptions = {
         method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(editedProductData),
+        body: formData,
       };
   
       const response = await fetch(
@@ -184,11 +208,23 @@ function Inventario() {
       );
   
       if (response.ok) {
-        // Update the state after editing the product
+        // Actualizar la lista de productos después de editar uno existente
         const updatedProducts = await fetchData();
         setProductos(updatedProducts);
   
-        setEditedProduct({});
+        // Limpiar el estado del producto editado y cerrar el diálogo
+        setEditedProduct({
+          id: null,
+          codigo: 0,
+          nombre: "",
+          descripcion: "",
+          categoria: "",
+          precio: "",
+          estado: "",
+          fecha_vencimiento: "",
+          cantidad: "",
+          imagen: null,
+        });
         setEditDialogOpen(false);
       } else if (response.status === 401) {
         console.error("Error de autorización: El token no es válido o ha caducado.");
@@ -200,13 +236,12 @@ function Inventario() {
       console.error("Error al editar el producto", error);
     }
   };
-
+  
 
 
 /*codigo de resetear el formulario */
 const resetForm = () => {
-  // Lógica para restablecer los valores del formulario
-  // Por ejemplo, podrías establecer los valores predeterminados o limpiar los campos.
+
   setNewProduct({
     codigo: '',
     nombre: '',
@@ -251,13 +286,13 @@ const resetForm = () => {
       const response = await fetch('https://simplificado-48e1a3e2d000.herokuapp.com/productos/', requestOptions);
   
       if (response.ok) {
-        // Restablecer el formulario después de una creación exitosa
+       
         resetForm();
         
-        // Cerrar el diálogo después de la creación exitosa
+        
         setNewProductDialogOpen(false);
   
-        // Actualizar la lista de productos después de agregar uno nuevo
+      
         const updatedProducts = await fetchData();
         setProductos(updatedProducts);
       } else if (response.status === 401) {
@@ -519,6 +554,31 @@ const resetForm = () => {
           </FormControl>
         </Grid>
 
+        <Grid item xs={12}>
+          <InputLabel htmlFor="lote_p">Lote</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              select
+              id="lote_p"
+              value={editedProduct.lote_p}
+              onChange={(e) =>
+                setEditedProduct({
+                  ...editedProduct,
+                  lote_p: e.target.value,
+                })
+              }
+              fullWidth
+              variant="outlined"
+              required
+            >
+              {lotes.map((lote) => (
+                <MenuItem key={lote.id} value={lote.id}>
+                  {lote.numero_lote}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FormControl>
+        </Grid>
         <Grid item xs={6}>
         <InputLabel htmlFor="categoria">Categoría</InputLabel>
           <FormControl fullWidth variant="outlined" margin="normal">
@@ -576,6 +636,7 @@ const resetForm = () => {
           </FormControl>
         </Grid>
 
+
         <Grid item xs={12}>
           <InputLabel htmlFor="fecha_vencimiento">Fecha de Vencimiento</InputLabel>
           <FormControl fullWidth variant="outlined" margin="normal">
@@ -596,10 +657,25 @@ const resetForm = () => {
             <input
               accept="image/*"
               type="file"
-              onChange={handleImageChange}
+              onChange={handleEditImageChanger}
             />
           </FormControl>
         </Grid>
+
+        <Grid item xs={12}>
+          <InputLabel htmlFor="codigo">codigo</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <TextField
+              id="codigo"
+              value={editedProduct.codigo}
+              onChange={(e) => setEditedProduct({ ...editedProduct, codigo: e.target.value })}
+              fullWidth
+              variant="outlined"
+              required
+            />
+          </FormControl>
+        </Grid>
+
       </Grid>
     </form>
   </DialogContent>
