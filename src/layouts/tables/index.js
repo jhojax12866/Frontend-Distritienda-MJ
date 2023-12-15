@@ -20,6 +20,7 @@ import { Chip, FormControl, InputLabel } from "@mui/material";
 import { DialogContentText, Grid } from "@mui/material";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { Visibility } from "@mui/icons-material";
 
 const data_facturas = {
   columns: [
@@ -85,6 +86,36 @@ function Tabla_Ventas() {
   const handleCreate = () => {
     setNewFacturaDialogOpen(true);
   };
+  const [productosFactura, setProductosFactura] = useState([]);
+  const [verProductosDialogOpen, setVerProductosDialogOpen] = useState(false);
+
+  const handleVerProductos = async (factura) => {
+  try {
+    const response = await fetch(
+      `https://simplificado-48e1a3e2d000.herokuapp.com/detalle_venta/?factura_venta=${factura.id}`
+    );
+    const productos = await response.json();
+
+    // Obtener detalles del producto para cada producto en la lista
+    const productosConNombre = await Promise.all(
+      productos.map(async (producto) => {
+        const productoResponse = await fetch(
+          `https://simplificado-48e1a3e2d000.herokuapp.com/productos/${producto.producto_venta}/`
+        );
+        const productoDetallado = await productoResponse.json();
+        return {
+          ...producto,
+          nombre_producto: productoDetallado.nombre_producto,
+        };
+      })
+    );
+
+    setProductosFactura(productosConNombre);
+    setVerProductosDialogOpen(true);
+  } catch (error) {
+    console.error("Error obteniendo productos de la factura", error);
+  }
+};
 
   const deleteFactura = async () => {
     try {
@@ -214,9 +245,12 @@ function Tabla_Ventas() {
       <IconButton onClick={() => handleDelete(factura)} color="error">
         <DeleteIcon />
       </IconButton>
+      <IconButton onClick={() => handleVerProductos(factura)} color="primary">
+        <Visibility />
+      </IconButton>
     </div>
   );
-
+  
   const rowsWithActions = facturas.map((factura) => {
     return {
       ...factura,
@@ -495,6 +529,24 @@ function Tabla_Ventas() {
     </Button>
   </DialogActions>
 </Dialog>
+<Dialog open={verProductosDialogOpen} onClose={() => setVerProductosDialogOpen(false)}>
+  <DialogTitle>Productos de la Factura</DialogTitle>
+  <DialogContent>
+    {productosFactura.map((producto) => (
+      <div key={producto.id}>
+        <p>Producto: {producto.producto_venta}</p>
+        <p>Cantidad: {producto.cantidad}</p>
+        <p>Precio: {producto.precio_producto}</p>
+      </div>
+    ))}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setVerProductosDialogOpen(false)} color="primary">
+      Cerrar
+    </Button>
+  </DialogActions>
+</Dialog>
+
 
     </DashboardLayout>
   );
