@@ -65,6 +65,9 @@ const LotesTable = () => {
 
       <Table striped bordered hover className="custom-table">
         <thead>
+        <tr>
+            <th colSpan="3">LOTES</th>
+          </tr>
           <tr>
             <th>ID</th>
             <th>Fecha de Ingreso</th>
