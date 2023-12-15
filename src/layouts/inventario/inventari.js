@@ -57,6 +57,7 @@ function Inventario() {
     precio: "",
     estado: "",
     fecha_vencimiento: "",
+    cantidad: "",
   });
 
   // Declare accessToken globally
@@ -66,10 +67,10 @@ function Inventario() {
     const fetchData = async () => {
       try {
         const [productosData, categoriasData, lotesData, stockData, estadosData] = await Promise.all([
-          fetch("https://diplomadobd-06369030a7e4.herokuapp.com/productos/").then((response) => response.json()),
-          fetch("https://diplomadobd-06369030a7e4.herokuapp.com/categorias/").then((response) => response.json()),
-          fetch("https://diplomadobd-06369030a7e4.herokuapp.com/lotes/").then((response) => response.json()),
-          fetch("https://diplomadobd-06369030a7e4.herokuapp.com/stock/").then((response) => response.json()),
+          fetch("https://simplificado-48e1a3e2d000.herokuapp.com/productos/").then((response) => response.json()),
+          fetch("https://simplificado-48e1a3e2d000.herokuapp.com/categorias/").then((response) => response.json()),
+          fetch("https://simplificado-48e1a3e2d000.herokuapp.com/lotes/").then((response) => response.json()),
+          fetch("https://simplificado-48e1a3e2d000.herokuapp.com/stock/").then((response) => response.json()),
         ]);
   
         setProductos(productosData);
@@ -127,7 +128,7 @@ function Inventario() {
         },
       };
 
-      await fetch(`https://diplomadobd-06369030a7e4.herokuapp.com/productos/${selectedProduct.id}/`, requestOptions);
+      await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/productos/${selectedProduct.id}/`, requestOptions);
 
       const updatedProducts = productos.filter((product) => product.id !== selectedProduct.id);
       setProductos(updatedProducts);
@@ -151,7 +152,7 @@ function Inventario() {
         codigo: parseInt(editedProduct.codigo),
         nombre: editedProduct.nombre,
         descripcion: editedProduct.descripcion,
-        cantidad: parseInt(editedProduct.cantidad),
+        cantidad: editedProduct.cantidad,
         categoria: parseInt(editedProduct.categoria), // Parse the categoria to an integer
         precio: editedProduct.precio,
         estado: editedProduct.estado,
@@ -168,7 +169,7 @@ function Inventario() {
       };
   
       const response = await fetch(
-        `https://diplomadobd-06369030a7e4.herokuapp.com/productos/${editedProduct.id}/`,
+        `https://simplificado-48e1a3e2d000.herokuapp.com/productos/${editedProduct.id}/`,
         requestOptions
       );
   
@@ -192,7 +193,7 @@ function Inventario() {
 
   const addNewProduct = async () => {
     try {
-      const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/productos/", {
+      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/productos/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -225,7 +226,7 @@ function Inventario() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/productos/");
+      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/productos/");
       const data = await response.json();
       return data;
     } catch (error) {
@@ -311,35 +312,34 @@ function Inventario() {
   };
 
   const rowsWithActions = productos.map((product) => {
-    const productStock = stock.find((item) => item.producto_stock === product.id);
-    const totalQuantity = productStock ? productStock.cantidad : 0;
-
     return {
-    ...product,
-    acciones: getActionButtons(product),
-    precio: `$${formatCurrency(product.precio)}`,
-    fecha_vencimiento: formatDate(product.fecha_vencimiento),
-    estado: (
-      <Chip
-        label={product.estado}
-        color={getChipColor(product.estado)}
-        style={{
-          backgroundColor: getChipBackgroundColor(product.estado),
-          color: getChipTextColor(product.estado),
-        }}
-      />
-    ),
-    imagen: (
-      <img
-        src={product.imagen}
-        alt={product.nombre}
-        style={{ maxWidth: '50px', maxHeight: '50px' }}
-      />
-    ),
-    categoria: categorias.find((categoria) => categoria.id === product.categoria)?.descripcion || '',
-    cantidad: Math.round(totalQuantity),
-  };
-});
+      ...product,
+      acciones: getActionButtons(product),
+      precio: `$${formatCurrency(product.precio)}`,
+      fecha_vencimiento: formatDate(product.fecha_vencimiento),
+      estado: (
+        <Chip
+          label={product.estado}
+          color={getChipColor(product.estado)}
+          style={{
+            backgroundColor: getChipBackgroundColor(product.estado),
+            color: getChipTextColor(product.estado),
+          }}
+        />
+      ),
+      imagen: (
+        <img
+          src={product.imagen}
+          alt={product.nombre}
+          style={{ maxWidth: '50px', maxHeight: '50px' }}
+        />
+      ),
+      categoria: categorias.find((categoria) => categoria.id === product.categoria)?.descripcion || '',
+      cantidad: Math.round(product.cantidad),
+      lote_p: product.lote_p,
+    };
+  });
+  
 
   const filteredProducts = rowsWithActions.filter((product) => {
     return (

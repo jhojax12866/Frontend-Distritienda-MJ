@@ -51,7 +51,7 @@ function Lotes() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const lotesData = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/lotes/").then((response) => response.json());
+        const lotesData = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/lotes/").then((response) => response.json());
         setLotes(lotesData);
       } catch (error) {
         console.error("Error fetching data from API", error);
@@ -95,7 +95,7 @@ function Lotes() {
         },
       };
 
-      await fetch(`https://diplomadobd-06369030a7e4.herokuapp.com/lotes/${selectedLote.id}/`, requestOptions);
+      await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/lotes/${selectedLote.id}/`, requestOptions);
 
       const updatedLotes = lotes.filter((lote) => lote.id !== selectedLote.id);
       setLotes(updatedLotes);
@@ -131,7 +131,7 @@ function Lotes() {
       };
 
       const response = await fetch(
-        `https://diplomadobd-06369030a7e4.herokuapp.com/lotes/${editedLote.id}/`,
+        `https://simplificado-48e1a3e2d000.herokuapp.com/lotes/${editedLote.id}/`,
         requestOptions
       );
 
@@ -154,7 +154,7 @@ function Lotes() {
 
   const addNewLote = async () => {
     try {
-      const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/lotes/", {
+      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/lotes/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -183,7 +183,7 @@ function Lotes() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/lotes/");
+      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/lotes/");
       const data = await response.json();
       return data;
     } catch (error) {

@@ -35,7 +35,7 @@ function Dashboard() {
   const { chart, items } = reportsBarChartData;
   useEffect(() => {
     // Obtener productos
-    axios.get('https://diplomadobd-06369030a7e4.herokuapp.com/productos/')
+    axios.get('https://simplificado-48e1a3e2d000.herokuapp.com/productos/')
       .then(response => {
         console.log('Productos recibidos:', response.data);
         setProducts(response.data);
@@ -45,7 +45,7 @@ function Dashboard() {
       });
   
      // información de stock
-     axios.get('https://diplomadobd-06369030a7e4.herokuapp.com/stock/')
+     axios.get('https://simplificado-48e1a3e2d000.herokuapp.com/stock/')
      .then(response => {
        // Filtrar productos 
        const productsWithStock = response.data.filter(product => product.cantidad > 0);

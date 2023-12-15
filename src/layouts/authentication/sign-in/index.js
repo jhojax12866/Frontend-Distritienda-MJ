@@ -27,14 +27,14 @@ function SignIn() {
 
   const handleSignIn = async () => {
     try {
-      const response = await fetch("https://diplomadobd-06369030a7e4.herokuapp.com/apiauth/login/", {
+      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/apiauth/login/", {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: username,
+          username: username,
           password: password,
         }),
       });
