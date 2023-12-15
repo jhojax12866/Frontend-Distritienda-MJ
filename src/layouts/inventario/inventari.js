@@ -312,34 +312,34 @@ function Inventario() {
   };
 
   const rowsWithActions = productos.map((product) => {
-    return {
-      ...product,
-      acciones: getActionButtons(product),
-      precio: `$${formatCurrency(product.precio)}`,
-      fecha_vencimiento: formatDate(product.fecha_vencimiento),
-      estado: (
-        <Chip
-          label={product.estado}
-          color={getChipColor(product.estado)}
-          style={{
-            backgroundColor: getChipBackgroundColor(product.estado),
-            color: getChipTextColor(product.estado),
-          }}
-        />
-      ),
-      imagen: (
-        <img
-          src={product.imagen}
-          alt={product.nombre}
-          style={{ maxWidth: '50px', maxHeight: '50px' }}
-        />
-      ),
-      categoria: categorias.find((categoria) => categoria.id === product.categoria)?.descripcion || '',
-      cantidad: Math.round(product.cantidad),
-      lote_p: product.lote_p,
-    };
-  });
-  
+  return {
+    ...product,
+    acciones: getActionButtons(product),
+    precio: `$${formatCurrency(product.precio)}`,
+    fecha_vencimiento: formatDate(product.fecha_vencimiento),
+    estado: (
+      <Chip
+        label={product.estado}
+        color={getChipColor(product.estado)}
+        style={{
+          backgroundColor: getChipBackgroundColor(product.estado),
+          color: getChipTextColor(product.estado),
+        }}
+      />
+    ),
+    imagen: (
+      <img
+        src={product.imagen}
+        alt={product.nombre}
+        style={{ maxWidth: '50px', maxHeight: '50px' }}
+      />
+    ),
+    categoria: categorias.find((categoria) => categoria.id === product.categoria)?.descripcion || '',
+    cantidad: Math.round(product.cantidad),
+    lote_p: product.lote_p,
+  };
+});
+
 
   const filteredProducts = rowsWithActions.filter((product) => {
     return (
@@ -558,7 +558,9 @@ function Inventario() {
     <Button onClick={() => setEditDialogOpen(false)} color="secondary">
       Cancelar
     </Button>
-    <Button onClick={editProduct} color="primary" variant="contained">
+    <Button onClick={editProduct}  color="primary"
+      variant="contained"
+      style={{ color: 'white' }} >
       Guardar
     </Button>
   </DialogActions>
@@ -701,7 +703,12 @@ function Inventario() {
     <Button onClick={() => setNewProductDialogOpen(false)} color="secondary">
       Cancelar
     </Button>
-    <Button onClick={addNewProduct} color="primary" variant="contained">
+    <Button
+      onClick={addNewProduct}
+      color="primary"
+      variant="contained"
+      style={{ color: 'white' }} // Establecer el color blanco
+    >
       Guardar
     </Button>
   </DialogActions>
