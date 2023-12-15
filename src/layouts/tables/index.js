@@ -551,5 +551,4 @@ function Tabla_Ventas() {
     </DashboardLayout>
   );
 }
-
 export default Tabla_Ventas;
