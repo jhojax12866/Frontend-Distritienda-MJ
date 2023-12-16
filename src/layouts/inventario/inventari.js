@@ -226,6 +226,7 @@ function Inventario() {
           categoria: "",
           precio: "",
           estado: "",
+          lote_p: "",
           fecha_vencimiento: "",
           cantidad: "",
           imagen: null,
@@ -255,6 +256,7 @@ const resetForm = () => {
     categoria: '',
     precio: '',
     estado: '',
+    lote_p: '',
     fecha_vencimiento: '',
     imagen: null,
   });
@@ -274,6 +276,7 @@ const resetForm = () => {
       formData.append('precio', newProduct.precio);
       formData.append('estado', newProduct.estado);
       formData.append('fecha_vencimiento', newProduct.fecha_vencimiento);
+      formData.append('lote_p', newProduct.lote_p);
       formData.append('imagen', newProduct.imagen); // Aquí se añade directamente el archivo
   
       const requestOptions = {
@@ -827,6 +830,7 @@ const resetForm = () => {
             </TextField>
           </FormControl>
         </Grid>
+
         <Grid item xs={12}>
           <InputLabel htmlFor="fecha_vencimiento">Fecha de Vencimiento</InputLabel>
           <FormControl fullWidth variant="outlined" margin="normal">
