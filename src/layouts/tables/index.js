@@ -29,7 +29,8 @@ const data_facturas = {
     { name: "fecha_ingreso", align: "center" },
     { name: "medio_pago_v", align: "center" },
     { name: "estado_pago_v", align: "center" },
-    { name: "total_v", align: "center" },
+    { name: "total_v", align: "center", label: "Total Venta" },
+    
     { name: "acciones", align: "center" },
   ],
 };
@@ -69,7 +70,12 @@ function Tabla_Ventas() {
     };
 
     fetchData();
-  }, []);
+
+    
+    if (selectedFactura) {
+      setEditedFactura({ ...selectedFactura });
+    }
+  }, [selectedFactura]);
 
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
@@ -95,20 +101,24 @@ function Tabla_Ventas() {
   
   const [verProductosDialogOpen, setVerProductosDialogOpen] = useState(false);
   
+  const fetchProductos = async (facturaId) => {
+    try {
+      const response = await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/detalle_venta/?factura_venta=${facturaId}`);
+      if (!response.ok) {
+        throw new Error(`Error al obtener productos de la factura: ${response.status} - ${response.statusText}`);
+      }
+      const productos = await response.json();
+      return productos;
+    } catch (error) {
+      console.error("Error obteniendo productos de la factura:", error);
+      throw error;
+    }
+  };
   
-
   const handleVerProductos = async (factura) => {
     try {
-      const response = await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/detalle_venta/?factura_venta=${factura.id}`);
-      console.log("Respuesta de la API Detalle Venta:", response);
-  
-      if (!response.ok) {
-        throw new Error(`Error al obtener detalles de productos: ${response.status} - ${response.statusText}`);
-      }
-  
-      const productos = await response.json();
-      console.log("Productos de la Factura:", productos);
-  
+      const productos = await fetchProductos(factura.id);
+
       const productosConNombre = await Promise.all(
         productos.map(async (producto) => {
           try {
@@ -128,18 +138,19 @@ function Tabla_Ventas() {
             const productoDetallado = await productoResponse.json();
   
             return {
-              ...producto,
-              nombre_producto: productoDetallado.nombre_producto,
-              precio_producto: productoDetallado.precio_producto,
-              total_producto: producto.cantidad * productoDetallado.precio_producto,
+              nombre: productoDetallado.nombre,
+            precio: productoDetallado.precio,
+            total_producto: producto.cantidad * productoDetallado.precio,
             };
-          } catch (error) {
+          }
+            catch (error) {
             console.error("Error obteniendo detalles del producto", error);
+            
             return {
               ...producto,
-              nombre_producto: "Error obteniendo nombre",
-              precio_producto: 0,
-              total_producto: 0,
+              nombre: productoDetallado.nombre,
+              precio: productoDetallado.precio,
+              total_producto: producto.cantidad * productoDetallado.precio,
             };
           }
         })
@@ -156,7 +167,6 @@ function Tabla_Ventas() {
       console.error("Error obteniendo productos de la factura", error);
     }
   };
-  
   
   
 
@@ -296,15 +306,20 @@ function Tabla_Ventas() {
   );
   
   const rowsWithActions = facturas.map((factura) => {
+    const totalFactura = productosFactura.reduce((total, producto) => total + producto.total_producto, 0);
+
     return {
       ...factura,
+      total_v: totalFactura.toFixed(2), // Ajusta el formato según tu necesidad
       acciones: getActionButtons(factura),
     };
   });
 
   const filteredFacturas = rowsWithActions.filter((factura) => {
-    return factura.cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      factura.total_v.toString().includes(searchTerm);
+    return (
+      factura.cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      factura.total_v.toString().includes(searchTerm)
+    );
   });
 
   return (
@@ -393,36 +408,35 @@ function Tabla_Ventas() {
   <DialogContent>
     <form>
       <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <InputLabel htmlFor="cliente">Cliente</InputLabel>
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <TextField
-              id="cliente"
-              value={editedFactura.cliente}
-              onChange={(e) => setEditedFactura({ ...editedFactura, cliente: e.target.value })}
-              fullWidth
-              variant="outlined"
-              required
-            />
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-              <InputLabel htmlFor="fecha_ingreso">Fecha de Ingreso</InputLabel>
-              <FormControl fullWidth variant="outlined" margin="normal">
+      <Grid item xs={12}>
+            <InputLabel htmlFor="cliente">Cliente</InputLabel>
+            <FormControl fullWidth variant="outlined" margin="normal">
               <TextField
-              id="fecha_ingreso"
-              value={editedFactura.fecha_ingreso}
-              onChange={(e) => {
-                const formattedDate = e.target.value; // Adjust the formatting if needed
-                setEditedFactura({ ...editedFactura, fecha_ingreso: formattedDate });
-              }}
-              fullWidth
-              type="date"
-              variant="outlined"
-              required
-            />
+                id="cliente"
+                value={editedFactura.cliente}
+                onChange={(e) => setEditedFactura({ ...editedFactura, cliente: e.target.value })}
+                fullWidth
+                variant="outlined"
+                required
+              />
             </FormControl>
-            </Grid>
+          </Grid>
+
+          <Grid item xs={12}>
+            <InputLabel htmlFor="fecha_ingreso">Fecha de Ingreso</InputLabel>
+            <FormControl fullWidth variant="outlined" margin="normal">
+              <TextField
+                id="fecha_ingreso"
+                value={editedFactura.fecha_ingreso}
+                onChange={(e) => setEditedFactura({ ...editedFactura, fecha_ingreso: e.target.value })}
+                fullWidth
+                type="date"
+                variant="outlined"
+                required
+              />
+            </FormControl>
+          </Grid>
+
 
 
 
@@ -576,26 +590,25 @@ function Tabla_Ventas() {
 </Dialog>
 
 
-
 <Dialog open={verProductosDialogOpen} onClose={() => setVerProductosDialogOpen(false)}>
-  <DialogTitle>Productos de la Factura</DialogTitle>
-  <DialogContent>
-    {productosFactura.map((producto) => (
-      <div key={producto.id}>
-        <p>Producto: {producto.nombre_producto}</p>
-        <p>Cantidad: {producto.cantidad}</p>
-        <p>Precio: {producto.precio_producto}</p>
-        <p>Total Producto: {producto.total_producto}</p>
-      </div>
-    ))}
-    <p>Total Factura: {totalFactura}</p> {/* Nuevo campo para mostrar el total de la factura */}
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={() => setVerProductosDialogOpen(false)} color="primary">
-      Cerrar
-    </Button>
-  </DialogActions>
-</Dialog>
+        <DialogTitle>Productos de la Factura</DialogTitle>
+        <DialogContent>
+          {productosFactura.map((producto) => (
+            <div key={producto.id}>
+              <p>Producto: {producto.nombre}</p>
+              <p>Cantidad: {producto.cantidad}</p>
+              <p>Precio: {producto.precio}</p>
+              
+            </div>
+          ))}
+          <p>Total Factura: {totalFactura}</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setVerProductosDialogOpen(false)} color="primary">
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
 
 

@@ -325,7 +325,7 @@ function Categorias() {
           </Button>
         </DialogActions>
       </Dialog>
-      <Footer />
+     
     </DashboardLayout>
   );
 }

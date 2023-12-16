@@ -127,15 +127,26 @@ function Inventario() {
   
 
 
-  const handleEdit = (product) => {
+  const handleEdit = async (product) => {
     setSelectedProduct(product);
   
-    // Verificar si el ID del producto está definido antes de abrir el diálogo de edición
     if (product.id) {
-      setEditedProduct({ ...product });
-      setEditDialogOpen(true);
+      try {
+        // Obtén los detalles actuales del producto, incluida la URL de la imagen
+        const response = await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/productos/${product.id}`);
+        const data = await response.json();
+  
+        setEditedProduct({
+          ...data,
+          id: product.id,
+        });
+  
+        setEditDialogOpen(true);
+      } catch (error) {
+        console.error("Error al obtener los detalles del producto para la edición:", error);
+      }
     } else {
-      console.error("El ID del producto a editar no está definido.");
+      console.error("No se ha definido el ID del producto a editar.");
     }
   };
   
@@ -669,6 +680,14 @@ const resetForm = () => {
               onChange={handleEditImageChanger}
             />
           </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <InputLabel>Imagen Actual</InputLabel>
+          <img
+            src={editedProduct.imagen}
+            alt={editedProduct.nombre}
+            style={{ maxWidth: '50px', maxHeight: '50px' }}
+          />
         </Grid>
 
         <Grid item xs={12}>
