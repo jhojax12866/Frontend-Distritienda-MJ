@@ -30,7 +30,6 @@ const data_facturas = {
     { name: "medio_pago_v", align: "center" },
     { name: "estado_pago_v", align: "center" },
     { name: "total_v", align: "center", label: "Total Venta" },
-    
     { name: "acciones", align: "center" },
   ],
 };
@@ -118,7 +117,7 @@ function Tabla_Ventas() {
   const handleVerProductos = async (factura) => {
     try {
       const productos = await fetchProductos(factura.id);
-
+  
       const productosConNombre = await Promise.all(
         productos.map(async (producto) => {
           try {
@@ -138,19 +137,18 @@ function Tabla_Ventas() {
             const productoDetallado = await productoResponse.json();
   
             return {
-              nombre: productoDetallado.nombre,
-            precio: productoDetallado.precio,
-            total_producto: producto.cantidad * productoDetallado.precio,
-            };
-          }
-            catch (error) {
-            console.error("Error obteniendo detalles del producto", error);
-            
-            return {
               ...producto,
               nombre: productoDetallado.nombre,
               precio: productoDetallado.precio,
               total_producto: producto.cantidad * productoDetallado.precio,
+            };
+          } catch (error) {
+            console.error("Error obteniendo detalles del producto", error);
+            return {
+              ...producto,
+              nombre: "Error obteniendo nombre",
+              precio: 0,
+              total_producto: 0,
             };
           }
         })
