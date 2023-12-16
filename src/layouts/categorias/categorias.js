@@ -233,7 +233,7 @@ function Categorias() {
                 }}
                 startIcon={<AddIcon />}
               >
-                Agregar Categoría
+                Agregar Categoria
               </Button>
             </SoftBox>
             <SoftBox
