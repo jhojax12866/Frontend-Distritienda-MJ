@@ -198,7 +198,7 @@ function Categorias() {
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
       <DashboardNavbar />
       <SoftTypography variant="body1" style={{ paddingLeft: '2px', paddingTop: '0px', fontSize: '19px' }}>
-        Search
+        Buscar
       </SoftTypography>
       <TextField
         label=""
@@ -266,7 +266,7 @@ function Categorias() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm" style={{ maxWidth: '400px', alignItems: 'center', margin: 'auto' }}>
         <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Categoría</DialogTitle>
         <DialogContent>
           <form>
@@ -278,7 +278,7 @@ function Categorias() {
                   variant="outlined"
                   margin="normal"
                   id="descripcion"
-                  label="Descripción"
+                 
                   value={editedCategoria.descripcion}
                   onChange={(e) => setEditedCategoria({ ...editedCategoria, descripcion: e.target.value })}
                 />
@@ -296,7 +296,7 @@ function Categorias() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={newCategoriaDialogOpen} onClose={() => setNewCategoriaDialogOpen(false)} fullWidth maxWidth="md">
+      <Dialog open={newCategoriaDialogOpen} onClose={() => setNewCategoriaDialogOpen(false)} fullWidth maxWidth="md" style={{ maxWidth: '500px', alignItems: 'center', margin: 'auto' }}>
         <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nueva Categoría</DialogTitle>
         <DialogContent>
           <form>
@@ -308,7 +308,7 @@ function Categorias() {
                   variant="outlined"
                   margin="normal"
                   id="descripcion"
-                  label="Descripción"
+                  
                   value={newCategoria.descripcion}
                   onChange={(e) => setNewCategoria({ ...newCategoria, descripcion: e.target.value })}
                 />

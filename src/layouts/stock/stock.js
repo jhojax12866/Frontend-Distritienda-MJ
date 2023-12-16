@@ -231,7 +231,7 @@ function Stock() {
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
       <DashboardNavbar />
       <SoftTypography variant="body1" style={{ paddingLeft: '2px', paddingTop: '0px', fontSize: '19px' }}>
-        Search
+        Buscar
       </SoftTypography>
       <TextField
         label=""
@@ -300,7 +300,7 @@ function Stock() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm" style={{ maxWidth: '300px', alignItems: 'center', margin: 'auto' }}>
         <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Stock</DialogTitle>
         <DialogContent>
           <form>
@@ -352,7 +352,7 @@ function Stock() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={newStockDialogOpen} onClose={() => setNewStockDialogOpen(false)} fullWidth maxWidth="md">
+      <Dialog open={newStockDialogOpen} onClose={() => setNewStockDialogOpen(false)} fullWidth maxWidth="md" style={{ maxWidth: '300px', alignItems: 'center', margin: 'auto' }}>
         <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nuevo Stock</DialogTitle>
         <DialogContent>
           <form>

@@ -204,7 +204,7 @@ function Lotes() {
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
       <DashboardNavbar />
       <SoftTypography variant="body1" style={{ paddingLeft: '2px', paddingTop: '0px', fontSize: '19px' }}>
-        Search
+        Buscar
       </SoftTypography>
       <TextField
         label=""
@@ -274,7 +274,7 @@ function Lotes() {
       </Dialog>
 
       {/* Diálogo de edición de lote */}
-      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm" style={{ maxWidth: '250px', alignItems: 'center', margin: 'auto' }}>
         <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Lote</DialogTitle>
         <DialogContent>
           <form>
@@ -305,7 +305,7 @@ function Lotes() {
       </Dialog>
 
       {/* Diálogo de creación de lote */}
-      <Dialog open={newLoteDialogOpen} onClose={() => setNewLoteDialogOpen(false)} fullWidth maxWidth="md">
+      <Dialog open={newLoteDialogOpen} onClose={() => setNewLoteDialogOpen(false)} fullWidth maxWidth="md"style={{ maxWidth: '500px', alignItems: 'center', margin: 'auto' }}>
         <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nuevo Lote</DialogTitle>
         <DialogContent>
           <form>
