@@ -99,23 +99,32 @@ function Tabla_Ventas() {
 
   const handleVerProductos = async (factura) => {
     try {
-      // Obtener detalles de venta
       const response = await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/detalle_venta/?factura_venta=${factura.id}`);
-      const productos = await response.json();
+      console.log("Respuesta de la API Detalle Venta:", response);
   
-      // Obtener detalles del producto para cada producto en la lista
+      if (!response.ok) {
+        throw new Error(`Error al obtener detalles de productos: ${response.status} - ${response.statusText}`);
+      }
+  
+      const productos = await response.json();
+      console.log("Productos de la Factura:", productos);
+  
       const productosConNombre = await Promise.all(
         productos.map(async (producto) => {
           try {
-            // Obtener detalles del producto desde la API de productos
             const productoResponse = await fetch(
               `https://simplificado-48e1a3e2d000.herokuapp.com/productos/${producto.producto_venta}/`,
               {
                 headers: {
-                  Authorization: `Bearer ${accessToken}`, // Incluye el token de autenticación
+                  Authorization: `Bearer ${accessToken}`,
                 },
               }
             );
+  
+            if (!productoResponse.ok) {
+              throw new Error(`Error al obtener detalles del producto: ${productoResponse.status} - ${productoResponse.statusText}`);
+            }
+  
             const productoDetallado = await productoResponse.json();
   
             return {
@@ -134,14 +143,13 @@ function Tabla_Ventas() {
             };
           }
         })
-      );  
+      );
   
-      console.log(productosConNombre);
+      console.log("Productos con Nombre:", productosConNombre);
   
       setProductosFactura(productosConNombre);
       setVerProductosDialogOpen(true);
   
-      // Calcular el total de la factura sumando los totales de los productos
       const totalFactura = productosConNombre.reduce((total, producto) => total + producto.total_producto, 0);
       setTotalFactura(totalFactura);
     } catch (error) {
@@ -429,8 +437,9 @@ function Tabla_Ventas() {
       variant="outlined"
       required
     >
-      <MenuItem value="Efectivo">Efectivo</MenuItem>
-      <MenuItem value="Transferencia Bancaria">Transferencia Bancaria</MenuItem>
+                    <MenuItem value="Efectivo">Efectivo</MenuItem>
+                    <MenuItem value="Transferencia BANCOLOMBIA">Transferencia BANCOLOMBIA</MenuItem>
+                    <MenuItem value="Transferencia NEQUI">Transferencia NEQUI</MenuItem>
       {/* Agrega más opciones según sea necesario */}
     </Select>
   </FormControl>
@@ -522,7 +531,8 @@ function Tabla_Ventas() {
                     required
                   >
                     <MenuItem value="Efectivo">Efectivo</MenuItem>
-                    <MenuItem value="Transferencia Bancaria">Transferencia Bancaria</MenuItem>
+                    <MenuItem value="Transferencia BANCOLOMBIA">Transferencia BANCOLOMBIA</MenuItem>
+                    <MenuItem value="Transferencia NEQUI">Transferencia NEQUI</MenuItem>
                     {/* Agrega más opciones según sea necesario */}
                   </Select>
                 </FormControl>
