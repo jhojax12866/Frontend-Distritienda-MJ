@@ -43,12 +43,15 @@ function Tabla_Ventas() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [newFacturaDialogOpen, setNewFacturaDialogOpen] = useState(false);
   const [editedFactura, setEditedFactura] = useState({});
+  const [totalFactura, setTotalFactura] = useState(0);
   const [newFactura, setNewFactura] = useState({
     cliente: "",
     fecha_ingreso: "",
     medio_pago_v: "", // Valor inicial
     estado_pago_v: "",
-    total_v: "0",
+    total_v: "0.00",
+  
+
   });
 
   // Declare accessToken globally
@@ -87,36 +90,67 @@ function Tabla_Ventas() {
     setNewFacturaDialogOpen(true);
   };
   const [productosFactura, setProductosFactura] = useState([]);
+
+
+  
   const [verProductosDialogOpen, setVerProductosDialogOpen] = useState(false);
+  
+  
 
   const handleVerProductos = async (factura) => {
-  try {
-    const response = await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/detalle_venta/?factura_venta=${factura.id}`
-    );
-    const productos = await response.json();
-
-    // Obtener detalles del producto para cada producto en la lista
-    const productosConNombre = await Promise.all(
-      productos.map(async (producto) => {
-        const productoResponse = await fetch(
-          `https://simplificado-48e1a3e2d000.herokuapp.com/productos/${producto.producto_venta}/`
-        );
-        const productoDetallado = await productoResponse.json();
-        return {
-          ...producto,
-          nombre_producto: productoDetallado.nombre_producto,
-        };
-      })
-    );
-
-    console.log(productosConNombre)
-
-    setProductosFactura(productosConNombre);
-    setVerProductosDialogOpen(true);
-  } catch (error) {
-    console.error("Error obteniendo productos de la factura", error);
-  }
-};
+    try {
+      // Obtener detalles de venta
+      const response = await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/detalle_venta/?factura_venta=${factura.id}`);
+      const productos = await response.json();
+  
+      // Obtener detalles del producto para cada producto en la lista
+      const productosConNombre = await Promise.all(
+        productos.map(async (producto) => {
+          try {
+            // Obtener detalles del producto desde la API de productos
+            const productoResponse = await fetch(
+              `https://simplificado-48e1a3e2d000.herokuapp.com/productos/${producto.producto_venta}/`,
+              {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`, // Incluye el token de autenticación
+                },
+              }
+            );
+            const productoDetallado = await productoResponse.json();
+  
+            return {
+              ...producto,
+              nombre_producto: productoDetallado.nombre_producto,
+              precio_producto: productoDetallado.precio_producto,
+              total_producto: producto.cantidad * productoDetallado.precio_producto,
+            };
+          } catch (error) {
+            console.error("Error obteniendo detalles del producto", error);
+            return {
+              ...producto,
+              nombre_producto: "Error obteniendo nombre",
+              precio_producto: 0,
+              total_producto: 0,
+            };
+          }
+        })
+      );  
+  
+      console.log(productosConNombre);
+  
+      setProductosFactura(productosConNombre);
+      setVerProductosDialogOpen(true);
+  
+      // Calcular el total de la factura sumando los totales de los productos
+      const totalFactura = productosConNombre.reduce((total, producto) => total + producto.total_producto, 0);
+      setTotalFactura(totalFactura);
+    } catch (error) {
+      console.error("Error obteniendo productos de la factura", error);
+    }
+  };
+  
+  
+  
 
   const deleteFactura = async () => {
     try {
@@ -158,8 +192,9 @@ function Tabla_Ventas() {
         fecha_ingreso: editedFactura.fecha_ingreso,
         medio_pago_v: editedFactura.medio_pago_v,
         estado_pago_v: editedFactura.estado_pago_v,
-        total_v: editedFactura.total_v,
+        // total_v: editedFactura.total_v, // Elimina esta línea
       };
+      
 
       const requestOptions = {
         method: "PUT",
@@ -291,7 +326,7 @@ function Tabla_Ventas() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">FACTURAS TABLE</SoftTypography>
+              <SoftTypography variant="h6">FACTURAS DE VENTAS</SoftTypography>
               <Button
                 onClick={() => setNewFacturaDialogOpen(true)}
                 variant="contained"
@@ -322,10 +357,14 @@ function Tabla_Ventas() {
         </SoftBox>
       </SoftBox>
 
+
+
+
+
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Confirmar eliminación</DialogTitle>
         <DialogContent>
-          ¿Estás seguro de que deseas eliminar el producto?
+          ¿Estás seguro de que deseas eliminar el registro?
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
@@ -336,6 +375,10 @@ function Tabla_Ventas() {
           </Button>
         </DialogActions>
       </Dialog>
+
+
+
+
       
 <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
   <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Factura</DialogTitle>
@@ -375,45 +418,42 @@ function Tabla_Ventas() {
 
 
 
+            <Grid item xs={12}>
+  <InputLabel htmlFor="medio_pago_v">Medio de Pago</InputLabel>
+  <FormControl fullWidth variant="outlined" margin="normal">
+    <Select
+      id="medio_pago_v"
+      value={editedFactura.medio_pago_v}
+      onChange={(e) => setEditedFactura({ ...editedFactura, medio_pago_v: e.target.value })}
+      fullWidth
+      variant="outlined"
+      required
+    >
+      <MenuItem value="Efectivo">Efectivo</MenuItem>
+      <MenuItem value="Transferencia Bancaria">Transferencia Bancaria</MenuItem>
+      {/* Agrega más opciones según sea necesario */}
+    </Select>
+  </FormControl>
+</Grid>
+
         <Grid item xs={12}>
-          <InputLabel htmlFor="medio_pago_v">Medio de Pago</InputLabel>
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <TextField
-              id="medio_pago_v"
-              value={editedFactura.medio_pago_v}
-              onChange={(e) => setEditedFactura({ ...editedFactura, medio_pago_v: e.target.value })}
-              fullWidth
-              variant="outlined"
-              required
-            />
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <InputLabel htmlFor="estado_pago_v">Estado de Pago</InputLabel>
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <TextField
-              id="estado_pago_v"
-              value={editedFactura.estado_pago_v}
-              onChange={(e) => setEditedFactura({ ...editedFactura, estado_pago_v: e.target.value })}
-              fullWidth
-              variant="outlined"
-              required
-            />
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <InputLabel htmlFor="total_v">Total</InputLabel>
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <TextField
-              id="total_v"
-              value={editedFactura.total_v}
-              onChange={(e) => setEditedFactura({ ...editedFactura, total_v: e.target.value })}
-              fullWidth
-              variant="outlined"
-              required
-            />
-          </FormControl>
-        </Grid>
+  <InputLabel htmlFor="estado_pago_v">Estado de Pago</InputLabel>
+  <FormControl fullWidth variant="outlined" margin="normal">
+    <Select
+      id="estado_pago_v"
+      value={editedFactura.estado_pago_v}
+      onChange={(e) => setEditedFactura({ ...editedFactura, estado_pago_v: e.target.value })}
+      fullWidth
+      variant="outlined"
+      required
+    >
+      <MenuItem value="APROBADO">APROBADO</MenuItem>
+      <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+      <MenuItem value="RECHAZADO">RECHAZADO</MenuItem>
+    </Select>
+  </FormControl>
+</Grid>
+
       </Grid>
     </form>
   </DialogContent>
@@ -431,6 +471,9 @@ function Tabla_Ventas() {
     </Button>
   </DialogActions>
 </Dialog>
+
+
+
 
 
 <Dialog open={newFacturaDialogOpen} onClose={() => setNewFacturaDialogOpen(false)} fullWidth maxWidth="sm">
@@ -451,20 +494,21 @@ function Tabla_Ventas() {
             />
           </FormControl>
         </Grid>
+
         <Grid item xs={12}>
-  <InputLabel htmlFor="fecha_ingreso">Fecha de Ingreso</InputLabel>
-  <FormControl fullWidth variant="outlined" margin="normal">
-  <TextField
-  id="fecha_ingreso"
-  value={newFactura.fecha_ingreso}
-  onChange={(e) => setNewFactura({ ...newFactura, fecha_ingreso: e.target.value })}
-  fullWidth
-  type="date"
-  variant="outlined"
-  required
-/>
-  </FormControl>
-</Grid>
+                <InputLabel htmlFor="fecha_ingreso">Fecha de Ingreso</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                <TextField
+                  id="fecha_ingreso"
+                  value={newFactura.fecha_ingreso}
+                  onChange={(e) => setNewFactura({ ...newFactura, fecha_ingreso: e.target.value })}
+                  fullWidth
+                  type="date"
+                  variant="outlined"
+                  required
+                />
+                </FormControl>
+              </Grid>
 
         <Grid item xs={12}>
                 <InputLabel htmlFor="medio_pago_v">Medio de Pago</InputLabel>
@@ -483,6 +527,7 @@ function Tabla_Ventas() {
                   </Select>
                 </FormControl>
               </Grid>
+
         <Grid item xs={12}>
                 <InputLabel htmlFor="estado_pago_v">Estado de Pago</InputLabel>
                 <FormControl fullWidth variant="outlined" margin="normal">
@@ -500,22 +545,11 @@ function Tabla_Ventas() {
                   </Select>
                 </FormControl>
               </Grid>
-        <Grid item xs={12}>
-          <InputLabel htmlFor="total_v">Total</InputLabel>
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <TextField
-              id="total_v"
-              value={newFactura.total_v}
-              onChange={(e) => setNewFactura({ ...newFactura, total_v: e.target.value })}
-              fullWidth
-              variant="outlined"
-              required
-            />
-          </FormControl>
-        </Grid>
       </Grid>
     </form>
-    </DialogContent>
+  </DialogContent>
+
+
   <DialogActions>
     <Button onClick={() => setNewFacturaDialogOpen(false)} color="secondary">
       Cancelar
@@ -530,16 +564,21 @@ function Tabla_Ventas() {
     </Button>
   </DialogActions>
 </Dialog>
+
+
+
 <Dialog open={verProductosDialogOpen} onClose={() => setVerProductosDialogOpen(false)}>
   <DialogTitle>Productos de la Factura</DialogTitle>
   <DialogContent>
     {productosFactura.map((producto) => (
       <div key={producto.id}>
-        <p>Producto: {producto.producto_venta}</p>
+        <p>Producto: {producto.nombre_producto}</p>
         <p>Cantidad: {producto.cantidad}</p>
         <p>Precio: {producto.precio_producto}</p>
+        <p>Total Producto: {producto.total_producto}</p>
       </div>
     ))}
+    <p>Total Factura: {totalFactura}</p> {/* Nuevo campo para mostrar el total de la factura */}
   </DialogContent>
   <DialogActions>
     <Button onClick={() => setVerProductosDialogOpen(false)} color="primary">
@@ -549,7 +588,9 @@ function Tabla_Ventas() {
 </Dialog>
 
 
+
     </DashboardLayout>
   );
+  
 }
 export default Tabla_Ventas;
