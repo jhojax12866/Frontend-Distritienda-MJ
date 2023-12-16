@@ -22,12 +22,12 @@ import { Grid } from "@mui/material";
 const data_cartera = {
   columns: [
     { name: "id", align: "left" },
-    { name: "fecha_facturacion", align: "center" },
     { name: "factura_v", align: "center" },
+    { name: "telefono", align: "center" },
+    { name: "fecha_facturacion", align: "center" },
+    { name: "fecha_vencimiento", align: "center" },
     { name: "medio_pago_cartera", align: "center" },
     { name: "estado_cartera", align: "center" },
-    { name: "fecha_vencimiento", align: "center" },
-    { name: "telefono", align: "center" },
     { name: "acciones", align: "center" },
   ],
 };
