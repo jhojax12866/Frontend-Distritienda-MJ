@@ -305,21 +305,25 @@ function Tabla_Ventas() {
   );
   
   const rowsWithActions = facturas.map((factura) => {
-    const totalFactura = productosFactura.reduce((total, producto) => total + producto.total_producto, 0);
-
+    const productosDeFactura = productosFactura.filter(producto => producto.factura_venta === factura.id);
+    const totalFactura = productosDeFactura.reduce((total, producto) => total + producto.total_producto, 0);
+  
     return {
       ...factura,
-      total_v: totalFactura.toFixed(2), // Ajusta el formato según tu necesidad
+      total_v: totalFactura.toFixed(2),
+      productos: productosDeFactura.map(producto => producto.nombre).join(", "), // Display product names
       acciones: getActionButtons(factura),
     };
   });
-
+  
   const filteredFacturas = rowsWithActions.filter((factura) => {
     return (
       factura.cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
       factura.total_v.toString().includes(searchTerm)
     );
   });
+  
+  
 
   return (
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
