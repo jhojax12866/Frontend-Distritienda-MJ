@@ -23,8 +23,9 @@ const data_cartera = {
   columns: [
     { name: "id", align: "left" },
     { name: "factura_v", align: "center" },
+    { name: "cliente", align: "center" },
     { name: "telefono", align: "center" },
-    { name: "fecha_facturacion", align: "center" },
+    { name: "fecha_ingreso", align: "center" },
     { name: "fecha_vencimiento", align: "center" },
     { name: "medio_pago_cartera", align: "center" },
     { name: "estado_cartera", align: "center" },
@@ -42,7 +43,6 @@ function Creditos() {
   const [newCarteraDialogOpen, setNewCarteraDialogOpen] = useState(false);
   const [editedCartera, setEditedCartera] = useState({});
   const [newCartera, setNewCartera] = useState({
-    fecha_facturacion: "",
     factura_v: "",
     medio_pago_cartera: "",
     estado_cartera: "",
@@ -112,7 +112,6 @@ function Creditos() {
       }
 
       const editedCarteraData = {
-        fecha_facturacion: editedCartera.fecha_facturacion,
         factura_v: editedCartera.factura_v,
         medio_pago_cartera: editedCartera.medio_pago_cartera,
         estado_cartera: editedCartera.estado_cartera,
@@ -161,13 +160,15 @@ function Creditos() {
         },
         body: JSON.stringify(newCartera),
       });
-
-      if (response.ok) {
+  
+      if (!response.ok) {
+        console.error("Error adding new cartera:", response.statusText);
+        console.log(await response.json());
+      } else {
         const updatedCartera = await fetchData();
         setCartera(updatedCartera);
-
+  
         setNewCartera({
-          fecha_facturacion: "",
           factura_v: "",
           medio_pago_cartera: "",
           estado_cartera: "",
@@ -175,24 +176,38 @@ function Creditos() {
           telefono: "",
         });
         setNewCarteraDialogOpen(false);
-      } else {
-        console.error("Error adding new cartera");
       }
     } catch (error) {
       console.error("Error adding new cartera", error);
     }
   };
+  
 
   const fetchData = async () => {
     try {
-      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/cartera/");
-      const data = await response.json();
-      setCartera(data);
-      return data; // Devuelve los datos para su uso posterior
+      const responseCartera = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/cartera/");
+      const dataCartera = await responseCartera.json();
+  
+      // Obtener la información del cliente para cada registro de cartera
+      const updatedCartera = await Promise.all(dataCartera.map(async (cartera) => {
+        const responseFactura = await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/factura_venta/${cartera.factura_v}/`);
+        const dataFactura = await responseFactura.json();
+        
+        return {
+          ...cartera,
+          fecha_ingreso: dataFactura.fecha_ingreso,
+          cliente: dataFactura.cliente,
+        };
+      }));
+  
+      setCartera(updatedCartera);
+      return updatedCartera;
     } catch (error) {
       console.error("Error fetching data from API", error);
     }
   };
+  
+  
 
   const getActionButtons = (cartera) => (
     <div>
@@ -203,7 +218,8 @@ function Creditos() {
         <DeleteIcon />
       </IconButton>
     </div>
-  );
+  ); 
+  
 
   // Verifica si 'cartera' es un array válido antes de mapear
   const rowsWithActions = cartera && cartera.map((cartera) => {
@@ -297,18 +313,6 @@ function Creditos() {
           <form>
             <Grid container spacing={1}>
               <Grid item xs={12}>
-                <InputLabel htmlFor="fecha_facturacion">Fecha Facturación</InputLabel>
-                <FormControl fullWidth variant="outlined" margin="normal">
-                  <TextField
-                    id="fecha_facturacion"
-                    value={editedCartera.fecha_facturacion}
-                    onChange={(e) => setEditedCartera({ ...editedCartera, fecha_facturacion: e.target.value })}
-                    fullWidth
-                    variant="outlined"
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
                 <InputLabel htmlFor="factura_v">Factura V</InputLabel>
                 <FormControl fullWidth variant="outlined" margin="normal">
                   <TextField
@@ -387,22 +391,6 @@ function Creditos() {
         <DialogContent>
           <form>
             <Grid container spacing={1}>
-              <Grid item xs={6}>
-                <InputLabel htmlFor="fecha_facturacion">Fecha Facturación</InputLabel>
-                <TextField
-                  type="date"
-                  variant="filled"
-                  color="secondary"
-                  value={newCartera.fecha_facturacion}
-                  onChange={(e) => {
-                    const localDate = new Date(e.target.value);
-                    const adjustedDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000).toISOString();
-                    setNewCartera({ ...newCartera, fecha_facturacion: adjustedDate });
-                  }}
-                  fullWidth
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
               <Grid item xs={6}>
                 <InputLabel htmlFor="factura_v">Factura V</InputLabel>
                 <TextField
