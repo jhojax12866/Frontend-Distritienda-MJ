@@ -16,54 +16,38 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import { FormControl, Grid } from "@mui/material";
-import DashboardNavbar2 from "layouts/Compras/componentes";
+import { Chip, FormControl, InputLabel } from "@mui/material";
+import { Grid } from "@mui/material";
 
-const apiUrl = "https://simplificado-48e1a3e2d000.herokuapp.com/cartera/";
-
-const data_cartera = {
+const data_detalle_venta = {
   columns: [
-    { name: "id", align: "center" },
-    { name: "fecha_facturacion", align: "center" },
-    { name: "factura_v", align: "center" },
-    { name: "medio_pago_cartera", align: "center" },
-    { name: "estado_cartera", align: "center" },
-    { name: "fecha_vencimiento", align: "center" },
-    { name: "telefono", align: "center" },
+    { name: "id", align: "left" },
+    { name: "factura_venta", align: "center" },
+    { name: "producto_venta", align: "center" },
+    { name: "cantidad", align: "center" },
     { name: "acciones", align: "center" },
   ],
 };
 
 function Detalles() {
-  const { columns } = data_cartera;
-  const [cartera, setCartera] = useState([]);
+  const { columns } = data_detalle_venta;
+  const [detalleVenta, setDetalleVenta] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCartera, setSelectedCartera] = useState(null);
+  const [selectedDetalleVenta, setSelectedDetalleVenta] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [newCarteraDialogOpen, setNewCarteraDialogOpen] = useState(false);
-  const [editedCartera, setEditedCartera] = useState({});
-  const [newCartera, setNewCartera] = useState({
-    fecha_vencimiento: "2023-12-27",
-    pago: 0,
+  const [newDetalleVentaDialogOpen, setNewDetalleVentaDialogOpen] = useState(false);
+  const [editedDetalleVenta, setEditedDetalleVenta] = useState({});
+  const [newDetalleVenta, setNewDetalleVenta] = useState({
+    factura_venta: "",
+    producto_venta: "",
+    cantidad: "",
   });
 
-  const handleNewCarteraChange = (field, value) => {
-    setNewCartera((prev) => ({ ...prev, [field]: value }));
-  };
-
+  // Declare accessToken globally
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const carteraData = await fetch(apiUrl).then((response) => response.json());
-        setCartera(carteraData);
-      } catch (error) {
-        console.error("Error fetching data from cartera API", error);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -71,25 +55,25 @@ function Detalles() {
     setSearchTerm(event.target.value);
   };
 
-  const handleEdit = (carteraItem) => {
-    setSelectedCartera(carteraItem);
-    setEditedCartera({ ...carteraItem });
+  const handleEdit = (detalleVenta) => {
+    setSelectedDetalleVenta(detalleVenta);
+    setEditedDetalleVenta({ ...detalleVenta });
     setEditDialogOpen(true);
   };
 
-  const handleDelete = (carteraItem) => {
-    setSelectedCartera(carteraItem);
+  const handleDelete = (detalleVenta) => {
+    setSelectedDetalleVenta(detalleVenta);
     setDeleteDialogOpen(true);
   };
 
   const handleCreate = () => {
-    setNewCarteraDialogOpen(true);
+    setNewDetalleVentaDialogOpen(true);
   };
 
-  const deleteCartera = async () => {
+  const deleteDetalleVenta = async () => {
     try {
       if (!accessToken) {
-        console.error("No se encontró el token de acceso");
+        console.error("Access token not found");
         return;
       }
 
@@ -101,29 +85,30 @@ function Detalles() {
         },
       };
 
-      await fetch(`${apiUrl}/${selectedCartera.id}/`, requestOptions);
+      await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/detalle_venta/${selectedDetalleVenta.id}/`, requestOptions);
 
-      const updatedCartera = cartera.filter((item) => item.id !== selectedCartera.id);
-      setCartera(updatedCartera);
+      const updatedDetalleVenta = await fetchData();
+      setDetalleVenta(updatedDetalleVenta);
 
-      console.log("Cartera item deleted successfully!");
+      console.log("DetalleVenta deleted successfully!");
     } catch (error) {
-      console.error("Error deleting cartera item", error);
+      console.error("Error deleting detalleVenta", error);
     }
 
     setDeleteDialogOpen(false);
   };
 
-  const editCartera = async () => {
+  const editDetalleVenta = async () => {
     try {
-      if (!editedCartera.id) {
-        console.error("ID del item de cartera a editar no está definido.");
+      if (!editedDetalleVenta.id) {
+        console.error("DetalleVenta ID is not defined.");
         return;
       }
 
-      const editedCarteraData = {
-        fecha_vencimiento: editedCartera.fecha_vencimiento,
-        pago: editedCartera.pago,
+      const editedDetalleVentaData = {
+        factura_venta: editedDetalleVenta.factura_venta,
+        producto_venta: editedDetalleVenta.producto_venta,
+        cantidad: editedDetalleVenta.cantidad,
       };
 
       const requestOptions = {
@@ -132,87 +117,99 @@ function Detalles() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(editedCarteraData),
+        body: JSON.stringify(editedDetalleVentaData),
       };
 
       const response = await fetch(
-        `${apiUrl}/${editedCartera.id}/`,
+        `https://simplificado-48e1a3e2d000.herokuapp.com/detalle_venta/${editedDetalleVenta.id}/`,
         requestOptions
       );
 
       if (response.ok) {
-        const updatedCartera = await fetchData();
-        setCartera(updatedCartera);
+        const updatedDetalleVenta = await fetchData();
+        setDetalleVenta(updatedDetalleVenta);
 
-        setEditedCartera({});
+        setEditedDetalleVenta({});
         setEditDialogOpen(false);
+      } else if (response.status === 401) {
+        console.error("Authorization error: Token is invalid or expired.");
       } else {
-        console.error("Error al editar el item de cartera:", response.statusText);
+        console.error("Error editing detalleVenta:", response.statusText);
         console.log(await response.json());
       }
     } catch (error) {
-      console.error("Error al editar el item de cartera", error);
+      console.error("Error editing detalleVenta", error);
     }
   };
 
-  const addNewCartera = async () => {
+  const addNewDetalleVenta = async () => {
     try {
-      const requestOptions = {
+      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/detalle_venta/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(newCartera),
-      };
-
-      const response = await fetch(apiUrl, requestOptions);
+        body: JSON.stringify(newDetalleVenta),
+      });
 
       if (response.ok) {
-        const updatedCartera = await fetchData();
-        setCartera(updatedCartera);
+        const updatedDetalleVenta = await fetchData();
+        setDetalleVenta(updatedDetalleVenta);
 
-        setNewCartera({
-          fecha_vencimiento: "2023-12-27",
-          pago: 0,
+        setNewDetalleVenta({
+          factura_venta: "",
+          producto_venta: "",
+          cantidad: "",
         });
-        setNewCarteraDialogOpen(false);
+        setNewDetalleVentaDialogOpen(false);
       } else {
-        console.error("Error al agregar el nuevo item de cartera");
+        console.error("Error adding new detalleVenta");
       }
     } catch (error) {
-      console.error("Error al agregar el nuevo item de cartera", error);
+      console.error("Error adding new detalleVenta", error);
     }
   };
 
-  const getActionButtons = (carteraItem) => (
+  const fetchData = async () => {
+    try {
+      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/detalle_venta/");
+      const data = await response.json();
+      setDetalleVenta(data);
+      return data; // Devuelve los datos para su uso posterior
+    } catch (error) {
+      console.error("Error fetching data from API", error);
+    }
+  };
+
+  const getActionButtons = (detalleVenta) => (
     <div>
-      <IconButton onClick={() => handleEdit(carteraItem)} color="info">
+      <IconButton onClick={() => handleEdit(detalleVenta)} color="info">
         <EditIcon />
       </IconButton>
-      <IconButton onClick={() => handleDelete(carteraItem)} color="error">
+      <IconButton onClick={() => handleDelete(detalleVenta)} color="error">
         <DeleteIcon />
       </IconButton>
     </div>
   );
 
-  const rowsWithActions = cartera.map((carteraItem) => ({
-    ...carteraItem,
-    acciones: getActionButtons(carteraItem),
-  }));
+  // Verifica si 'detalleVenta' es un array válido antes de mapear
+  const rowsWithActions = detalleVenta && detalleVenta.map((detalleVenta) => {
+    return {
+      ...detalleVenta,
+      acciones: getActionButtons(detalleVenta),
+    };
+  });
 
-  const filteredCartera = rowsWithActions.filter((carteraItem) => {
-    return (
-      (carteraItem.fecha_vencimiento && carteraItem.fecha_vencimiento.includes(searchTerm)) ||
-      ((carteraItem.pago !== undefined) && carteraItem.pago.toString().includes(searchTerm))
-    );
+  const filteredDetalleVenta = rowsWithActions.filter((detalleVenta) => {
+    return detalleVenta.factura_venta.toString().includes(searchTerm);
   });
 
   return (
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
-      <DashboardNavbar2 />
+      <DashboardNavbar />
       <SoftTypography variant="body1" style={{ paddingLeft: '2px', paddingTop: '0px', fontSize: '19px' }}>
-        Buscar
+        Search
       </SoftTypography>
       <TextField
         label=""
@@ -235,10 +232,20 @@ function Detalles() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">TABLA DE CREDITOS</SoftTypography>
-              <IconButton onClick={() => setNewCarteraDialogOpen(true)} color="primary">
-                <AddIcon />
-              </IconButton>
+              <SoftTypography variant="h6">DETALLES VENTAS</SoftTypography>
+              <Button
+                onClick={handleCreate}
+                variant="contained"
+                color="primary"
+                style={{
+                  backgroundColor: '#3498db',
+                  borderRadius: '8px',
+                  color: '#ffffff',
+                }}
+                startIcon={<AddIcon />}
+              >
+                Agregar Detalle Venta
+              </Button>
             </SoftBox>
             <SoftBox
               sx={{
@@ -250,7 +257,7 @@ function Detalles() {
                 },
               }}
             >
-              <Table columns={columns} rows={filteredCartera} />
+              <Table columns={columns} rows={filteredDetalleVenta} />
             </SoftBox>
           </Card>
         </SoftBox>
@@ -259,106 +266,124 @@ function Detalles() {
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Confirmar eliminación</DialogTitle>
         <DialogContent>
-          ¿Estás seguro de que deseas eliminar el item de cartera?
+          ¿Estás seguro de que deseas eliminar el detalle de venta?
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={deleteCartera} color="secondary">
+          <Button onClick={deleteDetalleVenta} color="secondary">
             Eliminar
           </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-        <DialogTitle>Editar Item de Cartera</DialogTitle>
+      {/* Diálogo de edición de detalle de venta */}
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Detalle Venta</DialogTitle>
         <DialogContent>
-          <FormControl fullWidth margin="normal">
-            <TextField
-              id="fecha_vencimiento"
-              label="Fecha de Vencimiento"
-              type="date"
-              variant="filled"
-              color="secondary"
-              value={editedCartera.fecha_vencimiento}
-              onChange={(e) => setEditedCartera({ ...editedCartera, fecha_vencimiento: e.target.value })}
-              fullWidth
-              InputLabelProps={{ shrink: true }}
-            />
-          </FormControl>
-          <FormControl fullWidth margin="normal">
-            <TextField
-              id="pago"
-              label="Pago"
-              variant="filled"
-              color="secondary"
-              type="number"
-              value={editedCartera.pago}
-              onChange={(e) => setEditedCartera({ ...editedCartera, pago: e.target.value })}
-              fullWidth
-            />
-          </FormControl>
-          {/* Agregar más campos aquí */}
+          <form>
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="factura_venta">Factura Venta</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="factura_venta"
+                    value={editedDetalleVenta.factura_venta}
+                    onChange={(e) => setEditedDetalleVenta({ ...editedDetalleVenta, factura_venta: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="producto_venta">Producto Venta</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="producto_venta"
+                    value={editedDetalleVenta.producto_venta}
+                    onChange={(e) => setEditedDetalleVenta({ ...editedDetalleVenta, producto_venta: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="cantidad">Cantidad</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="cantidad"
+                    value={editedDetalleVenta.cantidad}
+                    onChange={(e) => setEditedDetalleVenta({ ...editedDetalleVenta, cantidad: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
+          </form>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditDialogOpen(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={editCartera} color="primary">
+          <Button onClick={editDetalleVenta} color="primary">
             Guardar
           </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={newCarteraDialogOpen} onClose={() => setNewCarteraDialogOpen(false)} fullWidth maxWidth="md">
-        <DialogTitle>Add New Cartera Item</DialogTitle>
+      {/* Diálogo de creación de detalle de venta */}
+      <Dialog open={newDetalleVentaDialogOpen} onClose={() => setNewDetalleVentaDialogOpen(false)} fullWidth maxWidth="md">
+        <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nuevo Detalle Venta</DialogTitle>
         <DialogContent>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <TextField
-                label="Fecha Facturación"
-                type="date"
-                variant="filled"
-                color="secondary"
-                value={newCartera.fecha_facturacion}
-                onChange={(e) => handleNewCarteraChange("fecha_facturacion", e.target.value)}
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-              />
+          <form>
+            <Grid container spacing={1}>
+              <Grid item xs={6}>
+                <InputLabel htmlFor="factura_venta">Factura Venta</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="factura_venta"
+                    value={newDetalleVenta.factura_venta}
+                    onChange={(e) => setNewDetalleVenta({ ...newDetalleVenta, factura_venta: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel htmlFor="producto_venta">Producto Venta</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="producto_venta"
+                    value={newDetalleVenta.producto_venta}
+                    onChange={(e) => setNewDetalleVenta({ ...newDetalleVenta, producto_venta: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel htmlFor="cantidad">Cantidad</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="cantidad"
+                    value={newDetalleVenta.cantidad}
+                    onChange={(e) => setNewDetalleVenta({ ...newDetalleVenta, cantidad: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                  />
+                </FormControl>
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Fecha Vencimiento"
-                type="date"
-                variant="filled"
-                color="secondary"
-                value={newCartera.fecha_vencimiento}
-                onChange={(e) => handleNewCarteraChange("fecha_vencimiento", e.target.value)}
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Pago"
-                variant="filled"
-                color="secondary"
-                type="number"
-                value={newCartera.pago}
-                onChange={(e) => handleNewCarteraChange("pago", e.target.value)}
-                fullWidth
-              />
-            </Grid>
-            {/* Agregar más campos aquí */}
-          </Grid>
+          </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setNewCarteraDialogOpen(false)} color="primary">
-            Cancel
+          <Button onClick={() => setNewDetalleVentaDialogOpen(false)} color="primary">
+            Cancelar
           </Button>
-          <Button onClick={addNewCartera} color="primary">
-            Save
+          <Button onClick={addNewDetalleVenta} color="primary">
+            Guardar
           </Button>
         </DialogActions>
       </Dialog>
