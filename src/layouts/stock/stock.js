@@ -284,6 +284,20 @@ function Stock() {
           </Card>
         </SoftBox>
       </SoftBox>
+      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+        <DialogTitle>Confirmar eliminación</DialogTitle>
+        <DialogContent>
+          ¿Estás seguro de que deseas eliminar el producto?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={deleteStock} color="secondary">
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Stock</DialogTitle>

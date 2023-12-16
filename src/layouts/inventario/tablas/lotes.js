@@ -9,6 +9,12 @@ const LotesTable = () => {
     fetchData();
   }, []);
 
+  const formatDate = (rawDate) => {
+    const options = { day: "numeric", month: "long" };
+    const date = new Date(rawDate);
+    return date.toLocaleDateString("es-ES", options);
+  };
+
   const fetchData = async () => {
     try {
       const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/lotes/");
@@ -62,10 +68,9 @@ const LotesTable = () => {
           }
         `}
       </style>
-
       <Table striped bordered hover className="custom-table">
         <thead>
-        <tr>
+          <tr>
             <th colSpan="3">LOTES</th>
           </tr>
           <tr>
@@ -78,7 +83,7 @@ const LotesTable = () => {
           {lotes.map((lote) => (
             <tr key={lote.id}>
               <td>{lote.id}</td>
-              <td>{lote.fecha_ingreso}</td>
+              <td>{formatDate(lote.fecha_ingreso)}</td>
               <td>{lote.numero_lote}</td>
             </tr>
           ))}
@@ -88,5 +93,5 @@ const LotesTable = () => {
   );
 };
 
-export default LotesTable;
 
+export default LotesTable;

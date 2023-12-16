@@ -11,13 +11,36 @@ const StockTable = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/stock/");
-      const data = await response.json();
-      setStock(data);
+      // Obtener datos de stock
+      const stockResponse = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/stock/");
+      const stockData = await stockResponse.json();
+  
+      // Obtener datos de lotes
+      const lotesResponse = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/lotes/");
+      const lotesData = await lotesResponse.json();
+  
+      // Obtener datos de productos
+      const productosResponse = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/productos/");
+      const productosData = await productosResponse.json();
+  
+      // Combinar datos de stock con información adicional de lotes y productos
+      const stockWithDetails = stockData.map((item) => {
+        const loteInfo = lotesData.find((lote) => lote.id === item.lote_stock);
+        const productoInfo = productosData.find((producto) => producto.id === item.producto_stock);
+        return {
+          ...item,
+          loteInfo,
+          productoInfo,
+        };
+      });
+  
+      setStock(stockWithDetails);
     } catch (error) {
       console.error("Error fetching data from API", error);
     }
   };
+  
+  
 
   return (
     <div className="table-responsive">
@@ -78,14 +101,16 @@ const StockTable = () => {
           </tr>
         </thead>
         <tbody>
-          {stock.map((item) => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.producto_stock}</td>
-              <td>{item.lote_stock}</td>
-            </tr>
-          ))}
-        </tbody>
+  {stock.map((item) => (
+    <tr key={item.id}>
+      <td>{item.id}</td>
+      <td>{item.productoInfo ? item.productoInfo.nombre : 'Nombre no disponible'}</td>
+      <td>{item.loteInfo ? item.loteInfo.numero_lote : 'Lote no disponible'}</td>
+    </tr>
+  ))}
+</tbody>
+
+
       </Table>
     </div>
   );

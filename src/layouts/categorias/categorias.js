@@ -16,33 +16,29 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import { Chip, FormControl, InputLabel } from "@mui/material";
-import { Grid } from "@mui/material";
+import { FormControl, InputLabel, Grid } from "@mui/material";
 
-const data_lotes = {
+const data_categorias = {
   columns: [
     { name: "id", align: "left" },
-    { name: "fecha_ingreso", align: "center" },
-    { name: "numero_lote", align: "center" },
+    { name: "descripcion", align: "center" },
     { name: "acciones", align: "center" },
   ],
 };
 
-function Lotes() {
-  const { columns } = data_lotes;
-  const [lotes, setLotes] = useState([]);
+function Categorias() {
+  const { columns } = data_categorias;
+  const [categorias, setCategorias] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedLote, setSelectedLote] = useState(null);
+  const [selectedCategoria, setSelectedCategoria] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [newLoteDialogOpen, setNewLoteDialogOpen] = useState(false);
-  const [editedLote, setEditedLote] = useState({});
-  const [newLote, setNewLote] = useState({
-    fecha_ingreso: "", // Agrega campo de fecha
-    numero_lote: "",
+  const [newCategoriaDialogOpen, setNewCategoriaDialogOpen] = useState(false);
+  const [editedCategoria, setEditedCategoria] = useState({});
+  const [newCategoria, setNewCategoria] = useState({
+    descripcion: "",
   });
 
-  // Declare accessToken globally
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
@@ -53,22 +49,22 @@ function Lotes() {
     setSearchTerm(event.target.value);
   };
 
-  const handleEdit = (lote) => {
-    setSelectedLote(lote);
-    setEditedLote({ ...lote });
+  const handleEdit = (categoria) => {
+    setSelectedCategoria(categoria);
+    setEditedCategoria({ ...categoria });
     setEditDialogOpen(true);
   };
 
-  const handleDelete = (lote) => {
-    setSelectedLote(lote);
+  const handleDelete = (categoria) => {
+    setSelectedCategoria(categoria);
     setDeleteDialogOpen(true);
   };
 
   const handleCreate = () => {
-    setNewLoteDialogOpen(true);
+    setNewCategoriaDialogOpen(true);
   };
 
-  const deleteLote = async () => {
+  const deleteCategoria = async () => {
     try {
       if (!accessToken) {
         console.error("Access token not found");
@@ -83,28 +79,28 @@ function Lotes() {
         },
       };
 
-      await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/lotes/${selectedLote.id}/`, requestOptions);
+      await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/categorias/${selectedCategoria.id}/`, requestOptions);
 
-      const updatedLotes = await fetchData();
-      setLotes(updatedLotes);
+      const updatedCategorias = await fetchData();
+      setCategorias(updatedCategorias);
 
-      console.log("Lote deleted successfully!");
+      console.log("Categoria deleted successfully!");
     } catch (error) {
-      console.error("Error deleting lot", error);
+      console.error("Error deleting categoria", error);
     }
 
     setDeleteDialogOpen(false);
   };
 
-  const editLote = async () => {
+  const editCategoria = async () => {
     try {
-      if (!editedLote.id) {
-        console.error("Lote ID is not defined.");
+      if (!editedCategoria.id) {
+        console.error("Categoria ID is not defined.");
         return;
       }
 
-      const editedLoteData = {
-        numero_lote: parseInt(editedLote.numero_lote),
+      const editedCategoriaData = {
+        descripcion: editedCategoria.descripcion,
       };
 
       const requestOptions = {
@@ -113,91 +109,89 @@ function Lotes() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(editedLoteData),
+        body: JSON.stringify(editedCategoriaData),
       };
 
       const response = await fetch(
-        `https://simplificado-48e1a3e2d000.herokuapp.com/lotes/${editedLote.id}/`,
+        `https://simplificado-48e1a3e2d000.herokuapp.com/categorias/${editedCategoria.id}/`,
         requestOptions
       );
 
       if (response.ok) {
-        const updatedLotes = await fetchData();
-        setLotes(updatedLotes);
+        const updatedCategorias = await fetchData();
+        setCategorias(updatedCategorias);
 
-        setEditedLote({});
+        setEditedCategoria({});
         setEditDialogOpen(false);
       } else if (response.status === 401) {
         console.error("Authorization error: Token is invalid or expired.");
       } else {
-        console.error("Error editing lot:", response.statusText);
+        console.error("Error editing categoria:", response.statusText);
         console.log(await response.json());
       }
     } catch (error) {
-      console.error("Error editing lot", error);
+      console.error("Error editing categoria", error);
     }
   };
 
-  const addNewLote = async () => {
+  const addNewCategoria = async () => {
     try {
-      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/lotes/", {
+      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/categorias/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(newLote),
+        body: JSON.stringify(newCategoria),
       });
 
       if (response.ok) {
-        const updatedLotes = await fetchData();
-        setLotes(updatedLotes);
+        const updatedCategorias = await fetchData();
+        setCategorias(updatedCategorias);
 
-        setNewLote({
-          fecha_ingreso: "", // Reinicia el campo de fecha
-          numero_lote: 1,
+        setNewCategoria({
+          descripcion: "",
         });
-        setNewLoteDialogOpen(false);
+        setNewCategoriaDialogOpen(false);
       } else {
-        console.error("Error adding new lot");
+        console.error("Error adding new categoria");
       }
     } catch (error) {
-      console.error("Error adding new lot", error);
+      console.error("Error adding new categoria", error);
     }
   };
 
   const fetchData = async () => {
     try {
-      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/lotes/");
+      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/categorias/");
       const data = await response.json();
-      setLotes(data);
-      return data; // Devuelve los datos para su uso posterior
+      setCategorias(data);
+      return data;
     } catch (error) {
       console.error("Error fetching data from API", error);
     }
   };
 
-  const getActionButtons = (lote) => (
+  const getActionButtons = (categoria) => (
     <div>
-      <IconButton onClick={() => handleEdit(lote)} color="info">
+      <IconButton onClick={() => handleEdit(categoria)} color="info">
         <EditIcon />
       </IconButton>
-      <IconButton onClick={() => handleDelete(lote)} color="error">
+      <IconButton onClick={() => handleDelete(categoria)} color="error">
         <DeleteIcon />
       </IconButton>
     </div>
   );
 
-  // Verifica si 'lotes' es un array válido antes de mapear
-  const rowsWithActions = lotes && lotes.map((lote) => {
+  const rowsWithActions = categorias && categorias.map((categoria) => {
     return {
-      ...lote,
-      acciones: getActionButtons(lote),
+      ...categoria,
+      acciones: getActionButtons(categoria),
     };
   });
 
-  const filteredLotes = rowsWithActions.filter((lote) => {
-    return lote.numero_lote.toString().includes(searchTerm);
+  const filteredCategorias = rowsWithActions.filter((categoria) => {
+    return categoria.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   return (
@@ -227,7 +221,7 @@ function Lotes() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">LOTS TABLE</SoftTypography>
+              <SoftTypography variant="h6">CATEGORIAS TABLE</SoftTypography>
               <Button
                 onClick={handleCreate}
                 variant="contained"
@@ -239,7 +233,7 @@ function Lotes() {
                 }}
                 startIcon={<AddIcon />}
               >
-                Agregar Producto
+                Agregar Categoría
               </Button>
             </SoftBox>
             <SoftBox
@@ -252,44 +246,42 @@ function Lotes() {
                 },
               }}
             >
-              <Table columns={columns} rows={filteredLotes} />
+              <Table columns={columns} rows={filteredCategorias} />
             </SoftBox>
           </Card>
         </SoftBox>
       </SoftBox>
-
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Confirmar eliminación</DialogTitle>
         <DialogContent>
-          ¿Estás seguro de que deseas eliminar el producto?
+          ¿Estás seguro de que deseas eliminar la categoría?
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={deleteLote} color="secondary">
+          <Button onClick={deleteCategoria} color="secondary">
             Eliminar
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Diálogo de edición de lote */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Lote</DialogTitle>
+        <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Categoría</DialogTitle>
         <DialogContent>
           <form>
             <Grid container spacing={1}>
               <Grid item xs={12}>
-                <InputLabel htmlFor="numero_lote">Numero Lote</InputLabel>
-                <FormControl fullWidth variant="outlined" margin="normal">
-                  <TextField
-                    id="numero_lote"
-                    value={editedLote.numero_lote}
-                    onChange={(e) => setEditedLote({ ...editedLote, numero_lote: e.target.value })}
-                    fullWidth
-                    variant="outlined"
-                  />
-                </FormControl>
+                <InputLabel htmlFor="descripcion">Descripción</InputLabel>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  margin="normal"
+                  id="descripcion"
+                  label="Descripción"
+                  value={editedCategoria.descripcion}
+                  onChange={(e) => setEditedCategoria({ ...editedCategoria, descripcion: e.target.value })}
+                />
               </Grid>
             </Grid>
           </form>
@@ -298,58 +290,44 @@ function Lotes() {
           <Button onClick={() => setEditDialogOpen(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={editLote} color="primary">
+          <Button onClick={editCategoria} color="primary">
             Guardar
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Diálogo de creación de lote */}
-      <Dialog open={newLoteDialogOpen} onClose={() => setNewLoteDialogOpen(false)} fullWidth maxWidth="md">
-        <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nuevo Lote</DialogTitle>
+      <Dialog open={newCategoriaDialogOpen} onClose={() => setNewCategoriaDialogOpen(false)} fullWidth maxWidth="md">
+        <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nueva Categoría</DialogTitle>
         <DialogContent>
           <form>
             <Grid container spacing={1}>
-              <Grid item xs={6}>
-                <InputLabel htmlFor="fecha_ingreso">Fecha Ingreso</InputLabel>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="descripcion">Descripción</InputLabel>
                 <TextField
-                    type="date"
-                    variant="filled"
-                    color="secondary"
-                    value={newLote.fecha_ingreso}
-                    onChange={(e) => {
-                      const localDate = new Date(e.target.value);
-                      const adjustedDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000).toISOString();
-                      setNewLote({ ...newLote, fecha_ingreso: adjustedDate });
-                    }}
-                    fullWidth
-                    InputLabelProps={{ shrink: true }}
-                  />
-              </Grid>
-              <Grid item xs={6}>
-                <InputLabel htmlFor="numero_lote">Numero Lote</InputLabel>
-                <TextField
-                  variant="filled"
-                  color="secondary"
-                  value={newLote.numero_lote}
-                  onChange={(e) => setNewLote({ ...newLote, numero_lote: e.target.value })}
                   fullWidth
+                  variant="outlined"
+                  margin="normal"
+                  id="descripcion"
+                  label="Descripción"
+                  value={newCategoria.descripcion}
+                  onChange={(e) => setNewCategoria({ ...newCategoria, descripcion: e.target.value })}
                 />
               </Grid>
             </Grid>
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setNewLoteDialogOpen(false)} color="primary">
+          <Button onClick={() => setNewCategoriaDialogOpen(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={addNewLote} color="primary">
+          <Button onClick={addNewCategoria} color="primary">
             Guardar
           </Button>
         </DialogActions>
       </Dialog>
+      <Footer />
     </DashboardLayout>
   );
 }
 
-export default Lotes;
+export default Categorias;
