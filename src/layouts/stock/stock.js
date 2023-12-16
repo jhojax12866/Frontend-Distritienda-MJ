@@ -21,8 +21,8 @@ import { FormControl, InputLabel, MenuItem, Select, Grid } from "@mui/material";
 const data_stock = {
   columns: [
     { name: "id", align: "left" },
-    { name: "producto_stock", label: "PRODUCTO ESTANTE", align: "center" }, // Cambiado el label de "producto_stock" a "PRODUCTO ESTANTE"
-    { name: "lote_stock", label: "LOTE ESTANT", align: "center" }, // Cambiado el label de "lote_stock" a "LOTE ESTANT"
+    { name: "producto_estante", label: "PRODUCTO ESTANTE", align: "center" }, // Cambiado el label de "producto_stok" a "PRODUCTO ESTANTE"
+    { name: "lote_estante", label: "LOTE ESTANT", align: "center" }, // Cambiado el label de "" a "LOTE ESTANT"
     { name: "acciones", align: "center" },
   ],
 };
@@ -39,8 +39,8 @@ function Stock() {
   const [newStockDialogOpen, setNewStockDialogOpen] = useState(false);
   const [editedStock, setEditedStock] = useState({});
   const [newStock, setNewStock] = useState({
-    producto_stock: null,
-    lote_stock: 1,
+    producto_estante: null,
+    lote_estante: 1,
   });
 
   const accessToken = localStorage.getItem("accessToken");
@@ -106,8 +106,8 @@ function Stock() {
       }
 
       const editedStockData = {
-        producto_stock: parseInt(editedStock.producto_stock),
-        lote_stock: parseInt(editedStock.lote_stock),
+        producto_estante: parseInt(editedStock.producto_estante),
+        lote_estante: parseInt(editedStock.lote_estante),
       };
 
       const requestOptions = {
@@ -157,8 +157,8 @@ function Stock() {
         setStock(updatedStock);
 
         setNewStock({
-          producto_stock: null,
-          lote_stock: 1,
+          producto_estante: null,
+          lote_estante: 1,
         });
         setNewStockDialogOpen(false);
       } else {
@@ -212,19 +212,19 @@ function Stock() {
   );
 
   const rowsWithActions = stock && stock.map((stock) => {
-    const productoNombre = products.find(product => product.id === stock.producto_stock)?.nombre || stock.producto_stock;
-    const loteNumero = lotes.find(lote => lote.id === stock.lote_stock)?.numero_lote || stock.lote_stock;
+    const productoNombre = products.find(product => product.id === stock.producto_estante)?.nombre || stock.producto_estante;
+    const loteNumero = lotes.find(lote => lote.id === stock.lote_estante)?.numero_lote || stock.lote_estante;
 
     return {
       ...stock,
-      producto_stock: productoNombre,
-      lote_stock: loteNumero,
+      producto_estante: productoNombre,
+      lote_estante: loteNumero,
       acciones: getActionButtons(stock),
     };
   });
 
   const filteredStock = rowsWithActions.filter((stock) => {
-    return stock.lote_stock.toString().includes(searchTerm);
+    return stock.lote_estante.toString().includes(searchTerm);
   });
 
   return (
@@ -306,12 +306,12 @@ function Stock() {
           <form>
             <Grid container spacing={1}>
               <Grid item xs={12}>
-                <InputLabel htmlFor="producto_stock">Producto Stock</InputLabel>
+                <InputLabel htmlFor="producto_estante">Producto estante</InputLabel>
                 <FormControl fullWidth variant="outlined" margin="normal">
                   <Select
-                    id="producto_stock"
-                    value={editedStock.producto_stock}
-                    onChange={(e) => setEditedStock({ ...editedStock, producto_stock: e.target.value })}
+                    id="producto_estante"
+                    value={editedStock.producto_estante}
+                    onChange={(e) => setEditedStock({ ...editedStock, producto_estante: e.target.value })}
                     fullWidth
                   >
                     {products.map((product) => (
@@ -323,12 +323,12 @@ function Stock() {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
-                <InputLabel htmlFor="lote_stock">Lote Stock</InputLabel>
+                <InputLabel htmlFor="lote_estante">Lote estante</InputLabel>
                 <FormControl fullWidth variant="outlined" margin="normal">
                   <Select
-                    id="lote_stock"
-                    value={editedStock.lote_stock}
-                    onChange={(e) => setEditedStock({ ...editedStock, lote_stock: e.target.value })}
+                    id="lote_estante"
+                    value={editedStock.lote_estante}
+                    onChange={(e) => setEditedStock({ ...editedStock, lote_estante: e.target.value })}
                     fullWidth
                   >
                     {lotes.map((lote) => (
@@ -358,12 +358,12 @@ function Stock() {
           <form>
             <Grid container spacing={1}>
               <Grid item xs={12}>
-                <InputLabel htmlFor="producto_stock">Producto Stock</InputLabel>
+                <InputLabel htmlFor="producto_estante">Producto Stock</InputLabel>
                 <FormControl fullWidth variant="outlined" margin="normal">
                   <Select
-                    id="producto_stock"
-                    value={newStock.producto_stock}
-                    onChange={(e) => setNewStock({ ...newStock, producto_stock: e.target.value })}
+                    id="producto_estante"
+                    value={newStock.producto_estante}
+                    onChange={(e) => setNewStock({ ...newStock, producto_estante: e.target.value })}
                     fullWidth
                   >
                     {products.map((product) => (
@@ -375,12 +375,12 @@ function Stock() {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
-                <InputLabel htmlFor="lote_stock">Lote Stock</InputLabel>
+                <InputLabel htmlFor="lote_estante">Lote estante</InputLabel>
                 <FormControl fullWidth variant="outlined" margin="normal">
                   <Select
-                    id="lote_stock"
-                    value={newStock.lote_stock}
-                    onChange={(e) => setNewStock({ ...newStock, lote_stock: e.target.value })}
+                    id="lote_estante"
+                    value={newStock.lote_estante}
+                    onChange={(e) => setNewStock({ ...newStock, lote_estante: e.target.value })}
                     fullWidth
                   >
                     {lotes.map((lote) => (

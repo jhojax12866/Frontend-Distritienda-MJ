@@ -265,8 +265,7 @@ function Categorias() {
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm" style={{ maxWidth: '400px', alignItems: 'center', margin: 'auto' }}>
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm" style={{ maxWidth: '300px', alignItems: 'center', margin: 'auto' }}>
         <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Categoría</DialogTitle>
         <DialogContent>
           <form>
@@ -296,7 +295,7 @@ function Categorias() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={newCategoriaDialogOpen} onClose={() => setNewCategoriaDialogOpen(false)} fullWidth maxWidth="md" style={{ maxWidth: '500px', alignItems: 'center', margin: 'auto' }}>
+      <Dialog open={newCategoriaDialogOpen} onClose={() => setNewCategoriaDialogOpen(false)} fullWidth maxWidth="md" style={{ maxWidth: '400px', alignItems: 'center', margin: 'auto' }}>
         <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nueva Categoría</DialogTitle>
         <DialogContent>
           <form>
@@ -325,7 +324,6 @@ function Categorias() {
           </Button>
         </DialogActions>
       </Dialog>
-     
     </DashboardLayout>
   );
 }

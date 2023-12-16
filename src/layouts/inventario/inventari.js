@@ -23,12 +23,7 @@ import MenuItem from "@mui/material/MenuItem";
 import LotesTable from "./tablas/lotes";
 import StockTable from "./tablas/stock";
 
-console.error = (message) => {
-  if (message.startsWith('Warning: Encountered two children with the same key')) {
-    return;
-  }
-  originalConsoleError(message);
-};
+
 const originalConsoleError = console.error;
 
 const data_productos = {
