@@ -34,10 +34,7 @@ function Pcantidad() {
       fetchData();
     }, []);
   
-    if (loading) {
-      return <p>Cargando...</p>;
-    }
-  
+   
     return (
       <Card>
         <SoftBox p={2}>

@@ -62,7 +62,7 @@ function Dashboard() {
       <SoftBox py={3}>
       <SoftBox mb={3}>
         <Grid container spacing={3}>
-          <Grid item xs={12} lg={6}> {/* Cambiado el tamaño para que ambos ocupen la mitad en pantallas grandes */}
+          <Grid item xs={12} lg={6}> 
             <Pvendido />
           </Grid>
           <Grid item xs={12} lg={6}>
