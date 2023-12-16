@@ -244,7 +244,7 @@ function Creditos() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">CARTERA TABLE</SoftTypography>
+              <SoftTypography variant="h6">REGISTRO DE CREDITOS</SoftTypography>
               <Button
                 onClick={handleCreate}
                 variant="contained"
