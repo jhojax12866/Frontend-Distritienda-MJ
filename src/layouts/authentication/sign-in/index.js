@@ -106,21 +106,7 @@ function SignIn() {
             Inicia Sesión
           </SoftButton>
         </SoftBox>
-        <SoftBox mt={3} textAlign="center">
-          <SoftTypography variant="button" color="text" fontWeight="regular">
-            Aún no estás registrado?{" "}
-            <SoftTypography
-              component={Link}
-              to="/authentication/sign-up"
-              variant="button"
-              color="info"
-              fontWeight="medium"
-              textGradient
-            >
-              Regístrate
-            </SoftTypography>
-          </SoftTypography>
-        </SoftBox>
+        
       </SoftBox>
     </CoverLayout>
   );

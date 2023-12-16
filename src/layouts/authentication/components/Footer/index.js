@@ -21,12 +21,12 @@ function Footer() {
             <SoftBox mr={{ xs: 2, lg: 3, xl: 6 }}>
             </SoftBox>
             <SoftBox mr={{ xs: 0, lg: 3, xl: 6 }}>
-              <SoftTypography component="a" href="#" variant="body2" color="secondary">
+              <SoftTypography component="a" href="https://jhonierp.github.io/equipo-desarrollo/" variant="body2" color="secondary">
                 Equipo Desarrollador
               </SoftTypography>
             </SoftBox>
             <SoftBox mr={{ xs: 2, lg: 3, xl: 6 }}>
-              <SoftTypography component="a" href="#" variant="body2" color="secondary">
+              <SoftTypography component="a" href="https://jhonierp.github.io/DistritiendaMJ/" variant="body2" color="secondary">
                 Acerca del Producto
               </SoftTypography>
             </SoftBox>

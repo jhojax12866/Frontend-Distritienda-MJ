@@ -18,6 +18,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import { Chip, FormControl, InputLabel } from "@mui/material";
 import { Grid } from "@mui/material";
+import StockTable from "layouts/inventario/tablas/stock";
 
 const data_detalle_venta = {
   columns: [
@@ -387,6 +388,7 @@ function Detalles() {
           </Button>
         </DialogActions>
       </Dialog>
+      <StockTable />
     </DashboardLayout>
   );
 }

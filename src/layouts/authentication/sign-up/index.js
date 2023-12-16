@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
-import axios from "axios";
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 import SoftInput from "components/SoftInput";
@@ -12,6 +11,9 @@ import curved6 from "assets/images/curved-images/curved14.jpg";
 
 function SignUp() {
   const [agreement, setAgreement] = useState(true);
+  const [error, setError] = useState(null);
+  //TOKEN
+  const accessToken = localStorage.getItem("accessToken");
 
   const handleSignUp = async () => {
     // Get form data from the input fields
@@ -29,31 +31,36 @@ function SignUp() {
     };
 
     try {
-      const response = await axios.post("https://diplomadobd-06369030a7e4.herokuapp.com/users/users_create", formData);
-    
-      if (response && response.data) {
-        console.log("Usuario registrado exitosamente:", response.data);
+      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/users/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        console.log("Usuario registrado exitosamente!");
       } else {
-        console.error("Respuesta inesperada:", response);
+        const errorData = await response.json();
+        console.error("Error al registrar usuario:", errorData);
+        setError("Error al registrar usuario. Verifica los datos e intenta de nuevo.");
       }
     } catch (error) {
-      console.error("Error al registrarse:", error.response ? error.response.data : error.message);
+      console.error("Error de red:", error);
+      setError("Error de red. Intenta de nuevo más tarde.");
     }
   };
 
   useEffect(() => {
     // ... any other code you want to run on component mount ...
-
   }, []); // Empty dependency array ensures the effect runs only once after initial render
 
   const handleSetAgreement = () => setAgreement(!agreement);
 
   return (
-    <BasicLayout
-      title="BIENVENIDO"
-      description="REGISTRATE AQUI"
-      image={curved6}
-    >
+    <BasicLayout title="BIENVENIDO" description="REGISTRATE AQUI" image={curved6}>
       <Card>
         <SoftBox pt={2} pb={3} px={3}>
           <SoftBox component="form" role="form">

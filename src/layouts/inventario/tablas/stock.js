@@ -92,12 +92,12 @@ const StockTable = () => {
       <Table striped bordered hover className="custom-table">
         <thead>
           <tr>
-            <th colSpan="3">STOCK</th>
+            <th colSpan="3">ESTANTE</th>
           </tr>
           <tr>
             <th>ID</th>
-            <th>Producto Stock</th>
-            <th>Lote Stock</th>
+            <th>Producto Estante</th>
+            <th>Lote </th>
           </tr>
         </thead>
         <tbody>
