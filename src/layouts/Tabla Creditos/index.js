@@ -11,6 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
+import GetAppIcon from "@mui/icons-material/GetApp"; // Add this import
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -74,6 +75,47 @@ function Creditos() {
 
   const handleCreate = () => {
     setNewCarteraDialogOpen(true);
+  };
+
+  const handleGetPDF = async (cartera) => {
+    try {
+      if (!accessToken) {
+        console.error("Access token not found");
+        return;
+      }
+
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      };
+
+      const response = await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/cartera/${cartera.id}/pdf`, requestOptions);
+
+      if (response.ok) {
+        // Create a Blob from the PDF data and trigger a download
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cartera_${cartera.id}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
+        console.log("PDF downloaded successfully!");
+      } else if (response.status === 401) {
+        console.error("Authorization error: Token is invalid or expired.");
+      } else {
+        console.error("Error getting PDF:", response.statusText);
+        console.log(await response.json());
+      }
+    } catch (error) {
+      console.error("Error getting PDF", error);
+    }
   };
 
   const deleteCartera = async () => {
@@ -150,15 +192,27 @@ function Creditos() {
     }
   };
 
+
   const addNewCartera = async () => {
     try {
+      // Intenta convertir newCartera.fecha_vencimiento a un objeto Date
+      const fechaVencimientoDate = new Date(newCartera.fecha_vencimiento);
+  
+      if (isNaN(fechaVencimientoDate.getTime())) {
+        // La conversión a Date no fue exitosa
+        console.error("Invalid date format for fecha_vencimiento");
+        return;
+      }
+  
+      const formattedFechaVencimiento = fechaVencimientoDate.toISOString().split('T')[0];
+  
       const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/cartera/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(newCartera),
+        body: JSON.stringify({ ...newCartera, fecha_vencimiento: formattedFechaVencimiento }),
       });
   
       if (!response.ok) {
@@ -182,35 +236,38 @@ function Creditos() {
     }
   };
   
+  const fetchClienteData = async (cartera) => {
+    try {
+      const responseFactura = await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/factura_venta/${cartera.factura_v}/`);
+      const dataFactura = await responseFactura.json();
 
+      return {
+        ...cartera,
+        fecha_ingreso: dataFactura.fecha_ingreso,
+        cliente: dataFactura.cliente,
+      };
+    } catch (error) {
+      console.error("Error fetching cliente data", error);
+      return cartera; // Devuelve el objeto cartera sin cambios en caso de error
+    }
+  };
   const fetchData = async () => {
     try {
       const responseCartera = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/cartera/");
       const dataCartera = await responseCartera.json();
-  
-      // Obtener la información del cliente para cada registro de cartera
-      const updatedCartera = await Promise.all(dataCartera.map(async (cartera) => {
-        const responseFactura = await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/factura_venta/${cartera.factura_v}/`);
-        const dataFactura = await responseFactura.json();
-        
-        return {
-          ...cartera,
-          fecha_ingreso: dataFactura.fecha_ingreso,
-          cliente: dataFactura.cliente,
-        };
-      }));
-  
+
+      const updatedCartera = await Promise.all(dataCartera.map(fetchClienteData));
+
       setCartera(updatedCartera);
       return updatedCartera;
     } catch (error) {
       console.error("Error fetching data from API", error);
     }
   };
-  
-  
 
   const getActionButtons = (cartera) => (
     <div>
+      
       <IconButton onClick={() => handleEdit(cartera)} color="info">
         <EditIcon />
       </IconButton>
@@ -218,8 +275,7 @@ function Creditos() {
         <DeleteIcon />
       </IconButton>
     </div>
-  ); 
-  
+  );
 
   // Verifica si 'cartera' es un array válido antes de mapear
   const rowsWithActions = cartera && cartera.map((cartera) => {

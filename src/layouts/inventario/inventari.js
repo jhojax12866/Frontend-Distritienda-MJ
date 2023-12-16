@@ -23,9 +23,6 @@ import MenuItem from "@mui/material/MenuItem";
 import LotesTable from "./tablas/lotes";
 import StockTable from "./tablas/stock";
 
-
-const originalConsoleError = console.error;
-
 const data_productos = {
   columns: [
     { name: "id", align: "left" },
