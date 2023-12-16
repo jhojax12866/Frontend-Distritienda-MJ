@@ -42,6 +42,7 @@ function SignUp() {
 
       if (response.ok) {
         console.log("Usuario registrado exitosamente!");
+        window.alert("Usuario creado con éxito. ¡Inicia sesión ahora!");
       } else {
         const errorData = await response.json();
         console.error("Error al registrar usuario:", errorData);
@@ -54,8 +55,8 @@ function SignUp() {
   };
 
   useEffect(() => {
-    // ... any other code you want to run on component mount ...
-  }, []); // Empty dependency array ensures the effect runs only once after initial render
+   
+  }, []); 
 
   const handleSetAgreement = () => setAgreement(!agreement);
 
