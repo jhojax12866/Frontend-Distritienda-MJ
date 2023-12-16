@@ -1,102 +1,64 @@
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import Icon from "@mui/material/Icon";
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 
-function Productcard({ title, count, percentage, direction, image }) {
-  const bgColor = "white";
-  const iconComponent = <Icon fontSize="small">your_icon_here</Icon>;
+function Productcard() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const percentageColor = percentage.color || "success";
-  const percentageText = String(percentage.text || "");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const productosResponse = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/productos/").then((res) => res.json());
+        setProducts(productosResponse);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setProducts([]);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <p>Cargando...</p>;
+  }
 
   return (
-    <Card>
-      <SoftBox bgColor={bgColor} variant="gradient">
-        <SoftBox p={2}>
-          <Grid container alignItems="center">
-            {direction === "left" && (
-              <Grid item>
-                <SoftBox
-                  variant="gradient"
-                  bgColor={bgColor === "white" ? "info" : "white"}
-                  color={bgColor === "white" ? "white" : "dark"}
-                  width="3rem"
-                  height="3rem"
-                  borderRadius="md"
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  shadow="md"
-                >
-                  {iconComponent}
-                </SoftBox>
-              </Grid>
-            )}
-            <Grid item xs={8}>
-              <SoftBox ml={direction === "left" ? 2 : 0} lineHeight={1}>
-                <SoftTypography
-                  variant="button"
-                  color={bgColor === "white" ? "text" : "white"}
-                  opacity={bgColor === "white" ? 1 : 0.7}
-                  textTransform="capitalize"
-                  fontWeight="medium"
-                >
-                  {title}
+    <Grid container spacing={2}>
+      {products.map((product) => (
+        <Grid key={product.id} item xs={12} sm={6} md={4} lg={3}>
+          <Card>
+            <SoftBox display="flex">
+              <SoftBox p={2} flexBasis="70%">
+                <SoftTypography variant="h6" gutterBottom>
+                  {product.nombre}
                 </SoftTypography>
-                <SoftTypography
-                  variant="h5"
-                  fontWeight="bold"
-                  color={bgColor === "white" ? "dark" : "white"}
-                >
-                  {count}{" "}
-                  <SoftTypography variant="button" color={percentageColor} fontWeight="bold">
-                    {percentageText}
+                <SoftBox mb={1}>
+                  <SoftTypography variant="body2" color="text">
+                    Precio: {product.precio}
                   </SoftTypography>
-                </SoftTypography>
-              </SoftBox>
-            </Grid>
-            {direction === "right" && (
-              <Grid item xs={4}>
-                <SoftBox
-                  variant="gradient"
-                  bgColor={bgColor === "white" ? "info" : "white"}
-                  color={bgColor === "white" ? "white" : "dark"}
-                  width="3rem"
-                  height="3rem"
-                  marginLeft="auto"
-                  borderRadius="md"
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  shadow="md"
-                >
-                  {iconComponent}
                 </SoftBox>
-              </Grid>
-            )}
-          </Grid>
-        </SoftBox>
-      </SoftBox>
-    </Card>
+              </SoftBox>
+              <SoftBox flexBasis="30%">
+                <SoftBox
+                  component="img"
+                  src={product.imagen}
+                  alt={product.nombre}
+                  width="100%"
+                  style={{ borderRadius: "4px" /* Adjust the border radius as needed */ }}
+                />
+              </SoftBox>
+            </SoftBox>
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
   );
 }
-
-Productcard.defaultProps = {
-  title: "",
-  count: 0,
-  percentage: "",
-  direction: "right",
-};
-
-Productcard.propTypes = {
-  title: PropTypes.string.isRequired,
-  count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  percentage: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  direction: PropTypes.oneOf(["right", "left"]),
-  image: PropTypes.string.isRequired, // Agregamos esta línea para la imagen
-};
 
 export default Productcard;

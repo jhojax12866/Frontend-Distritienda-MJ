@@ -60,30 +60,19 @@ function Dashboard() {
       <DashboardNavbar/>
       <SoftBox py={3}>
         <SoftBox mb={3}>
-          <Grid container spacing={3}>
-          
-            {products.map(product => (
-              
-              <Grid key={product.id} item xs={12} sm={6} xl={3}>
-               <Productcard
-                            title={leastSoldProduct.nombre}
-                            count={leastSoldProduct.ventas}
-                            subcount={`Categoría: ${leastSoldProduct.categoria}`}
-                            percentage={{ color: "danger", text: "-5%" }} // You may customize this as needed
-                            icon={{ color: "info", component: "paid" }}
-                            image={leastSoldProduct.imagen}
-                          />
-              </Grid>
-              
-            ))}
-
+        <Grid container spacing={3}>
+          <Grid item xs={12} lg={15}>
+            <Productcard />
           </Grid>
+          </Grid>
+        
+        
         </SoftBox>
         
         <SoftBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={7}>
-              <Pvendido />
+            <Pvendido />
             </Grid>
             <Grid item xs={12} lg={5}>
               

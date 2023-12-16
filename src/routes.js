@@ -25,6 +25,7 @@ import New_Producto from "layouts/New Producto";
 import Tabla_Ventas from "layouts/tables";
 import { Productos } from "datos_api";
 import Detalles from "layouts/Detalles/detalles";
+import Stock from "layouts/stock/stock";
 
 const routes = [
   { type: "title", title: "menu", key: "account-pages" },
@@ -55,6 +56,15 @@ const routes = [
     route: "/Lotes",
     icon: <Shop2 size="12px" />,
     component: <Lotes/>,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Stock",
+    key: "stock",
+    route: "/Stock",
+    icon: <Shop2 size="12px" />,
+    component: <Stock/>,
     noCollapse: true,
   },
   
