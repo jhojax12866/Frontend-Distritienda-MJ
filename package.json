@@ -32,6 +32,8 @@
     "react-flatpickr": "3.10.13",
     "react-router-dom": "^6.19.0",
     "react-scripts": "5.0.1",
+    "react-slick": "^0.29.0",
+    "slick-carousel": "^1.8.1",
     "stylis": "4.2.0",
     "stylis-plugin-rtl": "2.1.1",
     "uuid": "9.0.0",

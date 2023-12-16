@@ -25,6 +25,7 @@ import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
 import Pvendido from "./components/Pvendido";
 import Productcard from "./components/Productcard/indes";
+import Pcantidad from "./components/Pcantidad";
 
 
 
@@ -52,13 +53,23 @@ function Dashboard() {
       console.error('Error al obtener productos:', error);
     });
 
-  // ... existing code ...
+  
 }, []);
 
   return (
     <DashboardLayout>
       <DashboardNavbar/>
       <SoftBox py={3}>
+      <SoftBox mb={3}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} lg={6}> {/* Cambiado el tamaño para que ambos ocupen la mitad en pantallas grandes */}
+            <Pvendido />
+          </Grid>
+          <Grid item xs={12} lg={6}>
+            <Pcantidad />
+          </Grid>
+        </Grid>
+      </SoftBox>
         <SoftBox mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={15}>
@@ -68,18 +79,6 @@ function Dashboard() {
         
         
         </SoftBox>
-        
-        <SoftBox mb={3}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} lg={7}>
-            <Pvendido />
-            </Grid>
-            <Grid item xs={12} lg={5}>
-              
-            </Grid>
-          </Grid>
-        </SoftBox>
-        
         
       </SoftBox>
       

@@ -44,7 +44,7 @@ import {
 import team2 from "assets/images/team-2.jpg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 
-function DashboardNavbar({ absolute, light, isMini }) {
+function DashboardNavbar2({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useSoftUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator } = controller;
@@ -122,7 +122,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
         sx={{borderRadius: "8px"}}>
       <Toolbar sx={(theme) => navbarContainer(theme)}>
         <SoftBox color="inherit" mb={{ xs: 1, md: 0 }}>
-          <Breadcrumbs icon="home" title="Sistema de Inventario" route={route} light={light} />
+          <Breadcrumbs icon="home" title="Sistema Creditos" route={route} light={light} />
         </SoftBox>
         {isMini ? null : (
           <SoftBox sx={(theme) => navbarRow(theme, { isMini })}>
@@ -177,17 +177,17 @@ function DashboardNavbar({ absolute, light, isMini }) {
 }
 
 
-DashboardNavbar.defaultProps = {
+DashboardNavbar2.defaultProps = {
   absolute: false,
   light: false,
   isMini: false,
 };
 
 
-DashboardNavbar.propTypes = {
+DashboardNavbar2.propTypes = {
   absolute: PropTypes.bool,
   light: PropTypes.bool,
   isMini: PropTypes.bool,
 };
 
-export default DashboardNavbar;
+export default DashboardNavbar2;

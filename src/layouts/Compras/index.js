@@ -4,8 +4,6 @@ import TextField from "@mui/material/TextField";
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -21,6 +19,7 @@ import { DialogContentText, Grid } from "@mui/material";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { Visibility } from "@mui/icons-material";
+import DashboardNavbar2 from "./componentes";
 
 const data_facturas = {
   columns: [
@@ -309,7 +308,7 @@ function Tabla_Ventas() {
 
   return (
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
-      <DashboardNavbar />
+      <DashboardNavbar2 />
       <SoftTypography variant="body1" style={{ paddingLeft: '2px', paddingTop: '0px', fontSize: '19px' }}>
         Search
       </SoftTypography>

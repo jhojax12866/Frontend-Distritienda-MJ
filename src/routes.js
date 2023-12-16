@@ -61,7 +61,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Stock",
+    name: "Estante",
     key: "stock",
     route: "/Stock",
     icon: <Shop2 size="12px" />,

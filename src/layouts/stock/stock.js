@@ -21,8 +21,8 @@ import { FormControl, InputLabel, MenuItem, Select, Grid } from "@mui/material";
 const data_stock = {
   columns: [
     { name: "id", align: "left" },
-    { name: "producto_stock", align: "center" },
-    { name: "lote_stock", align: "center" },
+    { name: "producto_stock", label: "PRODUCTO ESTANTE", align: "center" }, // Cambiado el label de "producto_stock" a "PRODUCTO ESTANTE"
+    { name: "lote_stock", label: "LOTE ESTANT", align: "center" }, // Cambiado el label de "lote_stock" a "LOTE ESTANT"
     { name: "acciones", align: "center" },
   ],
 };
@@ -254,7 +254,7 @@ function Stock() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">STOCK TABLE</SoftTypography>
+              <SoftTypography variant="h6">ESTANTERIA</SoftTypography>
               <Button
                 onClick={handleCreate}
                 variant="contained"
@@ -279,7 +279,8 @@ function Stock() {
                 },
               }}
             >
-              <Table columns={columns} rows={filteredStock} />
+             <Table columns={columns} rows={filteredStock} />
+
             </SoftBox>
           </Card>
         </SoftBox>

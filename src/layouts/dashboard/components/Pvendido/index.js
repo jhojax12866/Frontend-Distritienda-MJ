@@ -34,9 +34,7 @@ function Pvendido() {
     fetchData();
   }, []);
 
-  if (loading) {
-    return <p>Cargando...</p>;
-  }
+
 
   return (
     <Card>
@@ -46,7 +44,7 @@ function Pvendido() {
             <SoftBox display="flex" flexDirection="column" height="100%">
               <SoftBox pt={1} mb={0.5}>
                 <SoftTypography variant="body2" color="text" fontWeight="medium">
-                  PRODUCTO MENOS VENDIDO
+                  PRODUCTO CON MENOS CANTIDAD
                 </SoftTypography>
               </SoftBox>
               <SoftBox mb={1}>

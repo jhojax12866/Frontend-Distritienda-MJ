@@ -17,6 +17,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import { FormControl, Grid } from "@mui/material";
+import DashboardNavbar2 from "layouts/Compras/componentes";
 
 const apiUrl = "https://simplificado-48e1a3e2d000.herokuapp.com/cartera/";
 
@@ -209,7 +210,7 @@ function Cartera() {
 
   return (
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
-      <DashboardNavbar />
+      <DashboardNavbar2 />
       <SoftTypography variant="body1" style={{ paddingLeft: '2px', paddingTop: '0px', fontSize: '19px' }}>
         Buscar
       </SoftTypography>
