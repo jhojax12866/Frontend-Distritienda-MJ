@@ -28,9 +28,10 @@ const data_cartera = {
     { name: "telefono", align: "center" },
     { name: "fecha_ingreso", align: "center" },
     { name: "fecha_vencimiento", align: "center" },
-    { name: "medio_pago_cartera", align: "center" },
-    { name: "estado_cartera", align: "center" },
+    { name: "estado_pago_v", aling: "center"},
+    { name: "medio_pago_v", aling: "center"},
     { name: "acciones", align: "center" },
+    
   ],
 };
 
@@ -45,8 +46,6 @@ function Creditos() {
   const [editedCartera, setEditedCartera] = useState({});
   const [newCartera, setNewCartera] = useState({
     factura_v: "",
-    medio_pago_cartera: "",
-    estado_cartera: "",
     fecha_vencimiento: "",
     telefono: "",
   });
@@ -155,8 +154,6 @@ function Creditos() {
 
       const editedCarteraData = {
         factura_v: editedCartera.factura_v,
-        medio_pago_cartera: editedCartera.medio_pago_cartera,
-        estado_cartera: editedCartera.estado_cartera,
         fecha_vencimiento: editedCartera.fecha_vencimiento,
         telefono: editedCartera.telefono,
       };
@@ -224,8 +221,6 @@ function Creditos() {
   
         setNewCartera({
           factura_v: "",
-          medio_pago_cartera: "",
-          estado_cartera: "",
           fecha_vencimiento: "",
           telefono: "",
         });
@@ -245,6 +240,8 @@ function Creditos() {
         ...cartera,
         fecha_ingreso: dataFactura.fecha_ingreso,
         cliente: dataFactura.cliente,
+        medio_pago_v: dataFactura.medio_pago_v,
+        estado_pago_v: dataFactura.estado_pago_v,
       };
     } catch (error) {
       console.error("Error fetching cliente data", error);
@@ -274,6 +271,7 @@ function Creditos() {
       <IconButton onClick={() => handleDelete(cartera)} color="error">
         <DeleteIcon />
       </IconButton>
+      
     </div>
   );
 
@@ -381,30 +379,6 @@ function Creditos() {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
-                <InputLabel htmlFor="medio_pago_cartera">Medio Pago Cartera</InputLabel>
-                <FormControl fullWidth variant="outlined" margin="normal">
-                  <TextField
-                    id="medio_pago_cartera"
-                    value={editedCartera.medio_pago_cartera}
-                    onChange={(e) => setEditedCartera({ ...editedCartera, medio_pago_cartera: e.target.value })}
-                    fullWidth
-                    variant="outlined"
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <InputLabel htmlFor="estado_cartera">Estado Cartera</InputLabel>
-                <FormControl fullWidth variant="outlined" margin="normal">
-                  <TextField
-                    id="estado_cartera"
-                    value={editedCartera.estado_cartera}
-                    onChange={(e) => setEditedCartera({ ...editedCartera, estado_cartera: e.target.value })}
-                    fullWidth
-                    variant="outlined"
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
                 <InputLabel htmlFor="fecha_vencimiento">Fecha Vencimiento</InputLabel>
                 <FormControl fullWidth variant="outlined" margin="normal">
                   <TextField
@@ -454,26 +428,6 @@ function Creditos() {
                   color="secondary"
                   value={newCartera.factura_v}
                   onChange={(e) => setNewCartera({ ...newCartera, factura_v: e.target.value })}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <InputLabel htmlFor="medio_pago_cartera">Medio Pago Cartera</InputLabel>
-                <TextField
-                  variant="filled"
-                  color="secondary"
-                  value={newCartera.medio_pago_cartera}
-                  onChange={(e) => setNewCartera({ ...newCartera, medio_pago_cartera: e.target.value })}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <InputLabel htmlFor="estado_cartera">Estado Cartera</InputLabel>
-                <TextField
-                  variant="filled"
-                  color="secondary"
-                  value={newCartera.estado_cartera}
-                  onChange={(e) => setNewCartera({ ...newCartera, estado_cartera: e.target.value })}
                   fullWidth
                 />
               </Grid>
