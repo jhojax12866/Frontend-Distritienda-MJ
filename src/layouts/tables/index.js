@@ -272,6 +272,7 @@ function Tabla_Ventas() {
   
       if (response.ok) {
         const updatedFacturas = await fetchData();
+        updatedFacturas.sort((a, b) => new Date(b.fecha_ingreso) - new Date(a.fecha_ingreso));
         setFacturas(updatedFacturas);
   
         setNewFactura({
@@ -295,11 +296,16 @@ function Tabla_Ventas() {
     try {
       const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/factura_venta/");
       const data = await response.json();
-      return data;
+  
+      // Ordena los datos por fecha de ingreso antes de devolverlos
+      const sortedData = data.sort((a, b) => new Date(b.fecha_ingreso) - new Date(a.fecha_ingreso));
+  
+      return sortedData;
     } catch (error) {
       console.error("Error fetching data from API", error);
     }
   };
+  
 
   const getActionButtons = (factura) => (
     <div>
