@@ -22,15 +22,16 @@ import { Grid } from "@mui/material";
 
 const data_cartera = {
   columns: [
-    { name: "id", align: "left" },
+    { name: "id", align: "center" },
     { name: "factura_v", align: "center" },
     { name: "cliente", align: "center" },
     { name: "telefono", align: "center" },
     { name: "fecha_ingreso", align: "center" },
     { name: "fecha_vencimiento", align: "center" },
-    { name: "medio_pago_cartera", align: "center" },
-    { name: "estado_cartera", align: "center" },
+    { name: "estado_pago_v", aling: "center"},
+    { name: "medio_pago_v", aling: "center"},
     { name: "acciones", align: "center" },
+    
   ],
 };
 
@@ -45,8 +46,6 @@ function Creditos() {
   const [editedCartera, setEditedCartera] = useState({});
   const [newCartera, setNewCartera] = useState({
     factura_v: "",
-    medio_pago_cartera: "",
-    estado_cartera: "",
     fecha_vencimiento: "",
     telefono: "",
   });
@@ -124,7 +123,7 @@ function Creditos() {
         console.error("Access token not found");
         return;
       }
-
+  
       const requestOptions = {
         method: 'DELETE',
         headers: {
@@ -132,19 +131,20 @@ function Creditos() {
           'Authorization': `Bearer ${accessToken}`,
         },
       };
-
+  
+  
       await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/cartera/${selectedCartera.id}/`, requestOptions);
-
-      const updatedCartera = await fetchData();
-      setCartera(updatedCartera);
-
+  
+      setCartera(prevCartera => prevCartera.filter(cartera => cartera.id !== selectedCartera.id));
+  
       console.log("Cartera deleted successfully!");
     } catch (error) {
       console.error("Error deleting cartera", error);
     }
-
+  
     setDeleteDialogOpen(false);
   };
+  
 
   const editCartera = async () => {
     try {
@@ -155,8 +155,6 @@ function Creditos() {
 
       const editedCarteraData = {
         factura_v: editedCartera.factura_v,
-        medio_pago_cartera: editedCartera.medio_pago_cartera,
-        estado_cartera: editedCartera.estado_cartera,
         fecha_vencimiento: editedCartera.fecha_vencimiento,
         telefono: editedCartera.telefono,
       };
@@ -224,8 +222,6 @@ function Creditos() {
   
         setNewCartera({
           factura_v: "",
-          medio_pago_cartera: "",
-          estado_cartera: "",
           fecha_vencimiento: "",
           telefono: "",
         });
@@ -245,6 +241,8 @@ function Creditos() {
         ...cartera,
         fecha_ingreso: dataFactura.fecha_ingreso,
         cliente: dataFactura.cliente,
+        medio_pago_v: dataFactura.medio_pago_v,
+        estado_pago_v: dataFactura.estado_pago_v,
       };
     } catch (error) {
       console.error("Error fetching cliente data", error);
@@ -255,15 +253,25 @@ function Creditos() {
     try {
       const responseCartera = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/cartera/");
       const dataCartera = await responseCartera.json();
-
-      const updatedCartera = await Promise.all(dataCartera.map(fetchClienteData));
-
+  
+      if (!dataCartera) {
+        console.error("Data from API is null");
+        return [];
+      }
+  
+      // Filtrar los datos que tienen un valor en el campo "factura_v"
+      const filteredCartera = dataCartera.filter(cartera => cartera.factura_v);
+  
+      const updatedCartera = await Promise.all(filteredCartera.map(fetchClienteData));
+  
       setCartera(updatedCartera);
       return updatedCartera;
     } catch (error) {
       console.error("Error fetching data from API", error);
     }
   };
+  
+  
 
   const getActionButtons = (cartera) => (
     <div>
@@ -274,6 +282,7 @@ function Creditos() {
       <IconButton onClick={() => handleDelete(cartera)} color="error">
         <DeleteIcon />
       </IconButton>
+      
     </div>
   );
 
@@ -284,10 +293,12 @@ function Creditos() {
       acciones: getActionButtons(cartera),
     };
   });
+  
 
   const filteredCartera = rowsWithActions.filter((cartera) => {
-    return cartera.factura_v.toString().includes(searchTerm);
+    return cartera && cartera.factura_v && cartera.factura_v.toString().includes(searchTerm);
   });
+  
 
   return (
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
@@ -381,30 +392,6 @@ function Creditos() {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
-                <InputLabel htmlFor="medio_pago_cartera">Medio Pago Cartera</InputLabel>
-                <FormControl fullWidth variant="outlined" margin="normal">
-                  <TextField
-                    id="medio_pago_cartera"
-                    value={editedCartera.medio_pago_cartera}
-                    onChange={(e) => setEditedCartera({ ...editedCartera, medio_pago_cartera: e.target.value })}
-                    fullWidth
-                    variant="outlined"
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <InputLabel htmlFor="estado_cartera">Estado Cartera</InputLabel>
-                <FormControl fullWidth variant="outlined" margin="normal">
-                  <TextField
-                    id="estado_cartera"
-                    value={editedCartera.estado_cartera}
-                    onChange={(e) => setEditedCartera({ ...editedCartera, estado_cartera: e.target.value })}
-                    fullWidth
-                    variant="outlined"
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
                 <InputLabel htmlFor="fecha_vencimiento">Fecha Vencimiento</InputLabel>
                 <FormControl fullWidth variant="outlined" margin="normal">
                   <TextField
@@ -454,26 +441,6 @@ function Creditos() {
                   color="secondary"
                   value={newCartera.factura_v}
                   onChange={(e) => setNewCartera({ ...newCartera, factura_v: e.target.value })}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <InputLabel htmlFor="medio_pago_cartera">Medio Pago Cartera</InputLabel>
-                <TextField
-                  variant="filled"
-                  color="secondary"
-                  value={newCartera.medio_pago_cartera}
-                  onChange={(e) => setNewCartera({ ...newCartera, medio_pago_cartera: e.target.value })}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <InputLabel htmlFor="estado_cartera">Estado Cartera</InputLabel>
-                <TextField
-                  variant="filled"
-                  color="secondary"
-                  value={newCartera.estado_cartera}
-                  onChange={(e) => setNewCartera({ ...newCartera, estado_cartera: e.target.value })}
                   fullWidth
                 />
               </Grid>

@@ -22,13 +22,14 @@ import StockTable from "layouts/inventario/tablas/stock";
 
 const data_detalle_venta = {
   columns: [
-    { name: "id", align: "left" },
+    { name: "id", align: "center" },
     { name: "factura_venta", align: "center" },
-    { name: "producto_venta", align: "center" },
+    { name: "Producto", align: "center", label: "Nombre del Producto" },
     { name: "cantidad", align: "center" },
     { name: "acciones", align: "center" },
   ],
 };
+
 
 function Detalles() {
   const { columns } = data_detalle_venta;
@@ -39,6 +40,7 @@ function Detalles() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [newDetalleVentaDialogOpen, setNewDetalleVentaDialogOpen] = useState(false);
   const [editedDetalleVenta, setEditedDetalleVenta] = useState({});
+  const [nombreProductos, setNombreProductos] = useState({});
   const [newDetalleVenta, setNewDetalleVenta] = useState({
     factura_venta: "",
     producto_venta: "",
@@ -50,7 +52,26 @@ function Detalles() {
 
   useEffect(() => {
     fetchData();
+    obtenerNombresProductos(); // Obtener nombres de productos
   }, []);
+  
+  const obtenerNombresProductos = async () => {
+    try {
+      const respuesta = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/productos/");
+      const datos = await respuesta.json();
+      const mapaNombres = {};
+  
+      // Crea un mapa de IDs de productos a sus nombres
+      datos.forEach((producto) => {
+        mapaNombres[producto.id] = producto.nombre;
+      });
+  
+      setNombreProductos(mapaNombres);
+    } catch (error) {
+      console.error("Error al obtener nombres de productos desde la API", error);
+    }
+  };
+  
 
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
@@ -193,17 +214,22 @@ function Detalles() {
       </IconButton>
     </div>
   );
-
-  // Verifica si 'detalleVenta' es un array válido antes de mapear
-  const rowsWithActions = detalleVenta && detalleVenta.map((detalleVenta) => {
+  
+  const filasConAcciones = detalleVenta && detalleVenta.map((detalleVenta) => {
     return {
       ...detalleVenta,
       acciones: getActionButtons(detalleVenta),
+      Producto: nombreProductos[detalleVenta.producto_venta] || "N/A",
     };
   });
+  
+  const detalleVentaFiltrado = filasConAcciones.filter((detalleVenta) => {
+    return detalleVenta && detalleVenta.factura_venta && detalleVenta.factura_venta.toString().includes(searchTerm);
+  });
+  
 
-  const filteredDetalleVenta = rowsWithActions.filter((detalleVenta) => {
-    return detalleVenta.factura_venta.toString().includes(searchTerm);
+  const filteredDetalleVenta = detalleVentaFiltrado.filter((detalleVenta) => {
+    return detalleVenta && detalleVenta.factura_venta && detalleVenta.factura_venta.toString().includes(searchTerm);
   });
 
   return (
