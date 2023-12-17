@@ -132,10 +132,9 @@ function Creditos() {
         },
       };
   
-      // Eliminar el registro de cartera
+  
       await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/cartera/${selectedCartera.id}/`, requestOptions);
   
-      // Actualizar el estado eliminando el elemento correspondiente
       setCartera(prevCartera => prevCartera.filter(cartera => cartera.id !== selectedCartera.id));
   
       console.log("Cartera deleted successfully!");

@@ -51,9 +51,20 @@ function Tabla_Ventas() {
     medio_pago_v: "", // Valor inicial
     estado_pago_v: "",
     total_v: "0.00",
-  
-
   });
+
+  const tableHeaderStyle = {
+    textAlign: 'center',
+    padding: '8px',
+    borderBottom: '1px solid #ddd',
+  };
+  
+  const tableCellStyle = {
+    textAlign: 'center',
+    padding: '8px',
+    borderBottom: '1px solid #ddd',
+  };
+  
 
   // Declare accessToken globally
   const accessToken = localStorage.getItem("accessToken");
@@ -592,26 +603,35 @@ function Tabla_Ventas() {
   </DialogActions>
 </Dialog>
 
-
 <Dialog open={verProductosDialogOpen} onClose={() => setVerProductosDialogOpen(false)}>
-        <DialogTitle>Productos de la Factura</DialogTitle>
-        <DialogContent>
-          {productosFactura.map((producto) => (
-            <div key={producto.id}>
-              <p>Producto: {producto.nombre}</p>
-              <p>Cantidad: {producto.cantidad}</p>
-              <p>Precio: {producto.precio}</p>
-              
-            </div>
-          ))}
-          <p>Total Factura: {totalFactura}</p>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setVerProductosDialogOpen(false)} color="primary">
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
+  <DialogTitle>Productos de la Factura</DialogTitle>
+  <DialogContent>
+    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <thead>
+        <tr>
+          <th style={tableHeaderStyle}>Producto</th>
+          <th style={tableHeaderStyle}>Cantidad</th>
+          <th style={tableHeaderStyle}>Precio</th>
+        </tr>
+      </thead>
+      <tbody>
+        {productosFactura.map((producto) => (
+          <tr key={producto.id}>
+            <td style={tableCellStyle}>{producto.nombre}</td>
+            <td style={tableCellStyle}>{producto.cantidad}</td>
+            <td style={tableCellStyle}>{producto.precio}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    <p style={{ textAlign: 'center', marginTop: '10px' }}>Total Factura: {totalFactura}</p>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setVerProductosDialogOpen(false)} color="primary">
+      Cerrar
+    </Button>
+  </DialogActions>
+</Dialog>
 
 
 
