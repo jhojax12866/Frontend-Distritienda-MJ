@@ -96,6 +96,7 @@ const StockTable = () => {
           </tr>
           <tr>
             <th>ID</th>
+            <th>codigo</th>
             <th>Producto Estante</th>
             <th>Lote </th>
           </tr>
@@ -104,6 +105,7 @@ const StockTable = () => {
   {stock.map((item) => (
     <tr key={item.id}>
       <td>{item.id}</td>
+      <td>{item.productoInfo ? item.productoInfo.id : 'Nombre no disponible'}</td>
       <td>{item.productoInfo ? item.productoInfo.nombre : 'Nombre no disponible'}</td>
       <td>{item.loteInfo ? item.loteInfo.numero_lote : 'Lote no disponible'}</td>
     </tr>
