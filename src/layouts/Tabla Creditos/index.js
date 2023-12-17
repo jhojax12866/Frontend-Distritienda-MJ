@@ -123,7 +123,7 @@ function Creditos() {
         console.error("Access token not found");
         return;
       }
-
+  
       const requestOptions = {
         method: 'DELETE',
         headers: {
@@ -131,19 +131,21 @@ function Creditos() {
           'Authorization': `Bearer ${accessToken}`,
         },
       };
-
+  
+      // Eliminar el registro de cartera
       await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/cartera/${selectedCartera.id}/`, requestOptions);
-
-      const updatedCartera = await fetchData();
-      setCartera(updatedCartera);
-
+  
+      // Actualizar el estado eliminando el elemento correspondiente
+      setCartera(prevCartera => prevCartera.filter(cartera => cartera.id !== selectedCartera.id));
+  
       console.log("Cartera deleted successfully!");
     } catch (error) {
       console.error("Error deleting cartera", error);
     }
-
+  
     setDeleteDialogOpen(false);
   };
+  
 
   const editCartera = async () => {
     try {
@@ -252,15 +254,21 @@ function Creditos() {
     try {
       const responseCartera = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/cartera/");
       const dataCartera = await responseCartera.json();
-
+  
+      if (!dataCartera) {
+        console.error("Data from API is null");
+        return [];
+      }
+  
       const updatedCartera = await Promise.all(dataCartera.map(fetchClienteData));
-
+  
       setCartera(updatedCartera);
       return updatedCartera;
     } catch (error) {
       console.error("Error fetching data from API", error);
     }
   };
+  
 
   const getActionButtons = (cartera) => (
     <div>
@@ -282,10 +290,12 @@ function Creditos() {
       acciones: getActionButtons(cartera),
     };
   });
+  
 
   const filteredCartera = rowsWithActions.filter((cartera) => {
-    return cartera.factura_v.toString().includes(searchTerm);
+    return cartera && cartera.factura_v && cartera.factura_v.toString().includes(searchTerm);
   });
+  
 
   return (
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
