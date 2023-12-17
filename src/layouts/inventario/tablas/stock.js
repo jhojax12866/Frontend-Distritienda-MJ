@@ -25,8 +25,8 @@ const StockTable = () => {
   
       // Combinar datos de stock con información adicional de lotes y productos
       const stockWithDetails = stockData.map((item) => {
-        const loteInfo = lotesData.find((lote) => lote.id === item.lote_stock);
-        const productoInfo = productosData.find((producto) => producto.id === item.producto_stock);
+        const loteInfo = lotesData.find((lote) => lote.id === item.lote_estante);
+        const productoInfo = productosData.find((producto) => producto.id === item.producto_estante);
         return {
           ...item,
           loteInfo,

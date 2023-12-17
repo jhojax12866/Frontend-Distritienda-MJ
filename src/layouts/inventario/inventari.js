@@ -450,13 +450,12 @@ const resetForm = () => {
 });
 
 
-  const filteredProducts = rowsWithActions.filter((product) => {
-    return (
-      product.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
-
+const filteredProducts = rowsWithActions.filter((product) => {
+  return (
+    product.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) 
+  );
+});
 
   return (
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
