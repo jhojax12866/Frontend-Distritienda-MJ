@@ -25,7 +25,7 @@ import DashboardNavbar2 from "layouts/Compras/componentes";
 
 const data_facturas = {
   columns: [
-    { name: "id", align: "left" },
+    { name: "id", align: "center" },
     { name: "cliente", align: "center" },
     { name: "fecha_ingreso", align: "center" },
     { name: "medio_pago_v", align: "center" },

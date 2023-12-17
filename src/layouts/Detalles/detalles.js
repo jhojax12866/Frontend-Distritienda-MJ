@@ -22,7 +22,7 @@ import StockTable from "layouts/inventario/tablas/stock";
 
 const data_detalle_venta = {
   columns: [
-    { name: "id", align: "left" },
+    { name: "id", align: "center" },
     { name: "factura_venta", align: "center" },
     { name: "Producto", align: "center", label: "Nombre del Producto" },
     { name: "cantidad", align: "center" },

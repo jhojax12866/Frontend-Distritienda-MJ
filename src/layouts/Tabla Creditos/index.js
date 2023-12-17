@@ -22,7 +22,7 @@ import { Grid } from "@mui/material";
 
 const data_cartera = {
   columns: [
-    { name: "id", align: "left" },
+    { name: "id", align: "center" },
     { name: "factura_v", align: "center" },
     { name: "cliente", align: "center" },
     { name: "telefono", align: "center" },
@@ -260,7 +260,10 @@ function Creditos() {
         return [];
       }
   
-      const updatedCartera = await Promise.all(dataCartera.map(fetchClienteData));
+      // Filtrar los datos que tienen un valor en el campo "factura_v"
+      const filteredCartera = dataCartera.filter(cartera => cartera.factura_v);
+  
+      const updatedCartera = await Promise.all(filteredCartera.map(fetchClienteData));
   
       setCartera(updatedCartera);
       return updatedCartera;
@@ -268,6 +271,7 @@ function Creditos() {
       console.error("Error fetching data from API", error);
     }
   };
+  
   
 
   const getActionButtons = (cartera) => (
