@@ -4,7 +4,6 @@ import TextField from "@mui/material/TextField";
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-
 import Table from "examples/Tables/Table";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -15,26 +14,27 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import { Chip, FormControl, InputLabel } from "@mui/material";
+import { FormControl, InputLabel } from "@mui/material";
 import { DialogContentText, Grid } from "@mui/material";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { Visibility } from "@mui/icons-material";
-import DashboardNavbar2 from "./componentes";
 
 const data_facturas = {
   columns: [
     { name: "id", align: "left" },
-    { name: "cliente", align: "center" },
+    { name: "proveedor", align: "center" },
+    { name: "telefono", align: "center" },
     { name: "fecha_ingreso", align: "center" },
-    { name: "medio_pago_v", align: "center" },
-    { name: "estado_pago_v", align: "center" },
-    { name: "total_v", align: "center" },
+    { name: "email", align: "center" },
+    { name: "categoriaf", align: "center" },
+    { name: "medio_pago_c", align: "center" }, // Nuevo campo
+    { name: "estado_pago_c", align: "center" }, // Nuevo campo
+    { name: "lote_f", align: "center" }, // Nuevo campo
     { name: "acciones", align: "center" },
   ],
 };
 
-function Tabla_Ventas() {
+function TablaCompras() {
   const { columns } = data_facturas;
   const [facturas, setFacturas] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -43,33 +43,31 @@ function Tabla_Ventas() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [newFacturaDialogOpen, setNewFacturaDialogOpen] = useState(false);
   const [editedFactura, setEditedFactura] = useState({});
-  const [totalFactura, setTotalFactura] = useState(0);
   const [newFactura, setNewFactura] = useState({
-    cliente: "",
+    proveedor: "",
+    telefono: "",
     fecha_ingreso: "",
-    medio_pago_v: "", // Valor inicial
-    estado_pago_v: "",
-    total_v: "0.00",
+    email: "",
+    categoriaf: "", // Nuevo campo
+  });
   
 
-  });
+
+  
 
   // Declare accessToken globally
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const facturasData = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/factura_venta/")
-          .then((response) => response.json());
-        setFacturas(facturasData);
-      } catch (error) {
-        console.error("Error fetching data from API", error);
-      }
+    const fetchDataAndSetState = async () => {
+      const initialData = await fetchData();
+      setFacturas(initialData);
     };
-
-    fetchData();
+  
+    fetchDataAndSetState();
   }, []);
+  
+  
 
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
@@ -89,76 +87,6 @@ function Tabla_Ventas() {
   const handleCreate = () => {
     setNewFacturaDialogOpen(true);
   };
-  const [productosFactura, setProductosFactura] = useState([]);
-
-
-  
-  const [verProductosDialogOpen, setVerProductosDialogOpen] = useState(false);
-  
-  
-
-  const handleVerProductos = async (factura) => {
-    try {
-      const response = await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/detalle_venta/?factura_venta=${factura.id}`);
-      console.log("Respuesta de la API Detalle Venta:", response);
-  
-      if (!response.ok) {
-        throw new Error(`Error al obtener detalles de productos: ${response.status} - ${response.statusText}`);
-      }
-  
-      const productos = await response.json();
-      console.log("Productos de la Factura:", productos);
-  
-      const productosConNombre = await Promise.all(
-        productos.map(async (producto) => {
-          try {
-            const productoResponse = await fetch(
-              `https://simplificado-48e1a3e2d000.herokuapp.com/productos/${producto.producto_venta}/`,
-              {
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                },
-              }
-            );
-  
-            if (!productoResponse.ok) {
-              throw new Error(`Error al obtener detalles del producto: ${productoResponse.status} - ${productoResponse.statusText}`);
-            }
-  
-            const productoDetallado = await productoResponse.json();
-  
-            return {
-              ...producto,
-              nombre_producto: productoDetallado.nombre_producto,
-              precio_producto: productoDetallado.precio_producto,
-              total_producto: producto.cantidad * productoDetallado.precio_producto,
-            };
-          } catch (error) {
-            console.error("Error obteniendo detalles del producto", error);
-            return {
-              ...producto,
-              nombre_producto: "Error obteniendo nombre",
-              precio_producto: 0,
-              total_producto: 0,
-            };
-          }
-        })
-      );
-  
-      console.log("Productos con Nombre:", productosConNombre);
-  
-      setProductosFactura(productosConNombre);
-      setVerProductosDialogOpen(true);
-  
-      const totalFactura = productosConNombre.reduce((total, producto) => total + producto.total_producto, 0);
-      setTotalFactura(totalFactura);
-    } catch (error) {
-      console.error("Error obteniendo productos de la factura", error);
-    }
-  };
-  
-  
-  
 
   const deleteFactura = async () => {
     try {
@@ -175,7 +103,7 @@ function Tabla_Ventas() {
         },
       };
 
-      await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/factura_venta/${selectedFactura.id}/`, requestOptions);
+      await fetch(`https://simplificado-48e1a3e2d000.herokuapp.com/factura_compra/${selectedFactura.id}/`, requestOptions);
 
       const updatedFacturas = facturas.filter((factura) => factura.id !== selectedFactura.id);
       setFacturas(updatedFacturas);
@@ -194,16 +122,19 @@ function Tabla_Ventas() {
         console.error("Factura ID is not defined.");
         return;
       }
-
+  
       const editedFacturaData = {
-        cliente: editedFactura.cliente,
+        proveedor: editedFactura.proveedor,
+        telefono: editedFactura.telefono,
         fecha_ingreso: editedFactura.fecha_ingreso,
-        medio_pago_v: editedFactura.medio_pago_v,
-        estado_pago_v: editedFactura.estado_pago_v,
-        // total_v: editedFactura.total_v, // Elimina esta línea
+        email: editedFactura.email,
+        medio_pago_c: editedFactura.medio_pago_c,
+        estado_pago_c: editedFactura.estado_pago_c,
+        lote_f: editedFactura.lote_f,
+        categoriaf: editedFactura.categoriaf, // Asegúrate de incluir categoriaf
       };
       
-
+  
       const requestOptions = {
         method: "PUT",
         headers: {
@@ -212,54 +143,51 @@ function Tabla_Ventas() {
         },
         body: JSON.stringify(editedFacturaData),
       };
-
+  
       const response = await fetch(
-        `https://simplificado-48e1a3e2d000.herokuapp.com/factura_venta/${editedFactura.id}/`,
+        `https://simplificado-48e1a3e2d000.herokuapp.com/factura_compra/${editedFactura.id}/`,
         requestOptions
       );
-
+  
       if (response.ok) {
         const updatedFacturas = await fetchData();
         setFacturas(updatedFacturas);
 
         setEditedFactura({});
         setEditDialogOpen(false);
-      } else if (response.status === 401) {
-        console.error("Authorization error: Token is invalid or expired.");
       } else {
-        console.error("Error editing factura:", response.statusText);
+        console.error("Error editando factura:", response.statusText);
         console.log(await response.json());
       }
     } catch (error) {
-      console.error("Error editing factura", error);
+      console.error("Error editando factura", error);
     }
   };
 
   const addNewFactura = async () => {
     try {
-      console.log("Nueva Factura:", newFactura);
-  
-      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/factura_venta/", {
+      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/factura_compra/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(newFactura),
+        body: JSON.stringify({
+          ...newFactura,
+          categoriaf: newFactura.categoriaf, // Nuevo campo
+        }),
       });
-  
-      console.log("Respuesta:", response);
   
       if (response.ok) {
         const updatedFacturas = await fetchData();
         setFacturas(updatedFacturas);
   
         setNewFactura({
-          cliente: "",
+          proveedor: "",
+          telefono: "",
           fecha_ingreso: "",
-          medio_pago_v: "",
-          estado_pago_v: "",
-          total_v: "0.00",
+          email: "",
+          categoria: "", // Reset the category after adding a new factura
         });
         setNewFacturaDialogOpen(false);
       } else {
@@ -273,7 +201,7 @@ function Tabla_Ventas() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/factura_venta/");
+      const response = await fetch("https://simplificado-48e1a3e2d000.herokuapp.com/factura_compra/");
       const data = await response.json();
       return data;
     } catch (error) {
@@ -289,12 +217,9 @@ function Tabla_Ventas() {
       <IconButton onClick={() => handleDelete(factura)} color="error">
         <DeleteIcon />
       </IconButton>
-      <IconButton onClick={() => handleVerProductos(factura)} color="primary">
-        <Visibility />
-      </IconButton>
     </div>
   );
-  
+
   const rowsWithActions = facturas.map((factura) => {
     return {
       ...factura,
@@ -303,13 +228,12 @@ function Tabla_Ventas() {
   });
 
   const filteredFacturas = rowsWithActions.filter((factura) => {
-    return factura.cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      factura.total_v.toString().includes(searchTerm);
+    return factura.proveedor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      factura.email.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   return (
     <DashboardLayout sx={{ backgroundColor: 'rgba(173, 216, 230, 0.9)' }}>
-      <DashboardNavbar2 />
       <SoftTypography variant="body1" style={{ paddingLeft: '2px', paddingTop: '0px', fontSize: '19px' }}>
         Search
       </SoftTypography>
@@ -334,7 +258,7 @@ function Tabla_Ventas() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">FACTURAS DE VENTAS</SoftTypography>
+              <SoftTypography variant="h6">FACTURAS DE COMPRAS</SoftTypography>
               <Button
                 onClick={() => setNewFacturaDialogOpen(true)}
                 variant="contained"
@@ -365,10 +289,6 @@ function Tabla_Ventas() {
         </SoftBox>
       </SoftBox>
 
-
-
-
-
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Confirmar eliminación</DialogTitle>
         <DialogContent>
@@ -387,220 +307,288 @@ function Tabla_Ventas() {
 
 
 
-      
-<Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
-  <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Factura</DialogTitle>
-  <DialogContent>
-    <form>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <InputLabel htmlFor="cliente">Cliente</InputLabel>
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <TextField
-              id="cliente"
-              value={editedFactura.cliente}
-              onChange={(e) => setEditedFactura({ ...editedFactura, cliente: e.target.value })}
-              fullWidth
-              variant="outlined"
-              required
-            />
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-              <InputLabel htmlFor="fecha_ingreso">Fecha de Ingreso</InputLabel>
-              <FormControl fullWidth variant="outlined" margin="normal">
-              <TextField
-              id="fecha_ingreso"
-              value={editedFactura.fecha_ingreso}
-              onChange={(e) => {
-                const formattedDate = e.target.value; // Adjust the formatting if needed
-                setEditedFactura({ ...editedFactura, fecha_ingreso: formattedDate });
-              }}
-              fullWidth
-              type="date"
-              variant="outlined"
-              required
-            />
-            </FormControl>
-            </Grid>
-
-
-
-            <Grid item xs={12}>
-  <InputLabel htmlFor="medio_pago_v">Medio de Pago</InputLabel>
-  <FormControl fullWidth variant="outlined" margin="normal">
-    <Select
-      id="medio_pago_v"
-      value={editedFactura.medio_pago_v}
-      onChange={(e) => setEditedFactura({ ...editedFactura, medio_pago_v: e.target.value })}
-      fullWidth
-      variant="outlined"
-      required
-    >
-                    <MenuItem value="Efectivo">Efectivo</MenuItem>
-                    <MenuItem value="Transferencia BANCOLOMBIA">Transferencia BANCOLOMBIA</MenuItem>
-                    <MenuItem value="Transferencia NEQUI">Transferencia NEQUI</MenuItem>
-      {/* Agrega más opciones según sea necesario */}
-    </Select>
-  </FormControl>
-</Grid>
-
-        <Grid item xs={12}>
-  <InputLabel htmlFor="estado_pago_v">Estado de Pago</InputLabel>
-  <FormControl fullWidth variant="outlined" margin="normal">
-    <Select
-      id="estado_pago_v"
-      value={editedFactura.estado_pago_v}
-      onChange={(e) => setEditedFactura({ ...editedFactura, estado_pago_v: e.target.value })}
-      fullWidth
-      variant="outlined"
-      required
-    >
-      <MenuItem value="APROBADO">APROBADO</MenuItem>
-      <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
-      <MenuItem value="RECHAZADO">RECHAZADO</MenuItem>
-    </Select>
-  </FormControl>
-</Grid>
-
-      </Grid>
-    </form>
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={() => setEditDialogOpen(false)} color="secondary">
-      Cancelar
-    </Button>
-    <Button
-      onClick={editFactura}
-      color="primary"
-      variant="contained"
-      style={{ color: 'white' }} // Establecer el color blanco
-    >
-      Guardar
-    </Button>
-  </DialogActions>
-</Dialog>
 
 
 
 
 
-<Dialog open={newFacturaDialogOpen} onClose={() => setNewFacturaDialogOpen(false)} fullWidth maxWidth="sm">
-  <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nueva Factura</DialogTitle>
-  <DialogContent>
-    <form>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <InputLabel htmlFor="cliente">Cliente</InputLabel>
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <TextField
-              id="cliente"
-              value={newFactura.cliente}
-              onChange={(e) => setNewFactura({ ...newFactura, cliente: e.target.value })}
-              fullWidth
-              variant="outlined"
-              required
-            />
-          </FormControl>
-        </Grid>
-
-        <Grid item xs={12}>
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Editar Factura</DialogTitle>
+        <DialogContent>
+          <form>
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="proveedor">Proveedor</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="proveedor"
+                    value={editedFactura.proveedor}
+                    onChange={(e) => setEditedFactura({ ...editedFactura, proveedor: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="telefono">Teléfono</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="telefono"
+                    value={editedFactura.telefono}
+                    onChange={(e) => setEditedFactura({ ...editedFactura, telefono: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
                 <InputLabel htmlFor="fecha_ingreso">Fecha de Ingreso</InputLabel>
                 <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="fecha_ingreso"
+                    value={editedFactura.fecha_ingreso}
+                    onChange={(e) => setEditedFactura({ ...editedFactura, fecha_ingreso: e.target.value })}
+                    fullWidth
+                    type="date"
+                    variant="outlined"
+                    required
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="email">Correo Electrónico</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="email"
+                    value={editedFactura.email}
+                    onChange={(e) => setEditedFactura({ ...editedFactura, email: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="categoriaf">Categoría F</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="categoriaf"
+                    value={newFactura.categoriaf}  // o editedFactura.categoriaf en el caso de editar
+                    onChange={(e) => setNewFactura({ ...newFactura, categoriaf: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <InputLabel htmlFor="medio_pago_c">Medio de Pago</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="medio_pago_c"
+                    value={editedFactura.medio_pago_c}
+                    onChange={(e) => setEditedFactura({ ...editedFactura, medio_pago_c: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <InputLabel htmlFor="estado_pago_c">Estado de Pago</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="estado_pago_c"
+                    value={editedFactura.estado_pago_c}
+                    onChange={(e) => setEditedFactura({ ...editedFactura, estado_pago_c: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                </FormControl>
+              </Grid>
+
+            <Grid item xs={12}>
+              <InputLabel htmlFor="lote_f">Lote</InputLabel>
+              <FormControl fullWidth variant="outlined" margin="normal">
                 <TextField
-                  id="fecha_ingreso"
-                  value={newFactura.fecha_ingreso}
-                  onChange={(e) => setNewFactura({ ...newFactura, fecha_ingreso: e.target.value })}
+                  id="lote_f"
+                  value={editedFactura.lote_f}
+                  onChange={(e) => setEditedFactura({ ...editedFactura, lote_f: e.target.value })}
                   fullWidth
-                  type="date"
                   variant="outlined"
                   required
                 />
-                </FormControl>
-              </Grid>
+              </FormControl>
+            </Grid>
+            </Grid>
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialogOpen(false)} color="secondary">
+            Cancelar
+          </Button>
+          <Button
+            onClick={editFactura}
+            color="primary"
+            variant="contained"
+            style={{ color: 'white' }}
+          >
+            Guardar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-        <Grid item xs={12}>
-                <InputLabel htmlFor="medio_pago_v">Medio de Pago</InputLabel>
+
+
+
+
+
+      <Dialog open={newFacturaDialogOpen} onClose={() => setNewFacturaDialogOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle style={{ backgroundColor: '#3498db', color: '#fff' }}>Agregar Nueva Factura</DialogTitle>
+        <DialogContent>
+          <form>
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="proveedor">Proveedor</InputLabel>
                 <FormControl fullWidth variant="outlined" margin="normal">
-                  <Select
-                    id="medio_pago_v"
-                    value={newFactura.medio_pago_v}
-                    onChange={(e) => setNewFactura({ ...newFactura, medio_pago_v: e.target.value })}
+                  <TextField
+                    id="proveedor"
+                    value={newFactura.proveedor}
+                    onChange={(e) => setNewFactura({ ...newFactura, proveedor: e.target.value })}
                     fullWidth
                     variant="outlined"
                     required
-                  >
-                    <MenuItem value="Efectivo">Efectivo</MenuItem>
-                    <MenuItem value="Transferencia BANCOLOMBIA">Transferencia BANCOLOMBIA</MenuItem>
-                    <MenuItem value="Transferencia NEQUI">Transferencia NEQUI</MenuItem>
-                    {/* Agrega más opciones según sea necesario */}
-                  </Select>
+                  />
                 </FormControl>
               </Grid>
-
-        <Grid item xs={12}>
-                <InputLabel htmlFor="estado_pago_v">Estado de Pago</InputLabel>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="telefono">Teléfono</InputLabel>
                 <FormControl fullWidth variant="outlined" margin="normal">
-                  <Select
-                    id="estado_pago_v"
-                    value={newFactura.estado_pago_v}
-                    onChange={(e) => setNewFactura({ ...newFactura, estado_pago_v: e.target.value })}
+                  <TextField
+                    id="telefono"
+                    value={newFactura.telefono}
+                    onChange={(e) => setNewFactura({ ...newFactura, telefono: e.target.value })}
                     fullWidth
                     variant="outlined"
                     required
-                  >
-                    <MenuItem value="APROBADO">APROBADO</MenuItem>
-                    <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
-                    <MenuItem value="RECHAZADO">RECHAZADO</MenuItem>
-                  </Select>
+                  />
                 </FormControl>
               </Grid>
-      </Grid>
-    </form>
-  </DialogContent>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="fecha_ingreso">Fecha de Ingreso</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="fecha_ingreso"
+                    value={newFactura.fecha_ingreso}
+                    onChange={(e) => setNewFactura({ ...newFactura, fecha_ingreso: e.target.value })}
+                    fullWidth
+                    type="date"
+                    variant="outlined"
+                    required
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="email">Correo Electrónico</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="email"
+                    value={newFactura.email}
+                    onChange={(e) => setNewFactura({ ...newFactura, email: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="categoriaf">Categoría F</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="categoriaf"
+                    value={editedFactura.categoriaf}
+                    onChange={(e) => setEditedFactura({ ...editedFactura, categoriaf: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <InputLabel htmlFor="medio_pago_c">Medio de Pago</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="medio_pago_c"
+                    value={newFactura.medio_pago_c}
+                    onChange={(e) => setNewFactura({ ...newFactura, medio_pago_c: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <InputLabel htmlFor="estado_pago_c">Estado de Pago</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="estado_pago_c"
+                    value={newFactura.estado_pago_c}
+                    onChange={(e) => setNewFactura({ ...newFactura, estado_pago_c: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <InputLabel htmlFor="lote_f">Lote</InputLabel>
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <TextField
+                    id="lote_f"
+                    value={newFactura.lote_f}
+                    onChange={(e) => setNewFactura({ ...newFactura, lote_f: e.target.value })}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
+          </form>
+        </DialogContent>
 
 
-  <DialogActions>
-    <Button onClick={() => setNewFacturaDialogOpen(false)} color="secondary">
-      Cancelar
-    </Button>
-    <Button
-      onClick={addNewFactura}
-      color="primary"
-      variant="contained"
-      style={{ color: 'white' }}
-    >
-      Guardar
-    </Button>
-  </DialogActions>
-</Dialog>
 
 
 
-<Dialog open={verProductosDialogOpen} onClose={() => setVerProductosDialogOpen(false)}>
-  <DialogTitle>Productos de la Factura</DialogTitle>
-  <DialogContent>
-    {productosFactura.map((producto) => (
-      <div key={producto.id}>
-        <p>Producto: {producto.nombre_producto}</p>
-        <p>Cantidad: {producto.cantidad}</p>
-        <p>Precio: {producto.precio_producto}</p>
-        <p>Total Producto: {producto.total_producto}</p>
-      </div>
-    ))}
-    <p>Total Factura: {totalFactura}</p> {/* Nuevo campo para mostrar el total de la factura */}
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={() => setVerProductosDialogOpen(false)} color="primary">
-      Cerrar
-    </Button>
-  </DialogActions>
-</Dialog>
+        <DialogActions>
+          <Button onClick={() => setNewFacturaDialogOpen(false)} color="secondary">
+            Cancelar
+          </Button>
+          <Button
+            onClick={addNewFactura}
+            color="primary"
+            variant="contained"
+            style={{ color: 'white' }}
+          >
+            Agregar
+          </Button>
+        </DialogActions>
 
 
 
+      </Dialog>
     </DashboardLayout>
   );
-  
 }
-export default Tabla_Ventas;
+
+export default TablaCompras;
+

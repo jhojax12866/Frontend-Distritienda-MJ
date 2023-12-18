@@ -22,7 +22,7 @@ import { Grid } from "@mui/material";
 
 const data_cartera = {
   columns: [
-    
+    { name: "id", align: "center" },
     { name: "factura_v", align: "center" },
     { name: "cliente", align: "center" },
     { name: "telefono", align: "center" },
