@@ -582,7 +582,7 @@ function Tabla_Ventas() {
   <DialogContent>
     {productosFactura.map((producto) => (
       <div key={producto.id}>
-        <p>Producto: {producto.nombre}</p>
+        <p>Producto: {producto.nombre_producto}</p>
         <p>Cantidad: {producto.cantidad}</p>
         <p>Precio: {producto.precio_producto}</p>
         <p>Total Producto: {producto.total_producto}</p>

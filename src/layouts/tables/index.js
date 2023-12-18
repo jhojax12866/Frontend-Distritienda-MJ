@@ -30,7 +30,6 @@ const data_facturas = {
     { name: "fecha_ingreso", align: "center" },
     { name: "medio_pago_v", align: "center" },
     { name: "estado_pago_v", align: "center" },
-    { name: "total_v", align: "center", label: "Total Venta" },
     { name: "acciones", align: "center" },
   ],
 };
@@ -220,7 +219,6 @@ function Tabla_Ventas() {
         fecha_ingreso: editedFactura.fecha_ingreso,
         medio_pago_v: editedFactura.medio_pago_v,
         estado_pago_v: editedFactura.estado_pago_v,
-        // total_v: editedFactura.total_v, // Elimina esta línea
       };
       
 
@@ -328,7 +326,7 @@ function Tabla_Ventas() {
     return {
       ...factura,
       total_v: totalFactura.toFixed(2),
-      productos: productosDeFactura.map(producto => producto.nombre).join(", "), // Display product names
+      productos: productosDeFactura.map(producto => producto.nombre).join(", "),
       acciones: getActionButtons(factura),
     };
   });
